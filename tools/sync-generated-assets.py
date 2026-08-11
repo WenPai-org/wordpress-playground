@@ -36,7 +36,7 @@ def run(command: list[str], *, stdout=None) -> subprocess.CompletedProcess:
                           stderr=subprocess.PIPE)
 
 
-with tempfile.TemporaryDirectory(prefix="wenpai-php-next-") as temporary:
+with tempfile.TemporaryDirectory(prefix="wenpai-php-next-", dir=source.parent) as temporary:
     temporary = Path(temporary)
     bare = temporary / "assets.git"
     subprocess.run(["git", "init", "--bare", str(bare)], check=True,
@@ -44,9 +44,13 @@ with tempfile.TemporaryDirectory(prefix="wenpai-php-next-") as temporary:
     # Consume the immutable commit, not the moving branch head. The latter is
     # observed for candidate/watcher reporting only and must not invalidate an
     # already locked, still reachable release input.
-    subprocess.run(["git", "-C", str(bare), "fetch", "--depth=1", repository,
-                    commit], check=True,
-                   stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
+    fetch = subprocess.run(
+        ["git", "-C", str(bare), "fetch", "--depth=1", repository, commit],
+        text=True, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE,
+    )
+    if fetch.returncode:
+        detail = fetch.stderr.strip().splitlines()[-1] if fetch.stderr.strip() else "no diagnostic"
+        raise SystemExit(f"BLOCKED php-next exact commit fetch failed: {detail}")
     resolved = subprocess.check_output(["git", "-C", str(bare), "rev-parse", "FETCH_HEAD"],
                                        text=True).strip()
     if resolved != commit:

@@ -35,7 +35,7 @@
     },
     {
       "path": "tests",
-      "sha256": "90ec69fc577e2625fca488927ff27d5bb3b472a1a0e952adc0688809a2d89bf9"
+      "sha256": "3708bc7e46d5a6a3ed2ac953b9b42c184d37cb3ed3d33ccd5ed66475ef86cfef"
     },
     {
       "path": "tools/apply-overlay.py",
@@ -91,7 +91,7 @@
     },
     {
       "path": "tools/sync-generated-assets.py",
-      "sha256": "4403dbc05524265ac5d188c4b532b6c618aad490ac21550b97e9197794391d09"
+      "sha256": "bfbffd1674144bdb4dadf0c73dbf289a9c9fab1d51ebcc1dac51d322fa376224"
     },
     {
       "path": "tools/transform-hash.py",
@@ -103,5 +103,5 @@
     }
   ],
   "schema": "wenpai-transform-digest/v1",
-  "transform_sha256": "194fb2b76e3da329982d90cf6ba9a90066baa8b67d009ec752a021c79329018c"
+  "transform_sha256": "de5a306355c65be15c2c5b59202f4e12c6a20d29c7176417171e05991c7c1678"
 }

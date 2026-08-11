@@ -64,6 +64,11 @@ class ManifestTests(unittest.TestCase):
 
 
 class PipelineTests(unittest.TestCase):
+    def test_generated_asset_fetch_uses_source_volume_not_system_tmpfs(self):
+        tool = (ROOT / "tools/sync-generated-assets.py").read_text()
+        self.assertIn('dir=source.parent', tool)
+        self.assertIn('php-next exact commit fetch failed', tool)
+
     def test_default_transform_digest_covers_attribution_audit_and_normalization(self):
         with tempfile.TemporaryDirectory() as temporary:
             output = Path(temporary) / "transform.json"
