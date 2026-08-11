@@ -32,7 +32,7 @@
     "workflow_run_url": "https://feicode.com/WenPai-org/wordpress-playground/actions/runs/15",
     "workflow_status": "success",
     "workflow_ref": "codex/initial-validation-20260812",
-    "workflow_commit": "bab97edfc988f9c5e250942241465b5a7d11a342"
+    "workflow_commit": "bab97edc10e41627d1409b77a5ef7b88b5fabb91"
   },
   "fail_closed": {
     "moved_stable_tag": "BLOCKED and exit 2",
