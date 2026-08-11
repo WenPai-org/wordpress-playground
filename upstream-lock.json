@@ -2,7 +2,7 @@
   "downstream": {
     "artifact_sha256": "SIDECAR: authoritative after deterministic archive creation and anonymous Release readback",
     "product_commit": "SELF: resolved from the immutable tag commit by exact-SHA CI",
-    "transform_sha256": "ea2f1b295edda0279daa8c7f2cc5f2f1d54f5456ce6162e64d42b9acc0ffe7ba",
+    "transform_sha256": "194fb2b76e3da329982d90cf6ba9a90066baa8b67d009ec752a021c79329018c",
     "version": "3.1.49.1"
   },
   "generated_assets": {
