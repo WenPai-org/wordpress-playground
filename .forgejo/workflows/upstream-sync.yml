@@ -17,6 +17,15 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           fetch-depth: 0
+      - name: Mirror canonical heads and tags before reconciliation
+        env:
+          FEICODE_TOKEN: ${{ secrets.FEICODE_TOKEN }}
+        run: |
+          test -n "$FEICODE_TOKEN" || { echo 'BLOCKED: FEICODE_TOKEN is absent'; exit 2; }
+          git clone --mirror https://github.com/WordPress/wordpress-playground.git /tmp/canonical.git
+          git -C /tmp/canonical.git -c http.extraHeader="Authorization: token $FEICODE_TOKEN" \
+            push https://feicode.com/WPFork/wordpress-playground-upstream.git \
+            '+refs/heads/*:refs/heads/*' '+refs/tags/*:refs/tags/*'
       - name: Detect canonical stable and reconcile mirror
         run: python3 tools/stable-watcher.py --output evidence/upstream-watch.json
       - name: Materialize exact candidate and open bot PR when changed

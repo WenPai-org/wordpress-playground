@@ -19,6 +19,8 @@ jobs:
       - name: Exact product tag and tooling gates
         run: |
           test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          test "$(node -p 'process.versions.node')" = "22.23.0"
+          test "$(corepack npm@10.9.2 --version)" = "10.9.2"
           python3 -m unittest discover -s tests -p 'test_*.py' -v
           python3 tools/security-scan.py .
       - name: Materialize, verify and localize exact upstream
@@ -35,11 +37,10 @@ jobs:
       - name: Upstream relevant gates and website build
         run: |
           cd /tmp/product-source
-          npm ci --ignore-scripts
-          npm run lint -- --projects=playground-website
-          npm run typecheck -- --projects=playground-website
-          npx nx test playground-website --runInBand
-          npm run build:website
+          corepack npm@10.9.2 ci --ignore-scripts
+          corepack npm@10.9.2 exec nx lint playground-website
+          corepack npm@10.9.2 exec nx typecheck playground-website
+          corepack npm@10.9.2 exec nx test playground-website
       - name: Reproducible clean website build one and two
         run: |
           python3 tools/transform-hash.py -o /tmp/transform.json
