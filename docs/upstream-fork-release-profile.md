@@ -154,7 +154,7 @@ PASS 必须记录 exact product SHA、命令/run、日期和非零样本。0 样
 
 | 日期 | upstream | product | CI/Release | artifact SHA | translation | 结论 |
 |---|---|---|---|---|---|---|
-| 2026-08-11 | `v3.1.49@4d9c20678ca7cbd7bb881dc0cc5f4e5739f6cc2d` | `PENDING: candidate exact SHA/tag` | 本地工具实现中；公开 run `PENDING` | `PENDING` | zh_CN 源码 overlay `PENDING` | PENDING |
+| 2026-08-12 | `v3.1.49@4d9c20678ca7cbd7bb881dc0cc5f4e5739f6cc2d` | `2280c358a56fe6743f66e052a2470954aa0c21aa` | FeiCode CI run `49898` PASS；Release BLOCKED | 双构建 SHA 不一致，未发布 | zh_CN 157/157，residual 0 | BLOCKED |
 
 ## 11. 偏差记录
 
