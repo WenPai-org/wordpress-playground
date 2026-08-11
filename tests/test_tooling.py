@@ -82,6 +82,7 @@ class PipelineTests(unittest.TestCase):
                 "LICENSE", "NOTICE", "UPSTREAM.md", "docs/licenses",
                 "tools/license-notice-audit.py", "tools/release.py",
                 "tools/stable-watcher.py", "tools/normalize-runtime.py",
+                "tools/restore-upstream-generated-assets.py",
                 "tools/normalize-blueprint-validator.py", "upstream-lock.json#downstream.transform_sha256=SELF",
             }
             self.assertEqual(set(), required - paths)
@@ -262,6 +263,113 @@ class PipelineTests(unittest.TestCase):
             )
             self.assertEqual(validator.read_text(), canonical)
             self.assertEqual(json.loads(second.read_text())["result"], "already-normalized")
+
+
+class ExportIgnoredAssetRestoreTests(unittest.TestCase):
+    def setUp(self):
+        self.temporary = tempfile.TemporaryDirectory()
+        self.base = Path(self.temporary.name)
+        self.repository = self.base / "upstream"
+        self.repository.mkdir()
+        files = {
+            "packages/playground/wordpress-builds/src/wordpress/wp-beta.tar.zst": b"tar-zst",
+            "packages/playground/wordpress-builds/public/wp-beta/wordpress-remote-asset-paths": b"remote",
+            "packages/playground/wordpress-builds/public/wp-beta/wordpress-static.zip": b"zip",
+            "packages/playground/wordpress-builds/public/wp-beta/wp-admin/css/deep/admin.css": b"css",
+            "packages/php-wasm/web-builds/8-5/asyncify/8_5_8/php_8_5.wasm": b"web-wasm",
+            "packages/php-wasm/node-builds/8-5/jspi/8_5_8/php_8_5.wasm": b"node-wasm",
+        }
+        for relative, payload in files.items():
+            target = self.repository / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(payload)
+        (self.repository / ".gitattributes").write_text(
+            "packages/playground/wordpress-builds/public/**/* export-ignore\n"
+            "packages/playground/wordpress-builds/src/wordpress/**/*.tar.zst export-ignore\n"
+            "packages/php-wasm/web-builds/**/*.wasm export-ignore\n"
+            "packages/php-wasm/node-builds/**/*.wasm export-ignore\n"
+        )
+        subprocess.run(["git", "init", "-q"], cwd=self.repository, check=True)
+        subprocess.run(["git", "add", "."], cwd=self.repository, check=True)
+        subprocess.run(["git", "-c", "user.name=Test", "-c", "user.email=test@example.invalid",
+                        "commit", "-qm", "fixture"], cwd=self.repository, check=True)
+        self.commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=self.repository,
+                                              text=True).strip()
+        self.lock = self.base / "lock.json"
+        self.lock.write_text(json.dumps({"upstream": {"commit": self.commit}, "generated_assets": {}}))
+        candidate = self.base / "candidate.json"
+        subprocess.run([sys.executable, str(ROOT / "tools/restore-upstream-generated-assets.py"),
+                        "--repository", str(self.repository), "--lock", str(self.lock),
+                        "--inventory-output", str(candidate)], check=True, capture_output=True, text=True)
+        locked = json.loads(self.lock.read_text())
+        locked["generated_assets"]["upstream_export_ignored"] = json.loads(candidate.read_text())
+        self.lock.write_text(json.dumps(locked))
+        archive = subprocess.check_output(["git", "archive", self.commit], cwd=self.repository)
+        self.destination = self.base / "archive"
+        self.destination.mkdir()
+        import io
+        import tarfile
+        with tarfile.open(fileobj=io.BytesIO(archive), mode="r:") as stream:
+            stream.extractall(self.destination, filter="data")
+
+    def tearDown(self):
+        self.temporary.cleanup()
+
+    def run_restore(self, *, check=True):
+        return subprocess.run(
+            [sys.executable, str(ROOT / "tools/restore-upstream-generated-assets.py"),
+             "--repository", str(self.repository), "--destination", str(self.destination),
+             "--lock", str(self.lock)], check=check, capture_output=True, text=True)
+
+    def test_restores_all_six_nonzero_tracked_groups_idempotently(self):
+        result = self.run_restore()
+        report = json.loads(result.stdout.splitlines()[0])
+        self.assertEqual(report["entry_count"], 6)
+        self.assertEqual(report["restored"], 6)
+        self.assertEqual(set(report["groups"]), {
+            "wordpress_tar_zst", "wordpress_remote_asset_paths", "wordpress_static_zip",
+            "wordpress_public_tree", "php_wasm_web", "php_wasm_node",
+        })
+        self.assertTrue(all(group["entry_count"] == 1 for group in report["groups"].values()))
+        second = self.run_restore()
+        self.assertEqual(json.loads(second.stdout.splitlines()[0])["already_present"], 6)
+
+    def test_rejects_tracked_symlink_in_whitelisted_tree(self):
+        link = self.repository / "packages/playground/wordpress-builds/public/wp-beta/tracked-link"
+        link.symlink_to("wordpress-static.zip")
+        subprocess.run(["git", "add", str(link.relative_to(self.repository))],
+                       cwd=self.repository, check=True)
+        subprocess.run(["git", "-c", "user.name=Test", "-c", "user.email=test@example.invalid",
+                        "commit", "-qm", "symlink fixture"], cwd=self.repository, check=True)
+        commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=self.repository,
+                                         text=True).strip()
+        locked = json.loads(self.lock.read_text())
+        locked["upstream"]["commit"] = commit
+        self.lock.write_text(json.dumps(locked))
+        failed = subprocess.run(
+            [sys.executable, str(ROOT / "tools/restore-upstream-generated-assets.py"),
+             "--repository", str(self.repository), "--lock", str(self.lock),
+             "--inventory-output", str(self.base / "invalid.json")],
+            check=False, capture_output=True, text=True,
+        )
+        self.assertNotEqual(failed.returncode, 0)
+        self.assertIn("non-regular tracked entry rejected", failed.stderr)
+
+    def test_rejects_deep_extra_and_deep_symlink(self):
+        self.run_restore()
+        extra = self.destination / "packages/playground/wordpress-builds/public/wp-beta/wp-admin/deep/extra.js"
+        extra.parent.mkdir(parents=True, exist_ok=True)
+        extra.write_text("extra")
+        failed = self.run_restore(check=False)
+        self.assertNotEqual(failed.returncode, 0)
+        self.assertIn("untracked/extra governed destination file", failed.stderr)
+        extra.unlink()
+        target = self.destination / "packages/playground/wordpress-builds/public/wp-beta/wp-admin/css/deep/admin.css"
+        target.unlink()
+        target.symlink_to("../../../../wordpress-static.zip")
+        failed = self.run_restore(check=False)
+        self.assertNotEqual(failed.returncode, 0)
+        self.assertIn("symlink rejected", failed.stderr)
 
 
 if __name__ == "__main__":

@@ -55,6 +55,9 @@ jobs:
           python3 tools/apply-overlay.py --upstream .ci-work/source-archive --output .ci-work/product-source-1 --report evidence/overlay-report-1.json
           python3 tools/apply-overlay.py --upstream .ci-work/source-archive --output .ci-work/product-source-2 --report evidence/overlay-report-2.json
           cmp evidence/overlay-report-1.json evidence/overlay-report-2.json
+          python3 tools/restore-upstream-generated-assets.py --repository .ci-work/upstream --destination .ci-work/product-source-1 --report evidence/upstream-export-ignored-assets-1.json
+          python3 tools/restore-upstream-generated-assets.py --repository .ci-work/upstream --destination .ci-work/product-source-2 --report evidence/upstream-export-ignored-assets-2.json
+          cmp evidence/upstream-export-ignored-assets-1.json evidence/upstream-export-ignored-assets-2.json
           python3 tools/sync-generated-assets.py --source .ci-work/product-source-1 --report evidence/php-next-assets-1.json
           python3 tools/sync-generated-assets.py --source .ci-work/product-source-2 --report evidence/php-next-assets-2.json
       - name: Upstream relevant gates and website build
@@ -122,7 +125,7 @@ jobs:
           FEICODE_TOKEN: ${{ secrets.FEICODE_TOKEN }}
         run: |
           tag="${GITHUB_REF_NAME}"
-          artifacts=(.ci-work/build-1/*.sha256 .ci-work/build-1/runtime.json .ci-work/build-1/runtime-manifest.json .ci-work/build-1/sbom-summary.json .ci-work/build-1/artifact-set.json .ci-work/build-1/THIRD_PARTY_NOTICES.md .ci-work/build-1/third-party-inventory.json .ci-work/build-1/sbom-notice-metadata.json .ci-work/build-1/LICENSE_TEXTS.sha256 .ci-work/build-1/license-notice-audit-source.json .ci-work/build-1/license-notice-audit-runtime.json .ci-work/build-1/node-license-notices.json .ci-work/runtime-normalization-1.json .ci-work/blueprint-validator-normalization-1.json evidence/build-determinism.json ROLLBACK.md)
+          artifacts=(.ci-work/build-1/*.sha256 .ci-work/build-1/runtime.json .ci-work/build-1/runtime-manifest.json .ci-work/build-1/sbom-summary.json .ci-work/build-1/artifact-set.json .ci-work/build-1/THIRD_PARTY_NOTICES.md .ci-work/build-1/third-party-inventory.json .ci-work/build-1/sbom-notice-metadata.json .ci-work/build-1/LICENSE_TEXTS.sha256 .ci-work/build-1/license-notice-audit-source.json .ci-work/build-1/license-notice-audit-runtime.json .ci-work/build-1/node-license-notices.json .ci-work/runtime-normalization-1.json .ci-work/blueprint-validator-normalization-1.json evidence/build-determinism.json evidence/upstream-export-ignored-assets-1.json evidence/upstream-export-ignored-assets-2.json ROLLBACK.md)
           if compgen -G '.ci-work/build-1/*.part-*' >/dev/null; then
             artifacts+=(.ci-work/build-1/*.part-*)
           else

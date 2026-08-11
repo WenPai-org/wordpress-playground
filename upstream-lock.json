@@ -2,7 +2,7 @@
   "downstream": {
     "artifact_sha256": "SIDECAR: authoritative after deterministic archive creation and anonymous Release readback",
     "product_commit": "SELF: resolved from the immutable tag commit by exact-SHA CI",
-    "transform_sha256": "d3567a4eb1d8a563cc3f82c6db341895d25e87e4246ec7d7ba2657571084b8b7",
+    "transform_sha256": "74517cce34ea6aeaa3156366ea417e463a2897f0ce89dceeacfff39400d15b83",
     "version": "3.1.49.1"
   },
   "generated_assets": {
@@ -11,12 +11,12 @@
       "commit": "c9ce635313dd326b3947a5d5c37b7f36307e665e",
       "manifest_entries": 13,
       "manifest_sha256": "902a37be9f6154f32fcf3e3433407f3345711f0f6ebe0b0281f347c644b912f7",
+      "mirror_ref": "refs/wenpai/generated/php-next/c9ce635313dd326b3947a5d5c37b7f36307e665e",
+      "mirror_repository": "https://feicode.com/WPFork/wordpress-playground-upstream.git",
       "php_ref": "master",
       "php_version": "8.6.0-dev",
       "provenance_boundary": "The immutable generated-assets commit and payload hashes are exact; upstream metadata records php-src ref master but not its resolved commit.",
       "repository": "https://github.com/WordPress/wordpress-playground",
-      "mirror_repository": "https://feicode.com/WPFork/wordpress-playground-upstream.git",
-      "mirror_ref": "refs/wenpai/generated/php-next/c9ce635313dd326b3947a5d5c37b7f36307e665e",
       "upstream_manifest_sha256": "861a8095c4cd754ab4b87d4012857cc4f16ef22ae20b5c02bf564766c22d181a",
       "wasm_sha256": {
         "asyncify": "3df97dd7be2219fc3d2a549b3a4ec89780f413d1dda885f10e1a5c812322fbc1",
@@ -24,6 +24,48 @@
       },
       "workflow_run": 30336711421,
       "workflow_source_commit": "3ee823249d1057b1c74e1cc8df76b5abcf1f52ba"
+    },
+    "upstream_export_ignored": {
+      "commit": "4d9c20678ca7cbd7bb881dc0cc5f4e5739f6cc2d",
+      "groups": {
+        "php_wasm_node": {
+          "entry_count": 16,
+          "manifest_sha256": "3127cd761d71522c1dcf03aee6f2a5bb5f38c51c93ea91d830f6afd21420b4ce",
+          "path_whitelist": "packages/php-wasm/node-builds/**/*.wasm",
+          "total_bytes": 334390849
+        },
+        "php_wasm_web": {
+          "entry_count": 16,
+          "manifest_sha256": "ea133c1911d4fa08599bf9e67db2b706d7cf185c399a39ae2d4ba73c158f1d0b",
+          "path_whitelist": "packages/php-wasm/web-builds/**/*.wasm",
+          "total_bytes": 261264839
+        },
+        "wordpress_public_tree": {
+          "entry_count": 22164,
+          "manifest_sha256": "a02db9a3f2341a1d385d103b24a389ccc40c40a1a3e36e797f0085ec8efcb401",
+          "path_whitelist": "packages/playground/wordpress-builds/public/wp-*/* (excluding the two files above)",
+          "total_bytes": 652877448
+        },
+        "wordpress_remote_asset_paths": {
+          "entry_count": 10,
+          "manifest_sha256": "ca5e8d36fd8276c8873cd1f1628e2454fb24179f9f0ddb8293ac4dbbe15efd23",
+          "path_whitelist": "packages/playground/wordpress-builds/public/wp-*/wordpress-remote-asset-paths",
+          "total_bytes": 809151
+        },
+        "wordpress_static_zip": {
+          "entry_count": 10,
+          "manifest_sha256": "5cac400bf2b24c31da1ab35dd774e0c3bd1bfa5af05610ff3f0acd989e2deac0",
+          "path_whitelist": "packages/playground/wordpress-builds/public/wp-*/wordpress-static.zip",
+          "total_bytes": 176251043
+        },
+        "wordpress_tar_zst": {
+          "entry_count": 9,
+          "manifest_sha256": "74084689e687bfcaa4566d7cda55cb388275006cd5fc48bdad90a6e49836f603",
+          "path_whitelist": "packages/playground/wordpress-builds/src/wordpress/wp-*.tar.zst",
+          "total_bytes": 34810400
+        }
+      },
+      "schema": "wenpai-upstream-export-ignored-assets/v1"
     },
     "wp_cli": {
       "branch": "gh-pages",
