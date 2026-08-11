@@ -11,11 +11,19 @@ concurrency:
 jobs:
   exact-build-release:
     runs-on: ubuntu-latest
+    container:
+      image: node:22.23.0-bookworm
     timeout-minutes: 120
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           fetch-depth: 0
+      - name: Install locked Python runtime
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends python3
+          rm -rf /var/lib/apt/lists/*
+          test "$(node -p 'process.versions.node')" = "22.23.0"
       - name: Exact product tag and tooling gates
         run: |
           test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
