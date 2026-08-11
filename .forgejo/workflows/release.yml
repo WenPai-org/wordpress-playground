@@ -61,9 +61,11 @@ jobs:
         run: |
           for source in .ci-work/product-source-1 .ci-work/product-source-2; do
             (cd "$source" && corepack npm@10.9.2 ci --ignore-scripts)
-            (cd "$source" && corepack npm@10.9.2 exec nx lint playground-website --parallel=1)
-            (cd "$source" && corepack npm@10.9.2 exec nx typecheck playground-website --parallel=1)
-            (cd "$source" && corepack npm@10.9.2 exec nx test playground-website --parallel=1)
+            grep -q "getButton('应用到此 Playground')" "$source/packages/playground/website/src/components/site-manager/site-settings-form/site-settings-action-footer.spec.tsx"
+            grep -q 'aria-label="显示工具"' "$source/packages/playground/website/src/components/dock/dock-toggle-pill.spec.tsx"
+            (cd "$source" && corepack npm@10.9.2 exec nx lint playground-website --skip-nx-cache --parallel=1)
+            (cd "$source" && corepack npm@10.9.2 exec nx typecheck playground-website --skip-nx-cache --parallel=1)
+            (cd "$source" && corepack npm@10.9.2 exec nx test playground-website --skip-nx-cache -- --runInBand)
           done
       - name: Reproducible clean website build one and two
         run: |

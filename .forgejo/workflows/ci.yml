@@ -70,9 +70,11 @@ jobs:
           for number in 1 2; do
             source=".ci-work/product-source-$number"
             (cd "$source" && corepack npm@10.9.2 ci --ignore-scripts)
-            (cd "$source" && corepack npm@10.9.2 exec nx lint playground-website --parallel=1)
-            (cd "$source" && corepack npm@10.9.2 exec nx typecheck playground-website --parallel=1)
-            (cd "$source" && corepack npm@10.9.2 exec nx test playground-website --parallel=1)
+            grep -q "getButton('应用到此 Playground')" "$source/packages/playground/website/src/components/site-manager/site-settings-form/site-settings-action-footer.spec.tsx"
+            grep -q 'aria-label="显示工具"' "$source/packages/playground/website/src/components/dock/dock-toggle-pill.spec.tsx"
+            (cd "$source" && corepack npm@10.9.2 exec nx lint playground-website --skip-nx-cache --parallel=1)
+            (cd "$source" && corepack npm@10.9.2 exec nx typecheck playground-website --skip-nx-cache --parallel=1)
+            (cd "$source" && corepack npm@10.9.2 exec nx test playground-website --skip-nx-cache -- --runInBand)
             python3 tools/normalize-blueprint-validator.py --source "$source" --output ".ci-work/blueprint-validator-normalization-$number.json"
             rm -rf "$source/dist"
             (cd "$source" && SOURCE_DATE_EPOCH="$epoch" TZ=UTC LC_ALL=C NX_DAEMON=false NX_PARALLEL=1 NODE_OPTIONS="--require=$GITHUB_WORKSPACE/tools/deterministic-node-build.cjs" corepack npm@10.9.2 exec nx build playground-website --skip-nx-cache --parallel=1)
