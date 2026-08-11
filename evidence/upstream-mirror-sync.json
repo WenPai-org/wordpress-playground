@@ -1,0 +1,12 @@
+{
+  "canonical_stable_commit": "4d9c20678ca7cbd7bb881dc0cc5f4e5739f6cc2d",
+  "canonical_trunk": "be483d400bcc6a82eb61f8d25fc0fa15d2077a64",
+  "mirror_stable_commit": "4d9c20678ca7cbd7bb881dc0cc5f4e5739f6cc2d",
+  "mirror_trunk": "be483d400bcc6a82eb61f8d25fc0fa15d2077a64",
+  "previous_mirror_trunk": "be483d400bcc6a82eb61f8d25fc0fa15d2077a64",
+  "schema": "wenpai-upstream-mirror-sync/v1",
+  "stable_tag": "v3.1.49",
+  "strategy": "shallow-layered-stable-tag-and-trunk",
+  "tag_mutation_policy": "fail-closed-no-force",
+  "trunk_mutation_policy": "force-with-lease-exact-observed-ref"
+}

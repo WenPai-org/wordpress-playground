@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 import re
 import subprocess
+import tempfile
 import urllib.request
 from manifest import normalized_manifest, write_json
 
@@ -41,6 +42,10 @@ parser.add_argument("--create-candidate", action="store_true")
 parser.add_argument("--product-remote", default="origin")
 parser.add_argument("--api-base", default="https://feicode.com/api/v1")
 parser.add_argument("--repo", default="WenPai-org/wordpress-playground")
+parser.add_argument("--sync-mirror", action="store_true",
+                    help="shallow-sync canonical trunk and latest stable tag before reconciliation")
+parser.add_argument("--mirror-push-url", default="https://feicode.com/WPFork/wordpress-playground-upstream.git")
+parser.add_argument("--sync-output", type=Path)
 args = parser.parse_args()
 
 canonical = ls_remote(args.canonical)
@@ -48,6 +53,71 @@ stable = stable_tags(canonical)
 if not stable:
     raise SystemExit("BLOCKED no stable canonical semver tags returned")
 version_tuple, tag, commit = stable[-1]
+
+if args.sync_mirror:
+    token = os.environ.get("FEICODE_TOKEN")
+    if not token:
+        raise SystemExit("BLOCKED FEICODE_TOKEN is absent; mirror mutation is forbidden")
+    canonical_heads = subprocess.check_output(
+        ["git", "ls-remote", "--heads", args.canonical, "refs/heads/trunk"],
+        text=True, timeout=60,
+    ).strip().split()
+    if len(canonical_heads) != 2 or canonical_heads[1] != "refs/heads/trunk":
+        raise SystemExit("BLOCKED canonical trunk ref is missing or ambiguous")
+    canonical_trunk = canonical_heads[0]
+    before = ls_remote(args.mirror)
+    tag_ref = f"refs/tags/{tag}"
+    if tag_ref in before and before[tag_ref] != commit:
+        raise SystemExit("BLOCKED existing mirror stable tag target differs; tags are immutable")
+    before_heads = subprocess.check_output(
+        ["git", "ls-remote", "--heads", args.mirror, "refs/heads/trunk"],
+        text=True, timeout=60,
+    ).strip().split()
+    before_trunk = before_heads[0] if len(before_heads) == 2 else None
+    auth_env = os.environ.copy()
+    auth_env.update({
+        "GIT_CONFIG_COUNT": "1",
+        "GIT_CONFIG_KEY_0": "http.extraHeader",
+        "GIT_CONFIG_VALUE_0": f"Authorization: token {token}",
+    })
+    with tempfile.TemporaryDirectory(prefix="wenpai-upstream-sync-") as directory:
+        subprocess.run(["git", "init", "--bare", directory], check=True,
+                       stdout=subprocess.DEVNULL)
+        subprocess.run(["git", "-C", directory, "remote", "add", "canonical", args.canonical], check=True)
+        subprocess.run(["git", "-C", directory, "fetch", "--depth=1", "--no-tags", "canonical",
+                        "refs/heads/trunk:refs/heads/trunk"], check=True)
+        subprocess.run(["git", "-C", directory, "fetch", "--depth=1", "--no-tags", "canonical",
+                        f"refs/tags/{tag}:refs/tags/{tag}"], check=True)
+        if tag_ref not in before:
+            subprocess.run(["git", "-C", directory, "push", args.mirror_push_url,
+                            f"{tag_ref}:{tag_ref}"], check=True, env=auth_env)
+        lease = f"--force-with-lease=refs/heads/trunk:{before_trunk}" if before_trunk else "--force-with-lease=refs/heads/trunk:"
+        subprocess.run(["git", "-C", directory, "push", lease, args.mirror_push_url,
+                        "refs/heads/trunk:refs/heads/trunk"], check=True, env=auth_env)
+    after = ls_remote(args.mirror)
+    after_heads = subprocess.check_output(
+        ["git", "ls-remote", "--heads", args.mirror, "refs/heads/trunk"],
+        text=True, timeout=60,
+    ).strip().split()
+    after_trunk = after_heads[0] if len(after_heads) == 2 else None
+    if after.get(tag_ref) != commit or after_trunk != canonical_trunk:
+        raise SystemExit("BLOCKED shallow mirror post-push reconciliation failed")
+    sync_report = {
+        "schema": "wenpai-upstream-mirror-sync/v1",
+        "strategy": "shallow-layered-stable-tag-and-trunk",
+        "canonical_trunk": canonical_trunk,
+        "previous_mirror_trunk": before_trunk,
+        "mirror_trunk": after_trunk,
+        "stable_tag": tag,
+        "canonical_stable_commit": commit,
+        "mirror_stable_commit": after.get(tag_ref),
+        "tag_mutation_policy": "fail-closed-no-force",
+        "trunk_mutation_policy": "force-with-lease-exact-observed-ref",
+    }
+    if args.sync_output:
+        write_json(args.sync_output, sync_report)
+    print(json.dumps(sync_report, sort_keys=True))
+
 mirror = ls_remote(args.mirror)
 mirror_commit = mirror.get(f"refs/tags/{tag}")
 status = "UNCHANGED"

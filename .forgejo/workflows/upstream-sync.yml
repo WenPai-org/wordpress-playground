@@ -17,16 +17,16 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           fetch-depth: 0
-      - name: Mirror canonical heads and tags before reconciliation
+      - name: Shallow-layer canonical trunk and stable tag into read-only mirror
         env:
           FEICODE_TOKEN: ${{ secrets.FEICODE_TOKEN }}
         run: |
           test -n "$FEICODE_TOKEN" || { echo 'BLOCKED: FEICODE_TOKEN is absent'; exit 2; }
-          git clone --mirror https://github.com/WordPress/wordpress-playground.git /tmp/canonical.git
-          git -C /tmp/canonical.git -c http.extraHeader="Authorization: token $FEICODE_TOKEN" \
-            push https://feicode.com/WPFork/wordpress-playground-upstream.git \
-            '+refs/heads/*:refs/heads/*' '+refs/tags/*:refs/tags/*'
-      - name: Detect canonical stable and reconcile mirror
+          python3 tools/stable-watcher.py \
+            --sync-mirror \
+            --sync-output evidence/upstream-mirror-sync.json \
+            --output evidence/upstream-watch.json
+      - name: Reconcile exact stable target
         run: python3 tools/stable-watcher.py --output evidence/upstream-watch.json
       - name: Materialize exact candidate and open bot PR when changed
         env:
@@ -37,3 +37,12 @@ jobs:
           tag=$(python3 -c 'import json; print(json.load(open("evidence/upstream-watch.json"))["tag"])')
           git clone --depth=1 --branch "$tag" https://feicode.com/WPFork/wordpress-playground-upstream.git /tmp/upstream
           python3 tools/stable-watcher.py --output evidence/upstream-watch.json --source-dir /tmp/upstream --create-candidate
+      - name: Publish run summary
+        if: always()
+        run: |
+          test -s evidence/upstream-watch.json || exit 0
+          python3 - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json
+          report = json.load(open('evidence/upstream-watch.json'))
+          print(f"stable={report['tag']} canonical={report['canonical_commit']} mirror={report['mirror_commit']} status={report['status']}")
+          PY
