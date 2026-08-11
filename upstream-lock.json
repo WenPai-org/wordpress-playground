@@ -2,7 +2,7 @@
   "downstream": {
     "artifact_sha256": "PENDING: assigned by release sidecar",
     "product_commit": "PENDING: assigned by exact candidate commit",
-    "transform_sha256": "adf17f6f0a0763a30cb92a061771c014645c82fc673184d8a7ccc914b2ca03eb",
+    "transform_sha256": "0db7439acdb82c36323b0a1814e8896e5d8dcb886e756bd2fe1912aac2c1875e",
     "version": "3.1.49.1"
   },
   "schema": "wenpai-upstream-lock/v1",

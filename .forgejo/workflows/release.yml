@@ -24,8 +24,12 @@ jobs:
       - name: Materialize, verify and localize exact upstream
         run: |
           tag=$(python3 -c 'import json; print(json.load(open("upstream-lock.json"))["upstream"]["tag"])')
+          commit=$(python3 -c 'import json; print(json.load(open("upstream-lock.json"))["upstream"]["commit"])')
           git clone --depth=1 --branch "$tag" https://feicode.com/WPFork/wordpress-playground-upstream.git /tmp/upstream
-          python3 tools/source-manifest.py /tmp/upstream --allow-internal-symlinks -o /tmp/source-manifest.json
+          test "$(git -C /tmp/upstream rev-parse HEAD)" = "$commit"
+          mkdir /tmp/source-archive
+          git -C /tmp/upstream archive "$commit" | tar -x -C /tmp/source-archive
+          python3 tools/source-manifest.py /tmp/source-archive --allow-internal-symlinks -o /tmp/source-manifest.json
           python3 -c 'import json; a=json.load(open("upstream-lock.json"))["upstream"]["source_sha256"]; b=json.load(open("/tmp/source-manifest.json"))["manifest_sha256"]; assert a==b,(a,b)'
           python3 tools/apply-overlay.py --upstream /tmp/upstream --output /tmp/product-source --report evidence/overlay-report.json
       - name: Upstream relevant gates and website build
@@ -36,12 +40,17 @@ jobs:
           npm run typecheck -- --projects=playground-website
           npx nx test playground-website --runInBand
           npm run build:website
-      - name: Reproducible archive build one and two
+      - name: Reproducible clean website build one and two
         run: |
-          transform=$(python3 tools/transform-hash.py | head -1)
+          python3 tools/transform-hash.py -o /tmp/transform.json
+          transform=$(python3 -c 'import json; print(json.load(open("/tmp/transform.json"))["transform_sha256"])')
           epoch=$(python3 -c 'import json; print(json.load(open("upstream-lock.json"))["toolchain"]["source_date_epoch"])')
           version=$(python3 -c 'import json; print(json.load(open("upstream-lock.json"))["downstream"]["version"])')
+          rm -rf /tmp/product-source/dist
+          (cd /tmp/product-source && SOURCE_DATE_EPOCH="$epoch" TZ=UTC LC_ALL=C npm run build:website)
           python3 tools/build-runtime.py --source /tmp/product-source --runtime-dir dist/packages/playground/wasm-wordpress-net --out-dir /tmp/build-1 --version "$version" --source-sha "$(python3 -c 'import json; print(json.load(open("upstream-lock.json"))["upstream"]["source_sha256"])')" --transform-sha "$transform" --product-commit "$GITHUB_SHA" --source-date-epoch "$epoch" --package-lock package-lock.json
+          rm -rf /tmp/product-source/dist
+          (cd /tmp/product-source && SOURCE_DATE_EPOCH="$epoch" TZ=UTC LC_ALL=C npm run build:website)
           python3 tools/build-runtime.py --source /tmp/product-source --runtime-dir dist/packages/playground/wasm-wordpress-net --out-dir /tmp/build-2 --version "$version" --source-sha "$(python3 -c 'import json; print(json.load(open("upstream-lock.json"))["upstream"]["source_sha256"])')" --transform-sha "$transform" --product-commit "$GITHUB_SHA" --source-date-epoch "$epoch" --package-lock package-lock.json
           cmp /tmp/build-1/*.tar.gz /tmp/build-2/*.tar.gz
       - name: Idempotent Release and anonymous SHA readback

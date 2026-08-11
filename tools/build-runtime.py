@@ -67,6 +67,12 @@ artifact = out / name
 members = [("runtime-manifest.json", json.dumps(runtime_manifest, ensure_ascii=False, indent=2, sort_keys=True).encode()+b"\n"),
            ("runtime.json", json.dumps(metadata, ensure_ascii=False, indent=2, sort_keys=True).encode()+b"\n"),
            ("sbom-summary.json", json.dumps(sbom, ensure_ascii=False, indent=2, sort_keys=True).encode()+b"\n")]
+product_root = Path(__file__).resolve().parents[1]
+for notice_name in ("LICENSE", "NOTICE", "UPSTREAM.md", "upstream-lock.json"):
+    notice_path = product_root / notice_name
+    if not notice_path.is_file():
+        raise SystemExit(f"BLOCKED required attribution file missing: {notice_name}")
+    members.append((notice_name, notice_path.read_bytes()))
 for entry in runtime_manifest["entries"]:
     members.append((f"runtime/{entry['path']}", None))
 
