@@ -61,6 +61,13 @@ jobs:
         run: |
           for source in .ci-work/product-source-1 .ci-work/product-source-2; do
             (cd "$source" && corepack npm@10.9.2 ci --ignore-scripts)
+            test_patch="$GITHUB_WORKSPACE/overlays/patches/0001-localization-test-contract.patch"
+            if git -C "$source" apply --reverse --check "$test_patch"; then
+              : # already applied before npm materialization
+            else
+              git -C "$source" apply --check --whitespace=error-all "$test_patch"
+              git -C "$source" apply --whitespace=error-all "$test_patch"
+            fi
             grep -q "getButton('应用到此 Playground')" "$source/packages/playground/website/src/components/site-manager/site-settings-form/site-settings-action-footer.spec.tsx"
             grep -q 'aria-label="显示工具"' "$source/packages/playground/website/src/components/dock/dock-toggle-pill.spec.tsx"
             (cd "$source" && corepack npm@10.9.2 exec nx lint playground-website --skip-nx-cache --parallel=1)
