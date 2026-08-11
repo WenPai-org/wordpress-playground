@@ -31,11 +31,11 @@
     },
     {
       "path": "overlays",
-      "sha256": "f67aa26fcc9a2988ac4f99f78b8797d412c4fbbdaf15dddbfcd071ca24ee20a7"
+      "sha256": "272d2173a68bf48d6868e27cc308f9524d78b6cb7e2c323c4312019cf80f2149"
     },
     {
       "path": "tests",
-      "sha256": "acd1f9abc2727c10f1d9396239020bc433a0d29d3fbb1c2a85589052b5f67391"
+      "sha256": "90ec69fc577e2625fca488927ff27d5bb3b472a1a0e952adc0688809a2d89bf9"
     },
     {
       "path": "tools/apply-overlay.py",
@@ -67,7 +67,7 @@
     },
     {
       "path": "tools/manifest.py",
-      "sha256": "fd90f8e08377dc92458931c5e7b45e70fe47e08cf52141bc7c3d1776186fe6ac"
+      "sha256": "4b6529608ae574062c4da0794cb5117f1d46bc905bcd34eac9836554ccf29c80"
     },
     {
       "path": "tools/normalize-blueprint-validator.py",
@@ -103,5 +103,5 @@
     }
   ],
   "schema": "wenpai-transform-digest/v1",
-  "transform_sha256": "4c65a85f910a10b99d5b89cdb46a05abc3843412bf986289e69069f9325ed425"
+  "transform_sha256": "16c3dc8d2000059c6ffb4f3d67a28719f2ae7c995ff2fa51e73b7989d9c051f5"
 }

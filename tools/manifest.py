@@ -11,7 +11,9 @@ import stat
 import unicodedata
 
 
-DEFAULT_EXCLUDES = {".git", ".DS_Store", "node_modules", ".nx", ".cache"}
+DEFAULT_EXCLUDES = {
+    ".git", ".DS_Store", "node_modules", ".nx", ".cache", "__pycache__",
+}
 
 
 class UnsafeTree(ValueError):

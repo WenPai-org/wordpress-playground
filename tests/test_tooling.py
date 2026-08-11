@@ -50,6 +50,18 @@ class ManifestTests(unittest.TestCase):
             self.assertEqual(result["input_count"], 2)
             self.assertEqual(len(result["transform_sha256"]), 64)
 
+    def test_python_bytecode_does_not_change_governed_digest(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / "rules").mkdir()
+            (root / "rules" / "rule.py").write_text("pass\n")
+            first = digest_inputs(root, ["rules"])
+            cache = root / "rules" / "__pycache__"
+            cache.mkdir()
+            (cache / "rule.cpython-311.pyc").write_bytes(b"generated")
+            second = digest_inputs(root, ["rules"])
+            self.assertEqual(first["transform_sha256"], second["transform_sha256"])
+
 
 class PipelineTests(unittest.TestCase):
     def test_default_transform_digest_covers_attribution_audit_and_normalization(self):
