@@ -30,8 +30,8 @@ changed: list[str] = []
 
 patches = sorted((overlay / "patches").glob("*.patch")) if (overlay / "patches").is_dir() else []
 for patch in patches:
-    subprocess.run(["git", "apply", "--check", "--whitespace=error-all", str(patch)], cwd=output, check=True)
-    subprocess.run(["git", "apply", "--whitespace=error-all", str(patch)], cwd=output, check=True)
+    subprocess.run(["git", "apply", "--no-index", "--check", "--whitespace=error-all", str(patch)], cwd=output, check=True)
+    subprocess.run(["git", "apply", "--no-index", "--whitespace=error-all", str(patch)], cwd=output, check=True)
     changed.append(f"patch:{patch.name}")
 
 localization_tool = repo / "tools" / "localization_overlay.py"

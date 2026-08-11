@@ -101,6 +101,30 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(first, second)
         self.assertTrue(first.startswith("4242 1786355284000 "))
 
+    def test_apply_overlay_forces_no_index_inside_parent_repository(self):
+        tool = (ROOT / "tools/apply-overlay.py").read_text()
+        self.assertIn('"apply", "--no-index"', tool)
+        with tempfile.TemporaryDirectory() as temporary:
+            outer = Path(temporary) / "outer"
+            nested = outer / "nested"
+            nested.mkdir(parents=True)
+            subprocess.run(["git", "init", str(outer)], check=True, capture_output=True)
+            target = nested / "contract.txt"
+            target.write_text("English\n")
+            patch = outer / "contract.patch"
+            patch.write_text("""diff --git a/contract.txt b/contract.txt
+--- a/contract.txt
++++ b/contract.txt
+@@ -1 +1 @@
+-English
++中文
+""")
+            subprocess.run(["git", "apply", "--no-index", "--check", str(patch)],
+                           cwd=nested, check=True, capture_output=True)
+            subprocess.run(["git", "apply", "--no-index", str(patch)],
+                           cwd=nested, check=True, capture_output=True)
+            self.assertEqual(target.read_text(), "中文\n")
+
     def test_apply_overlay_runs_localization_apply_check_and_scan(self):
         catalog = json.loads((ROOT / "overlays/localization/replacements.json").read_text())
         grouped = {}

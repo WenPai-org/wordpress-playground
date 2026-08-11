@@ -3,7 +3,7 @@
   "inputs": [
     {
       "path": ".forgejo/workflows",
-      "sha256": "e2066899a3f6ccf855eec07ab4db0a0bc15cead3e22734ef1761a4d99f305968"
+      "sha256": "ae0f9b924afad34c6536664b94a1aeffaa9f42dfd533c4e3881b623aa28e5033"
     },
     {
       "path": "LICENSE",
@@ -35,11 +35,11 @@
     },
     {
       "path": "tests",
-      "sha256": "3708bc7e46d5a6a3ed2ac953b9b42c184d37cb3ed3d33ccd5ed66475ef86cfef"
+      "sha256": "082dcb38ed6dd82fa1d8cf29d13174def318de22ff923eac04c70d64b2259412"
     },
     {
       "path": "tools/apply-overlay.py",
-      "sha256": "6f247c1f757e00c9fa711e377cf8275717e1ad58619854abc4d219ccc0bcc405"
+      "sha256": "8dd99fbef8e88cd62283a6f9fb46ff9768313930444bde060e93de35ea133ad4"
     },
     {
       "path": "tools/build-runtime.py",
@@ -103,5 +103,5 @@
     }
   ],
   "schema": "wenpai-transform-digest/v1",
-  "transform_sha256": "f8c20519a086cfd3ca84a6a05c3b95a1fe38bbb994906d4797a83c6d0801703f"
+  "transform_sha256": "18ab4da6ef3aee18ccbc16ae7b84e01a768ae797fb9a19dd7d53daf7c496b59e"
 }
