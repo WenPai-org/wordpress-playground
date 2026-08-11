@@ -307,10 +307,7 @@ class ExportIgnoredAssetRestoreTests(unittest.TestCase):
         archive = subprocess.check_output(["git", "archive", self.commit], cwd=self.repository)
         self.destination = self.base / "archive"
         self.destination.mkdir()
-        import io
-        import tarfile
-        with tarfile.open(fileobj=io.BytesIO(archive), mode="r:") as stream:
-            stream.extractall(self.destination, filter="data")
+        subprocess.run(["tar", "-x", "-C", str(self.destination)], input=archive, check=True)
 
     def tearDown(self):
         self.temporary.cleanup()
