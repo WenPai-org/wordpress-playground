@@ -71,16 +71,18 @@ jobs:
             source=".ci-work/product-source-$number"
             (cd "$source" && corepack npm@10.9.2 ci --ignore-scripts)
             test_patch="$GITHUB_WORKSPACE/overlays/patches/0001-localization-test-contract.patch"
-            if git -C "$source" apply --reverse --check "$test_patch"; then
-              : # already applied before npm materialization
+            footer_spec="$source/packages/playground/website/src/components/site-manager/site-settings-form/site-settings-action-footer.spec.tsx"
+            dock_spec="$source/packages/playground/website/src/components/dock/dock-toggle-pill.spec.tsx"
+            if grep -Fq "getButton('应用到此 Playground')" "$footer_spec" && grep -Fq 'aria-label="显示工具"' "$dock_spec"; then
+              : # localized contract preserved by dependency installation
             else
               git -C "$source" apply --check --whitespace=error-all "$test_patch"
               git -C "$source" apply --whitespace=error-all "$test_patch"
             fi
-            grep -q "getButton('应用到此 Playground')" "$source/packages/playground/website/src/components/site-manager/site-settings-form/site-settings-action-footer.spec.tsx"
-            grep -q 'aria-label="显示工具"' "$source/packages/playground/website/src/components/dock/dock-toggle-pill.spec.tsx"
-            (cd "$source" && corepack npm@10.9.2 exec nx lint playground-website --skip-nx-cache --parallel=1)
-            (cd "$source" && corepack npm@10.9.2 exec nx typecheck playground-website --skip-nx-cache --parallel=1)
+            grep -Fq "getButton('应用到此 Playground')" "$footer_spec"
+            grep -Fq 'aria-label="显示工具"' "$dock_spec"
+            (cd "$source" && corepack npm@10.9.2 exec nx lint playground-website --parallel=1)
+            (cd "$source" && corepack npm@10.9.2 exec nx typecheck playground-website --parallel=1)
             (cd "$source" && corepack npm@10.9.2 exec nx test playground-website --skip-nx-cache -- --runInBand)
             python3 tools/normalize-blueprint-validator.py --source "$source" --output ".ci-work/blueprint-validator-normalization-$number.json"
             rm -rf "$source/dist"

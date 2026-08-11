@@ -3,7 +3,7 @@
   "inputs": [
     {
       "path": ".forgejo/workflows",
-      "sha256": "78200bde36d327ac52a0e743045468197e910b4223949c29970802451f50afde"
+      "sha256": "e2066899a3f6ccf855eec07ab4db0a0bc15cead3e22734ef1761a4d99f305968"
     },
     {
       "path": "LICENSE",
@@ -103,5 +103,5 @@
     }
   ],
   "schema": "wenpai-transform-digest/v1",
-  "transform_sha256": "3a771f65f7549da4a2011d7a0d88740902f8cd70c6fd417e28a24a22ebd2990f"
+  "transform_sha256": "f8c20519a086cfd3ca84a6a05c3b95a1fe38bbb994906d4797a83c6d0801703f"
 }
