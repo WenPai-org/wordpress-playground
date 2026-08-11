@@ -1,0 +1,1077 @@
+{
+  "schemaVersion": 1,
+  "sourceRoot": ".",
+  "entries": [
+    {
+      "path": "packages/playground/website/src/main.tsx",
+      "old": "import './styles.css';",
+      "new": "import './styles.css';\nimport { applyProductLocale } from './lib/product-localization';",
+      "expectedCount": 1,
+      "category": "locale-bootstrap"
+    },
+    {
+      "path": "packages/playground/website/src/main.tsx",
+      "old": "collectWindowErrors(logger);",
+      "new": "collectWindowErrors(logger);\napplyProductLocale();",
+      "expectedCount": 1,
+      "category": "locale-bootstrap"
+    },
+    {
+      "path": "packages/playground/website/src/lib/state/url/resolve-blueprint-from-url.ts",
+      "old": "\t// Language\n\tif (query.get('language')) {",
+      "new": "\t// WordPress instance language. Shell locale is independently selected by `ui-language`.\n\tconst requestedWordPressLanguage = query.get('language') || 'zh_CN';\n\tif (requestedWordPressLanguage) {",
+      "expectedCount": 1,
+      "category": "locale-bootstrap"
+    },
+    {
+      "path": "packages/playground/website/src/lib/state/url/resolve-blueprint-from-url.ts",
+      "old": "\t\t\t\tlanguage: query.get('language')!,",
+      "new": "\t\t\t\tlanguage: requestedWordPressLanguage,",
+      "expectedCount": 1,
+      "category": "locale-bootstrap"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock.tsx",
+      "old": "label: 'New'",
+      "new": "label: '新建'",
+      "expectedCount": 1,
+      "category": "dock-navigation"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock.tsx",
+      "old": "ariaLabel: 'New Playground'",
+      "new": "ariaLabel: '新建 Playground'",
+      "expectedCount": 1,
+      "category": "dock-navigation-accessibility"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock.tsx",
+      "old": "label: 'Playgrounds'",
+      "new": "label: '站点'",
+      "expectedCount": 1,
+      "category": "dock-navigation"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock.tsx",
+      "old": "ariaLabel: 'Your Playgrounds'",
+      "new": "ariaLabel: '你的 Playground'",
+      "expectedCount": 1,
+      "category": "dock-navigation-accessibility"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock.tsx",
+      "old": "label: 'Blueprint'",
+      "new": "label: '蓝图'",
+      "expectedCount": 1,
+      "category": "dock-navigation"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock.tsx",
+      "old": "ariaLabel: 'Current Blueprint'",
+      "new": "ariaLabel: '当前蓝图'",
+      "expectedCount": 1,
+      "category": "dock-navigation-accessibility"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock.tsx",
+      "old": "label: 'Site Settings'",
+      "new": "label: '站点设置'",
+      "expectedCount": 1,
+      "category": "dock-navigation"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock.tsx",
+      "old": "ariaLabel: 'Site Settings'",
+      "new": "ariaLabel: '站点设置'",
+      "expectedCount": 1,
+      "category": "dock-navigation-accessibility"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock.tsx",
+      "old": "label: 'Database'",
+      "new": "label: '数据库'",
+      "expectedCount": 1,
+      "category": "dock-navigation"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock.tsx",
+      "old": "ariaLabel: 'Database'",
+      "new": "ariaLabel: '数据库'",
+      "expectedCount": 1,
+      "category": "dock-navigation-accessibility"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock.tsx",
+      "old": "label: 'Files'",
+      "new": "label: '文件'",
+      "expectedCount": 1,
+      "category": "dock-navigation"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock.tsx",
+      "old": "ariaLabel: 'Files'",
+      "new": "ariaLabel: '文件'",
+      "expectedCount": 1,
+      "category": "dock-navigation-accessibility"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock.tsx",
+      "old": "label: 'Logs'",
+      "new": "label: '日志'",
+      "expectedCount": 1,
+      "category": "dock-navigation"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock.tsx",
+      "old": "ariaLabel: 'Logs'",
+      "new": "ariaLabel: '日志'",
+      "expectedCount": 1,
+      "category": "dock-navigation-accessibility"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock.tsx",
+      "old": "label: 'Export'",
+      "new": "label: '导出'",
+      "expectedCount": 1,
+      "category": "dock-navigation"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock.tsx",
+      "old": "ariaLabel: 'Export'",
+      "new": "ariaLabel: '导出'",
+      "expectedCount": 1,
+      "category": "dock-navigation-accessibility"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock.tsx",
+      "old": "title: 'New Playground'",
+      "new": "title: '新建 Playground'",
+      "expectedCount": 1,
+      "category": "dock-navigation"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock.tsx",
+      "old": "description: 'Spin up a fresh Playground or start from a Blueprint.'",
+      "new": "description: '创建新的 Playground，或从蓝图开始。'",
+      "expectedCount": 1,
+      "category": "dock-navigation"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock.tsx",
+      "old": "title: 'Your Playgrounds'",
+      "new": "title: '你的 Playground'",
+      "expectedCount": 1,
+      "category": "dock-navigation"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock.tsx",
+      "old": "description: 'Switch between your recent and saved Playgrounds.'",
+      "new": "description: '切换最近使用和已保存的 Playground。'",
+      "expectedCount": 1,
+      "category": "dock-navigation"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock.tsx",
+      "old": "title: 'Blueprint'",
+      "new": "title: '蓝图'",
+      "expectedCount": 1,
+      "category": "dock-navigation"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock.tsx",
+      "old": "'Review and edit the Blueprint that describes this Playground.'",
+      "new": "'查看并编辑用于描述此 Playground 的蓝图。'",
+      "expectedCount": 1,
+      "category": "dock-navigation"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock.tsx",
+      "old": "title: 'Site Settings'",
+      "new": "title: '站点设置'",
+      "expectedCount": 1,
+      "category": "dock-navigation"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock.tsx",
+      "old": "'Change this Playground’s WordPress, PHP, language, and network settings.'",
+      "new": "'更改此 Playground 的 WordPress、PHP、语言和网络设置。'",
+      "expectedCount": 1,
+      "category": "dock-navigation"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock.tsx",
+      "old": "title: 'Database'",
+      "new": "title: '数据库'",
+      "expectedCount": 1,
+      "category": "dock-navigation"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock.tsx",
+      "old": "'Inspect and edit the SQLite database behind this Playground.'",
+      "new": "'查看并编辑此 Playground 使用的 SQLite 数据库。'",
+      "expectedCount": 1,
+      "category": "dock-navigation"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock.tsx",
+      "old": "title: 'Files'",
+      "new": "title: '文件'",
+      "expectedCount": 1,
+      "category": "dock-navigation"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock.tsx",
+      "old": "description: 'Browse and edit the active Playground filesystem.'",
+      "new": "description: '浏览并编辑当前 Playground 的文件系统。'",
+      "expectedCount": 1,
+      "category": "dock-navigation"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock.tsx",
+      "old": "title: 'PHP error log'",
+      "new": "title: 'PHP 错误日志'",
+      "expectedCount": 1,
+      "category": "dock-navigation"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock.tsx",
+      "old": "description: 'Errors, warnings, and notices from your site.'",
+      "new": "description: '查看站点的错误、警告和通知。'",
+      "expectedCount": 1,
+      "category": "dock-navigation"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock.tsx",
+      "old": "title: 'Export'",
+      "new": "title: '导出'",
+      "expectedCount": 1,
+      "category": "dock-navigation"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock.tsx",
+      "old": "title: 'Store permanently'",
+      "new": "title: '永久保存'",
+      "expectedCount": 1,
+      "category": "dock-navigation"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock.tsx",
+      "old": "? 'Unsaved Playground'",
+      "new": "? '未保存的 Playground'",
+      "expectedCount": 1,
+      "category": "dock-navigation"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock.tsx",
+      "old": "title: 'Export to GitHub'",
+      "new": "title: '导出到 GitHub'",
+      "expectedCount": 1,
+      "category": "dock-navigation"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock.tsx",
+      "old": "backLabel: 'Back to export options'",
+      "new": "backLabel: '返回导出选项'",
+      "expectedCount": 1,
+      "category": "dock-navigation"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock.tsx",
+      "old": "aria-label=\"Rename Playground\"",
+      "new": "aria-label=\"重命名 Playground\"",
+      "expectedCount": 1,
+      "category": "dock-navigation-accessibility"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock.tsx",
+      "old": "title=\"Rename\"",
+      "new": "title=\"重命名\"",
+      "expectedCount": 1,
+      "category": "dock-navigation-accessibility"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock.tsx",
+      "old": "? 'Wait for the current action to finish before closing'",
+      "new": "? '请等待当前操作完成后再关闭'",
+      "expectedCount": 1,
+      "category": "dock-navigation"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock.tsx",
+      "old": ": 'Close'",
+      "new": ": '关闭'",
+      "expectedCount": 1,
+      "category": "dock-navigation"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock.tsx",
+      "old": "? 'Operation succeeded'",
+      "new": "? '操作成功'",
+      "expectedCount": 1,
+      "category": "dock-navigation"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock.tsx",
+      "old": ": 'Operation failed'",
+      "new": ": '操作失败'",
+      "expectedCount": 1,
+      "category": "dock-navigation"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock.tsx",
+      "old": "? 'Dismiss operation notification'",
+      "new": "? '关闭操作通知'",
+      "expectedCount": 1,
+      "category": "dock-navigation"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock.tsx",
+      "old": ": 'Dismiss operation error'",
+      "new": ": '关闭操作错误'",
+      "expectedCount": 1,
+      "category": "dock-navigation"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock.tsx",
+      "old": "aria-label=\"Playground tools\"",
+      "new": "aria-label=\"Playground 工具\"",
+      "expectedCount": 1,
+      "category": "dock-navigation-accessibility"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock.tsx",
+      "old": ": 'Playground title'",
+      "new": ": 'Playground 标题'",
+      "expectedCount": 1,
+      "category": "dock-navigation"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock.tsx",
+      "old": "notificationAriaSuffix=\"recent autosave available\"",
+      "new": "notificationAriaSuffix=\"有可用的最近自动保存\"",
+      "expectedCount": 1,
+      "category": "dock-navigation"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock-toggle-pill.tsx",
+      "old": "'Tools cannot be hidden right now'",
+      "new": "'当前无法隐藏工具'",
+      "expectedCount": 1,
+      "category": "dock-navigation"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock-toggle-pill.tsx",
+      "old": "'Show tools'",
+      "new": "'显示工具'",
+      "expectedCount": 1,
+      "category": "dock-navigation"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock-toggle-pill.tsx",
+      "old": "'Hide tools'",
+      "new": "'隐藏工具'",
+      "expectedCount": 1,
+      "category": "dock-navigation"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock-toggle-pill.tsx",
+      "old": "'Exit full width'",
+      "new": "'退出全宽'",
+      "expectedCount": 2,
+      "category": "dock-navigation"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock-toggle-pill.tsx",
+      "old": "'Full width'",
+      "new": "'全宽'",
+      "expectedCount": 2,
+      "category": "dock-navigation"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock-corner-launcher.tsx",
+      "old": "'Show Playground tools'",
+      "new": "'显示 Playground 工具'",
+      "expectedCount": 1,
+      "category": "dock-navigation"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock-corner-launcher.tsx",
+      "old": "'Drag out or click to show Playground tools'",
+      "new": "'拖出或点击以显示 Playground 工具'",
+      "expectedCount": 1,
+      "category": "dock-navigation"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock-pane.tsx",
+      "old": "closeTitle !== 'Close'",
+      "new": "closeTitle !== '关闭'",
+      "expectedCount": 1,
+      "category": "dock-navigation"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock-pane.tsx",
+      "old": "aria-label=\"Close\"",
+      "new": "aria-label=\"关闭\"",
+      "expectedCount": 1,
+      "category": "dock-navigation-accessibility"
+    },
+    {
+      "path": "packages/playground/website/src/components/dock/dock-pane.tsx",
+      "old": "closeTitle ?? 'Close'",
+      "new": "closeTitle ?? '关闭'",
+      "expectedCount": 1,
+      "category": "dock-navigation"
+    },
+    {
+      "path": "packages/playground/website/src/components/modal-loading-fallback/index.tsx",
+      "old": "Loading modal...",
+      "new": "正在加载对话框…",
+      "expectedCount": 1,
+      "category": "loading-progress"
+    },
+    {
+      "path": "packages/playground/website/src/components/modal/modal-buttons.tsx",
+      "old": "submitText = 'Submit'",
+      "new": "submitText = '提交'",
+      "expectedCount": 1,
+      "category": "site-dialogs"
+    },
+    {
+      "path": "packages/playground/website/src/components/modal/modal-buttons.tsx",
+      "old": "\t\t\t\tCancel\n",
+      "new": "\t\t\t\t取消\n",
+      "expectedCount": 1,
+      "category": "site-dialogs"
+    },
+    {
+      "path": "packages/playground/website/src/components/rename-site-modal/index.tsx",
+      "old": "'Renaming failed. Please try again.'",
+      "new": "'重命名失败，请重试。'",
+      "expectedCount": 1,
+      "category": "site-dialogs"
+    },
+    {
+      "path": "packages/playground/website/src/components/rename-site-modal/index.tsx",
+      "old": "title=\"Rename Playground\"",
+      "new": "title=\"重命名 Playground\"",
+      "expectedCount": 1,
+      "category": "site-dialogs-accessibility"
+    },
+    {
+      "path": "packages/playground/website/src/components/rename-site-modal/index.tsx",
+      "old": "label=\"Name\"",
+      "new": "label=\"名称\"",
+      "expectedCount": 1,
+      "category": "site-dialogs"
+    },
+    {
+      "path": "packages/playground/website/src/components/rename-site-modal/index.tsx",
+      "old": "placeholder=\"e.g. Testing Gutenberg 24.17\"",
+      "new": "placeholder=\"例如：测试 Gutenberg 24.17\"",
+      "expectedCount": 1,
+      "category": "site-dialogs"
+    },
+    {
+      "path": "packages/playground/website/src/components/rename-site-modal/index.tsx",
+      "old": "submitText=\"Rename\"",
+      "new": "submitText=\"重命名\"",
+      "expectedCount": 1,
+      "category": "site-dialogs"
+    },
+    {
+      "path": "packages/playground/website/src/components/delete-site-modal/index.tsx",
+      "old": "'Deleting failed. Please try again.'",
+      "new": "'删除失败，请重试。'",
+      "expectedCount": 1,
+      "category": "site-dialogs"
+    },
+    {
+      "path": "packages/playground/website/src/components/delete-site-modal/index.tsx",
+      "old": "title=\"Delete Playground\"",
+      "new": "title=\"删除 Playground\"",
+      "expectedCount": 1,
+      "category": "site-dialogs-accessibility"
+    },
+    {
+      "path": "packages/playground/website/src/components/delete-site-modal/index.tsx",
+      "old": "Are you sure you want to delete the site &ldquo;",
+      "new": "确定要删除站点 &ldquo;",
+      "expectedCount": 1,
+      "category": "site-dialogs"
+    },
+    {
+      "path": "packages/playground/website/src/components/delete-site-modal/index.tsx",
+      "old": "&rdquo;? This action cannot be undone.",
+      "new": "&rdquo; 吗？此操作无法撤销。",
+      "expectedCount": 1,
+      "category": "site-dialogs"
+    },
+    {
+      "path": "packages/playground/website/src/components/delete-site-modal/index.tsx",
+      "old": "submitText=\"Delete Playground\"",
+      "new": "submitText=\"删除 Playground\"",
+      "expectedCount": 1,
+      "category": "site-dialogs"
+    },
+    {
+      "path": "packages/playground/website/src/components/offline-notice/index.tsx",
+      "old": "Some features may not available because you are offline.",
+      "new": "当前处于离线状态，部分功能可能不可用。",
+      "expectedCount": 1,
+      "category": "errors-offline"
+    },
+    {
+      "path": "packages/playground/website/src/components/start-error-modal/index.tsx",
+      "old": "Oops! There was a problem starting Playground. To figure out",
+      "new": "启动 Playground 时出现问题。要查明原因，请查看",
+      "expectedCount": 1,
+      "category": "errors-offline"
+    },
+    {
+      "path": "packages/playground/website/src/components/start-error-modal/index.tsx",
+      "old": "what went wrong, please take a look at the error logs provided",
+      "new": "下方的错误日志。如果看到“蓝图无效”错误，日志会",
+      "expectedCount": 1,
+      "category": "errors-offline"
+    },
+    {
+      "path": "packages/playground/website/src/components/start-error-modal/index.tsx",
+      "old": "below. If you see an \"Invalid blueprint error,\" the logs will",
+      "new": "指出导致问题的具体步骤。请检查蓝图；如需更多帮助，",
+      "expectedCount": 1,
+      "category": "errors-offline"
+    },
+    {
+      "path": "packages/playground/website/src/components/start-error-modal/index.tsx",
+      "old": "point out the specific step causing the issue. You can then",
+      "new": "请访问",
+      "expectedCount": 1,
+      "category": "errors-offline"
+    },
+    {
+      "path": "packages/playground/website/src/components/start-error-modal/index.tsx",
+      "old": "double-check your blueprint. For more help, you can also{' '}",
+      "new": "相关文档。{' '}",
+      "expectedCount": 1,
+      "category": "errors-offline"
+    },
+    {
+      "path": "packages/playground/website/src/components/start-error-modal/index.tsx",
+      "old": "visit our documentation.",
+      "new": "WordPress Playground 文档。",
+      "expectedCount": 1,
+      "category": "errors-offline"
+    },
+    {
+      "path": "packages/playground/website/src/components/start-error-modal/index.tsx",
+      "old": "text=\"Don't show again\"",
+      "new": "text=\"不再显示\"",
+      "expectedCount": 1,
+      "category": "errors-offline"
+    },
+    {
+      "path": "packages/playground/website/src/components/start-error-modal/index.tsx",
+      "old": "title=\"Error\"",
+      "new": "title=\"错误\"",
+      "expectedCount": 1,
+      "category": "errors-offline-accessibility"
+    },
+    {
+      "path": "packages/playground/website/src/components/playground-viewport/index.tsx",
+      "old": "caption=\"Loading Playgrounds\"",
+      "new": "caption=\"正在加载 Playground\"",
+      "expectedCount": 1,
+      "category": "loading-progress"
+    },
+    {
+      "path": "packages/playground/website/src/components/playground-viewport/index.tsx",
+      "old": "<h2>No site is selected</h2>",
+      "new": "<h2>未选择站点</h2>",
+      "expectedCount": 1,
+      "category": "loading-progress"
+    },
+    {
+      "path": "packages/playground/website/src/components/playground-viewport/index.tsx",
+      "old": "'Preparing WordPress'",
+      "new": "'正在准备 WordPress'",
+      "expectedCount": 1,
+      "category": "loading-progress"
+    },
+    {
+      "path": "packages/playground/website/src/components/playground-viewport/index.tsx",
+      "old": "'WordPress loading progress'",
+      "new": "'WordPress 加载进度'",
+      "expectedCount": 1,
+      "category": "loading-progress"
+    },
+    {
+      "path": "packages/playground/website/src/components/playground-viewport/index.tsx",
+      "old": "'WordPress import progress'",
+      "new": "'WordPress 导入进度'",
+      "expectedCount": 1,
+      "category": "loading-progress"
+    },
+    {
+      "path": "packages/playground/website/src/components/playground-viewport/index.tsx",
+      "old": "title=\"WordPress Playground wrapper (the actual WordPress site is in another, nested iframe)\"",
+      "new": "title=\"WordPress Playground 容器（实际 WordPress 站点位于嵌套框架中）\"",
+      "expectedCount": 1,
+      "category": "loading-progress-accessibility"
+    },
+    {
+      "path": "packages/playground/website/src/components/toolbar-buttons/download-as-zip.tsx",
+      "old": "aria-label=\"Download the current playground as a .zip file\"",
+      "new": "aria-label=\"将当前 Playground 下载为 .zip 文件\"",
+      "expectedCount": 1,
+      "category": "download-export-accessibility"
+    },
+    {
+      "path": "packages/playground/website/src/components/site-manager/index.tsx",
+      "old": "Start or select a Playground before opening this tool.",
+      "new": "请先启动或选择一个 Playground，再打开此工具。",
+      "expectedCount": 1,
+      "category": "site-management"
+    },
+    {
+      "path": "packages/playground/website/src/components/save-site-modal/index.tsx",
+      "old": "'Open this Playground to save it to a local directory'",
+      "new": "'请先打开此 Playground，再保存到本地目录'",
+      "expectedCount": 1,
+      "category": "save-storage-dialog"
+    },
+    {
+      "path": "packages/playground/website/src/components/save-site-modal/index.tsx",
+      "old": "'Not available in this browser'",
+      "new": "'此浏览器不支持'",
+      "expectedCount": 1,
+      "category": "save-storage-dialog"
+    },
+    {
+      "path": "packages/playground/website/src/components/save-site-modal/index.tsx",
+      "old": "'Not available on this site'",
+      "new": "'此站点不支持'",
+      "expectedCount": 1,
+      "category": "save-storage-dialog"
+    },
+    {
+      "path": "packages/playground/website/src/components/save-site-modal/index.tsx",
+      "old": "'Directory selection is not supported in this browser.'",
+      "new": "'此浏览器不支持选择目录。'",
+      "expectedCount": 1,
+      "category": "save-storage-dialog"
+    },
+    {
+      "path": "packages/playground/website/src/components/save-site-modal/index.tsx",
+      "old": "'Allow Playground to edit that directory in the browser prompt to continue.'",
+      "new": "'请在浏览器提示中允许 Playground 编辑该目录。'",
+      "expectedCount": 2,
+      "category": "save-storage-dialog"
+    },
+    {
+      "path": "packages/playground/website/src/components/save-site-modal/index.tsx",
+      "old": "'Unable to access the selected directory.'",
+      "new": "'无法访问所选目录。'",
+      "expectedCount": 1,
+      "category": "save-storage-dialog"
+    },
+    {
+      "path": "packages/playground/website/src/components/save-site-modal/index.tsx",
+      "old": "'Choose a directory to continue.'",
+      "new": "'请选择目录后继续。'",
+      "expectedCount": 1,
+      "category": "save-storage-dialog"
+    },
+    {
+      "path": "packages/playground/website/src/components/save-site-modal/index.tsx",
+      "old": "'Saving failed. Please try again.'",
+      "new": "'保存失败，请重试。'",
+      "expectedCount": 1,
+      "category": "save-storage-dialog"
+    },
+    {
+      "path": "packages/playground/website/src/components/save-site-modal/index.tsx",
+      "old": "'Finalizing save...'",
+      "new": "'正在完成保存…'",
+      "expectedCount": 1,
+      "category": "save-storage-dialog"
+    },
+    {
+      "path": "packages/playground/website/src/components/save-site-modal/index.tsx",
+      "old": "'Preparing to save...'",
+      "new": "'正在准备保存…'",
+      "expectedCount": 1,
+      "category": "save-storage-dialog"
+    },
+    {
+      "path": "packages/playground/website/src/components/save-site-modal/index.tsx",
+      "old": "label=\"Playground name\"",
+      "new": "label=\"Playground 名称\"",
+      "expectedCount": 1,
+      "category": "save-storage-dialog"
+    },
+    {
+      "path": "packages/playground/website/src/components/save-site-modal/index.tsx",
+      "old": "label=\"Storage location\"",
+      "new": "label=\"保存位置\"",
+      "expectedCount": 1,
+      "category": "save-storage-dialog"
+    },
+    {
+      "path": "packages/playground/website/src/components/save-site-modal/index.tsx",
+      "old": "'Save in browser storage'",
+      "new": "'保存到浏览器存储'",
+      "expectedCount": 1,
+      "category": "save-storage-dialog"
+    },
+    {
+      "path": "packages/playground/website/src/components/save-site-modal/index.tsx",
+      "old": "'Save in this browser'",
+      "new": "'保存到此浏览器'",
+      "expectedCount": 1,
+      "category": "save-storage-dialog"
+    },
+    {
+      "path": "packages/playground/website/src/components/save-site-modal/index.tsx",
+      "old": "' (not available)'",
+      "new": "'（不可用）'",
+      "expectedCount": 2,
+      "category": "save-storage-dialog"
+    },
+    {
+      "path": "packages/playground/website/src/components/save-site-modal/index.tsx",
+      "old": "'Save in a local directory'",
+      "new": "'保存到本地目录'",
+      "expectedCount": 1,
+      "category": "save-storage-dialog"
+    },
+    {
+      "path": "packages/playground/website/src/components/save-site-modal/index.tsx",
+      "old": "'Save to a local directory'",
+      "new": "'保存至本地目录'",
+      "expectedCount": 1,
+      "category": "save-storage-dialog"
+    },
+    {
+      "path": "packages/playground/website/src/components/save-site-modal/index.tsx",
+      "old": "<p style={helpTextStyle}>Not available in this browser</p>",
+      "new": "<p style={helpTextStyle}>此浏览器不支持</p>",
+      "expectedCount": 1,
+      "category": "save-storage-dialog"
+    },
+    {
+      "path": "packages/playground/website/src/components/save-site-modal/index.tsx",
+      "old": "<BaseControl label=\"Local directory\">",
+      "new": "<BaseControl label=\"本地目录\">",
+      "expectedCount": 1,
+      "category": "save-storage-dialog"
+    },
+    {
+      "path": "packages/playground/website/src/components/save-site-modal/index.tsx",
+      "old": "placeholder=\"Choose a directory...\"",
+      "new": "placeholder=\"选择目录…\"",
+      "expectedCount": 1,
+      "category": "save-storage-dialog"
+    },
+    {
+      "path": "packages/playground/website/src/components/save-site-modal/index.tsx",
+      "old": "submitText=\"Save\"",
+      "new": "submitText=\"保存\"",
+      "expectedCount": 1,
+      "category": "save-storage-dialog"
+    },
+    {
+      "path": "packages/playground/website/src/components/save-site-modal/index.tsx",
+      "old": "title=\"Save Playground\"",
+      "new": "title=\"保存 Playground\"",
+      "expectedCount": 1,
+      "category": "save-storage-dialog-accessibility"
+    },
+    {
+      "path": "packages/playground/website/src/components/save-site-modal/index.tsx",
+      "old": "contentLabel=\"Save Playground\"",
+      "new": "contentLabel=\"保存 Playground\"",
+      "expectedCount": 1,
+      "category": "save-storage-dialog-accessibility"
+    },
+    {
+      "path": "packages/playground/website/src/components/rename-site-modal/index.tsx",
+      "old": "contentLabel='This is a dialog window which overlays the main content of the page. The modal begins with a heading 2 called \"Rename Playground\". Pressing the Close button will close the modal and bring you back to where you were on the page.'",
+      "new": "contentLabel='这是覆盖页面主要内容的对话框。对话框标题为“重命名 Playground”。按关闭按钮将关闭对话框并返回原位置。'",
+      "expectedCount": 1,
+      "category": "site-dialogs-accessibility"
+    },
+    {
+      "path": "packages/playground/website/src/components/delete-site-modal/index.tsx",
+      "old": "contentLabel='This is a dialog window which overlays the main content of the page. The modal begins with a heading 2 called \"Delete Playground\". Pressing the Close button will close the modal and bring you back to where you were on the page.'",
+      "new": "contentLabel='这是覆盖页面主要内容的对话框。对话框标题为“删除 Playground”。按关闭按钮将关闭对话框并返回原位置。'",
+      "expectedCount": 1,
+      "category": "site-dialogs-accessibility"
+    },
+    {
+      "path": "packages/playground/website/src/components/site-manager/site-share-panel/index.tsx",
+      "old": "message=\"The Playground is still loading — Export to GitHub will be ready in a moment.\"",
+      "new": "message=\"Playground 仍在加载，稍后即可导出到 GitHub。\"",
+      "expectedCount": 1,
+      "category": "download-export"
+    },
+    {
+      "path": "packages/playground/website/src/components/site-manager/site-share-panel/index.tsx",
+      "old": "aria-label=\"Export options\"",
+      "new": "aria-label=\"导出选项\"",
+      "expectedCount": 1,
+      "category": "download-export-accessibility"
+    },
+    {
+      "path": "packages/playground/website/src/components/site-manager/site-share-panel/index.tsx",
+      "old": "message=\"The Playground is still loading — Download and Export to GitHub will be ready in a moment.\"",
+      "new": "message=\"Playground 仍在加载，稍后即可下载或导出到 GitHub。\"",
+      "expectedCount": 1,
+      "category": "download-export"
+    },
+    {
+      "path": "packages/playground/website/src/components/site-manager/site-share-panel/index.tsx",
+      "old": "Download a copy",
+      "new": "下载副本",
+      "expectedCount": 1,
+      "category": "download-export"
+    },
+    {
+      "path": "packages/playground/website/src/components/site-manager/site-share-panel/index.tsx",
+      "old": "Saves everything as it is right now — files, database,",
+      "new": "保存当前全部内容，包括文件、数据库和",
+      "expectedCount": 1,
+      "category": "download-export"
+    },
+    {
+      "path": "packages/playground/website/src/components/site-manager/site-share-panel/index.tsx",
+      "old": "and your edits — to a .zip you can re-import later.",
+      "new": "你的修改，生成可在以后重新导入的 .zip 文件。",
+      "expectedCount": 1,
+      "category": "download-export"
+    },
+    {
+      "path": "packages/playground/website/src/components/site-manager/site-share-panel/index.tsx",
+      "old": "'Preparing .zip…'",
+      "new": "'正在准备 .zip…'",
+      "expectedCount": 1,
+      "category": "download-export"
+    },
+    {
+      "path": "packages/playground/website/src/components/site-manager/site-share-panel/index.tsx",
+      "old": "'Download as .zip'",
+      "new": "'下载为 .zip'",
+      "expectedCount": 1,
+      "category": "download-export"
+    },
+    {
+      "path": "packages/playground/website/src/components/site-manager/site-share-panel/index.tsx",
+      "old": "Copy original setup link",
+      "new": "复制原始配置链接",
+      "expectedCount": 1,
+      "category": "download-export"
+    },
+    {
+      "path": "packages/playground/website/src/components/site-manager/site-share-panel/index.tsx",
+      "old": "Copies a URL that rebuilds this Playground from its",
+      "new": "复制一个可在任何设备上按原始蓝图重建此",
+      "expectedCount": 1,
+      "category": "download-export"
+    },
+    {
+      "path": "packages/playground/website/src/components/site-manager/site-share-panel/index.tsx",
+      "old": "original Blueprint on any device. It restores the",
+      "new": "Playground 的 URL。它只会恢复初始配置，",
+      "expectedCount": 1,
+      "category": "download-export"
+    },
+    {
+      "path": "packages/playground/website/src/components/site-manager/site-share-panel/index.tsx",
+      "old": "starting setup only — your edits to files and content",
+      "new": "不会包含你对文件和内容所做的",
+      "expectedCount": 1,
+      "category": "download-export"
+    },
+    {
+      "path": "packages/playground/website/src/components/site-manager/site-share-panel/index.tsx",
+      "old": "aren&apos;t included.",
+      "new": "修改。",
+      "expectedCount": 1,
+      "category": "download-export"
+    },
+    {
+      "path": "packages/playground/website/src/components/site-manager/site-share-panel/index.tsx",
+      "old": "? 'Link copied'",
+      "new": "? '链接已复制'",
+      "expectedCount": 1,
+      "category": "download-export"
+    },
+    {
+      "path": "packages/playground/website/src/components/site-manager/site-share-panel/index.tsx",
+      "old": ": 'Copy link'",
+      "new": ": '复制链接'",
+      "expectedCount": 1,
+      "category": "download-export"
+    },
+    {
+      "path": "packages/playground/website/src/components/site-manager/site-share-panel/index.tsx",
+      "old": "? 'Clipboard access was blocked. Please try again.'",
+      "new": "? '剪贴板访问被阻止，请重试。'",
+      "expectedCount": 1,
+      "category": "download-export"
+    },
+    {
+      "path": "packages/playground/website/src/components/site-manager/site-share-panel/index.tsx",
+      "old": ": 'Setup URL copied to the clipboard.'",
+      "new": ": '配置 URL 已复制到剪贴板。'",
+      "expectedCount": 1,
+      "category": "download-export"
+    },
+    {
+      "path": "packages/playground/website/src/components/site-manager/site-share-panel/index.tsx",
+      "old": "Pushes the current state — including your edits — to a",
+      "new": "将当前状态（包括你的修改）推送到",
+      "expectedCount": 1,
+      "category": "download-export"
+    },
+    {
+      "path": "packages/playground/website/src/components/site-manager/site-share-panel/index.tsx",
+      "old": "GitHub repository.",
+      "new": "GitHub 仓库。",
+      "expectedCount": 1,
+      "category": "download-export"
+    },
+    {
+      "path": "packages/playground/website/src/components/site-manager/site-settings-form/unconnected-site-settings-form.tsx",
+      "old": "'WordPress Version is required'",
+      "new": "'必须选择 WordPress 版本'",
+      "expectedCount": 1,
+      "category": "site-settings"
+    },
+    {
+      "path": "packages/playground/website/src/components/site-manager/site-settings-form/unconnected-site-settings-form.tsx",
+      "old": "label=\"WordPress Version\"",
+      "new": "label=\"WordPress 版本\"",
+      "expectedCount": 1,
+      "category": "site-settings"
+    },
+    {
+      "path": "packages/playground/website/src/components/site-manager/site-settings-form/unconnected-site-settings-form.tsx",
+      "old": "label=\"Include older versions\"",
+      "new": "label=\"包含旧版本\"",
+      "expectedCount": 1,
+      "category": "site-settings"
+    },
+    {
+      "path": "packages/playground/website/src/components/site-manager/site-settings-form/unconnected-site-settings-form.tsx",
+      "old": "'Selecting an older version locks the PHP version to the one it runs on.'",
+      "new": "'选择旧版 WordPress 后，PHP 版本将锁定为其支持的版本。'",
+      "expectedCount": 1,
+      "category": "site-settings"
+    },
+    {
+      "path": "packages/playground/website/src/components/site-manager/site-settings-form/unconnected-site-settings-form.tsx",
+      "old": "'PHP Version is required'",
+      "new": "'必须选择 PHP 版本'",
+      "expectedCount": 1,
+      "category": "site-settings"
+    },
+    {
+      "path": "packages/playground/website/src/components/site-manager/site-settings-form/unconnected-site-settings-form.tsx",
+      "old": "label=\"PHP Version\"",
+      "new": "label=\"PHP 版本\"",
+      "expectedCount": 1,
+      "category": "site-settings"
+    },
+    {
+      "path": "packages/playground/website/src/components/site-manager/site-settings-form/unconnected-site-settings-form.tsx",
+      "old": "label=\"Language\"",
+      "new": "label=\"站点语言\"",
+      "expectedCount": 1,
+      "category": "site-settings"
+    },
+    {
+      "path": "packages/playground/website/src/components/site-manager/site-settings-form/unconnected-site-settings-form.tsx",
+      "old": "label=\"Allow network access\"",
+      "new": "label=\"允许网络访问\"",
+      "expectedCount": 1,
+      "category": "site-settings"
+    },
+    {
+      "path": "packages/playground/website/src/components/site-manager/site-settings-form/unconnected-site-settings-form.tsx",
+      "old": "label=\"Create a multisite network\"",
+      "new": "label=\"创建多站点网络\"",
+      "expectedCount": 1,
+      "category": "site-settings"
+    },
+    {
+      "path": "packages/playground/website/src/components/site-manager/site-settings-form/site-settings-action-footer.tsx",
+      "old": "? 'Apply to this Playground'",
+      "new": "? '应用到此 Playground'",
+      "expectedCount": 1,
+      "category": "site-settings"
+    },
+    {
+      "path": "packages/playground/website/src/components/site-manager/site-settings-form/site-settings-action-footer.tsx",
+      "old": ": 'Create a fresh Playground'",
+      "new": ": '创建新的 Playground'",
+      "expectedCount": 1,
+      "category": "site-settings"
+    },
+    {
+      "path": "packages/playground/website/src/components/site-manager/site-settings-form/site-settings-action-footer.tsx",
+      "old": "aria-label=\"More settings actions\"",
+      "new": "aria-label=\"更多设置操作\"",
+      "expectedCount": 1,
+      "category": "site-settings-accessibility"
+    },
+    {
+      "path": "packages/playground/website/src/components/site-manager/site-settings-form/site-settings-action-footer.tsx",
+      "old": "This temporary Playground will be lost forever.",
+      "new": "此临时 Playground 将永久丢失。",
+      "expectedCount": 1,
+      "category": "site-settings"
+    },
+    {
+      "path": "packages/playground/website/src/components/site-manager/site-settings-form/site-settings-action-footer.tsx",
+      "old": "Continuing permanently discards all of its files and",
+      "new": "继续操作将永久丢弃其中的全部文件和",
+      "expectedCount": 1,
+      "category": "site-settings"
+    },
+    {
+      "path": "packages/playground/website/src/components/site-manager/site-settings-form/site-settings-action-footer.tsx",
+      "old": "changes.",
+      "new": "修改。",
+      "expectedCount": 1,
+      "category": "site-settings"
+    },
+    {
+      "path": "packages/playground/website/src/components/site-manager/site-settings-form/site-settings-action-footer.tsx",
+      "old": "Discard current work &amp; create a fresh Playground",
+      "new": "丢弃当前工作并创建新的 Playground",
+      "expectedCount": 1,
+      "category": "site-settings"
+    },
+    {
+      "path": "packages/playground/website/src/components/site-manager/site-share-panel/index.tsx",
+      "old": "<h3 className={css.groupTitle}>Export to GitHub</h3>",
+      "new": "<h3 className={css.groupTitle}>导出到 GitHub</h3>",
+      "expectedCount": 1,
+      "category": "download-export"
+    },
+    {
+      "path": "packages/playground/website/src/components/site-manager/site-share-panel/index.tsx",
+      "old": "\t\t\t\t\t\t\tExport to GitHub\n",
+      "new": "\t\t\t\t\t\t\t导出到 GitHub\n",
+      "expectedCount": 1,
+      "category": "download-export"
+    },
+    {
+      "path": "packages/playground/website/src/components/site-manager/site-share-panel/index.tsx",
+      "old": "aria-label=\"Export to GitHub form\"",
+      "new": "aria-label=\"导出到 GitHub 表单\"",
+      "expectedCount": 1,
+      "category": "download-export-accessibility"
+    }
+  ]
+}

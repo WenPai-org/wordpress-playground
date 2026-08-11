@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "catalog": "overlays/localization/replacements.json",
+  "sourceRoot": "packages/playground/website/src",
+  "defaultUiLanguage": "zh_CN",
+  "acceptedUiLanguageAliases": ["zh_CN", "zh-CN", "zh"],
+  "uiLanguageQueryParameter": "ui-language",
+  "wordpressLanguageQueryParameter": "language",
+  "residualPolicy": "mapped-stable-shell-strings",
+  "minimumReplacementSamples": 40
+}

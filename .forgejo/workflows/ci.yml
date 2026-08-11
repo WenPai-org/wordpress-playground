@@ -1,0 +1,20 @@
+name: ci
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  product-tooling:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Unit, localization contract, transform and security gates
+        run: |
+          python3 -m unittest discover -s tests -p 'test_*.py' -v
+          python3 tools/localization_overlay.py catalog-check
+          python3 tools/transform-hash.py -o evidence/transform-digest.json
+          python3 tools/security-scan.py .
+      - name: Workflow syntax smoke
+        run: python3 -c "import pathlib; assert len(list(pathlib.Path('.forgejo/workflows').glob('*.yml'))) == 4"

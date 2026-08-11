@@ -1,0 +1,23 @@
+name: translations
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '43 2 * * *'
+permissions:
+  contents: read
+concurrency:
+  group: wenpai-playground-product-mutation
+  cancel-in-progress: false
+jobs:
+  zh-cn-catalog:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Catalog coverage and placeholder gates
+        run: |
+          python3 tools/localization_overlay.py catalog-check | tee evidence/translation-status.json
+          python3 -m unittest tests/test_localization_overlay.py -v
+      - name: Translation policy
+        run: echo 'Translation failure is WARN and cannot create a Release; release retains stable zh_CN assertions.'

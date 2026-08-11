@@ -1,0 +1,52 @@
+name: release
+on:
+  workflow_dispatch:
+  push:
+    tags: ['v*.*.*.*']
+permissions:
+  contents: write
+concurrency:
+  group: wenpai-playground-release-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  exact-build-release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+      - name: Exact product tag and tooling gates
+        run: |
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          python3 -m unittest discover -s tests -p 'test_*.py' -v
+          python3 tools/security-scan.py .
+      - name: Materialize, verify and localize exact upstream
+        run: |
+          tag=$(python3 -c 'import json; print(json.load(open("upstream-lock.json"))["upstream"]["tag"])')
+          git clone --depth=1 --branch "$tag" https://feicode.com/WPFork/wordpress-playground-upstream.git /tmp/upstream
+          python3 tools/source-manifest.py /tmp/upstream --allow-internal-symlinks -o /tmp/source-manifest.json
+          python3 -c 'import json; a=json.load(open("upstream-lock.json"))["upstream"]["source_sha256"]; b=json.load(open("/tmp/source-manifest.json"))["manifest_sha256"]; assert a==b,(a,b)'
+          python3 tools/apply-overlay.py --upstream /tmp/upstream --output /tmp/product-source --report evidence/overlay-report.json
+      - name: Upstream relevant gates and website build
+        run: |
+          cd /tmp/product-source
+          npm ci --ignore-scripts
+          npm run lint -- --projects=playground-website
+          npm run typecheck -- --projects=playground-website
+          npx nx test playground-website --runInBand
+          npm run build:website
+      - name: Reproducible archive build one and two
+        run: |
+          transform=$(python3 tools/transform-hash.py | head -1)
+          epoch=$(python3 -c 'import json; print(json.load(open("upstream-lock.json"))["toolchain"]["source_date_epoch"])')
+          version=$(python3 -c 'import json; print(json.load(open("upstream-lock.json"))["downstream"]["version"])')
+          python3 tools/build-runtime.py --source /tmp/product-source --runtime-dir dist/packages/playground/wasm-wordpress-net --out-dir /tmp/build-1 --version "$version" --source-sha "$(python3 -c 'import json; print(json.load(open("upstream-lock.json"))["upstream"]["source_sha256"])')" --transform-sha "$transform" --product-commit "$GITHUB_SHA" --source-date-epoch "$epoch" --package-lock package-lock.json
+          python3 tools/build-runtime.py --source /tmp/product-source --runtime-dir dist/packages/playground/wasm-wordpress-net --out-dir /tmp/build-2 --version "$version" --source-sha "$(python3 -c 'import json; print(json.load(open("upstream-lock.json"))["upstream"]["source_sha256"])')" --transform-sha "$transform" --product-commit "$GITHUB_SHA" --source-date-epoch "$epoch" --package-lock package-lock.json
+          cmp /tmp/build-1/*.tar.gz /tmp/build-2/*.tar.gz
+      - name: Idempotent Release and anonymous SHA readback
+        env:
+          FEICODE_TOKEN: ${{ secrets.FEICODE_TOKEN }}
+        run: |
+          tag="${GITHUB_REF_NAME}"
+          python3 tools/release.py --tag "$tag" --commit "$GITHUB_SHA" --artifact /tmp/build-1/*.tar.gz --artifact /tmp/build-1/*.sha256 --artifact /tmp/build-1/runtime.json --artifact /tmp/build-1/runtime-manifest.json --artifact /tmp/build-1/sbom-summary.json

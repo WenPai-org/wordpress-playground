@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "productName": "文派 Playground",
+  "shortName": "文派",
+  "productUrl": "https://play.wenpai.net/",
+  "vendorName": "文派（WenPai）",
+  "vendorUrl": "https://wenpai.org/",
+  "upstreamName": "WordPress Playground",
+  "upstreamUrl": "https://github.com/WordPress/wordpress-playground",
+  "defaultUiLanguage": "zh_CN",
+  "defaultWordPressLanguage": "zh_CN",
+  "legalBrandAllowlist": [
+    "WordPress",
+    "WordPress Playground",
+    "PHP",
+    "SQLite",
+    "GitHub",
+    "Gutenberg"
+  ]
+}

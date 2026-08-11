@@ -1,0 +1,39 @@
+{
+  "input_count": 8,
+  "inputs": [
+    {
+      "path": "config",
+      "sha256": "71e07c3524417461bd335741a9c32bda5282aee8a3ade8ec610239959a5c1c70"
+    },
+    {
+      "path": "overlays",
+      "sha256": "c7ec047172d61d489655625128fc969677fc1b400206e1c0704768fb5e70d760"
+    },
+    {
+      "path": "tools/apply-overlay.py",
+      "sha256": "6f247c1f757e00c9fa711e377cf8275717e1ad58619854abc4d219ccc0bcc405"
+    },
+    {
+      "path": "tools/build-runtime.py",
+      "sha256": "80c3430a524cfdfa1e29f1c5fa0acfa63655f83f0f5592727f628a46c04ffe0f"
+    },
+    {
+      "path": "tools/localization_overlay.py",
+      "sha256": "0a1a37f9190a7a65cac742ec760b1d0f9d4d72af554d4dc390cddbdb9d25168a"
+    },
+    {
+      "path": "tools/localization_scan.py",
+      "sha256": "416df2d07fd07a0621a0b5cf7442b4396d6b2964bfb8e1fe63d5951d2102c8f5"
+    },
+    {
+      "path": "tools/manifest.py",
+      "sha256": "fd90f8e08377dc92458931c5e7b45e70fe47e08cf52141bc7c3d1776186fe6ac"
+    },
+    {
+      "path": "tools/security-scan.py",
+      "sha256": "9dded29143462ea1de670a6a50c36683143f09a3c5800559f678f8e6fa9350c0"
+    }
+  ],
+  "schema": "wenpai-transform-digest/v1",
+  "transform_sha256": "adf17f6f0a0763a30cb92a061771c014645c82fc673184d8a7ccc914b2ca03eb"
+}

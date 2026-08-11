@@ -1,0 +1,30 @@
+name: upstream-sync
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 */6 * * *'
+permissions:
+  contents: write
+  pull-requests: write
+concurrency:
+  group: wenpai-playground-product-mutation
+  cancel-in-progress: false
+jobs:
+  candidate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+      - name: Detect canonical stable and reconcile mirror
+        run: python3 tools/stable-watcher.py --output evidence/upstream-watch.json
+      - name: Materialize exact candidate and open bot PR when changed
+        env:
+          FEICODE_TOKEN: ${{ secrets.FEICODE_TOKEN }}
+        run: |
+          status=$(python3 -c 'import json; print(json.load(open("evidence/upstream-watch.json"))["status"])')
+          test "$status" = CANDIDATE || exit 0
+          tag=$(python3 -c 'import json; print(json.load(open("evidence/upstream-watch.json"))["tag"])')
+          git clone --depth=1 --branch "$tag" https://feicode.com/WPFork/wordpress-playground-upstream.git /tmp/upstream
+          python3 tools/stable-watcher.py --output evidence/upstream-watch.json --source-dir /tmp/upstream --create-candidate

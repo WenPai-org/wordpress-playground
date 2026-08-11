@@ -1,0 +1,27 @@
+{
+  "downstream": {
+    "artifact_sha256": "PENDING: assigned by release sidecar",
+    "product_commit": "PENDING: assigned by exact candidate commit",
+    "transform_sha256": "adf17f6f0a0763a30cb92a061771c014645c82fc673184d8a7ccc914b2ca03eb",
+    "version": "3.1.49.1"
+  },
+  "schema": "wenpai-upstream-lock/v1",
+  "toolchain": {
+    "lockfile": "package-lock.json",
+    "node": "22.23.0",
+    "npm": "10.9.2",
+    "source_date_epoch": 1786355284
+  },
+  "upstream": {
+    "commit": "4d9c20678ca7cbd7bb881dc0cc5f4e5739f6cc2d",
+    "commit_timestamp": 1786355284,
+    "mirror": "https://feicode.com/WPFork/wordpress-playground-upstream",
+    "repository": "https://github.com/WordPress/wordpress-playground",
+    "source_kind": "GitHub commit archive, prefix stripped",
+    "source_manifest_entries": 4977,
+    "source_sha256": "00dd34fde8625daac3ccf6c4fec527b87dd2cd8c0b486982270ee2f608534d79",
+    "source_symlink_policy": "record internal targets; reject absolute or tree-escaping targets",
+    "tag": "v3.1.49",
+    "tag_object": "9774d4a942f671a089a31b87ee93b81aaea64170"
+  }
+}

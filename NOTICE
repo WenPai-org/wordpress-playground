@@ -1,0 +1,17 @@
+WenPai WordPress Playground
+Copyright (c) 2026 WenPai.org contributors for downstream changes.
+
+Based on WordPress Playground:
+https://github.com/WordPress/wordpress-playground
+Copyright remains with its contributors. Licensed GPL-2.0-or-later; see LICENSE.
+
+The exact upstream tag, peeled commit, source digest, mirror, transform digest,
+and downstream version are recorded in upstream-lock.json.
+
+WordPress and related marks are trademarks of the WordPress Foundation. This
+downstream distribution is not endorsed by the WordPress Foundation.
+
+BLOCKED before public Release: produce and review a complete notice inventory
+for embedded WordPress archives, PHP/WASM binaries, fonts, Node dependencies,
+SQLite integration assets, and any other third-party binary or generated asset.
+The generated sbom-summary.json is informational and does not close that audit.
