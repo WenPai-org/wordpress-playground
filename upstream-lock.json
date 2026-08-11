@@ -1,12 +1,42 @@
 {
   "downstream": {
-    "artifact_sha256": "PENDING: assigned by release sidecar",
-    "product_commit": "PENDING: assigned by exact candidate commit",
-    "transform_sha256": "0db7439acdb82c36323b0a1814e8896e5d8dcb886e756bd2fe1912aac2c1875e",
+    "artifact_sha256": "SIDECAR: authoritative after deterministic archive creation and anonymous Release readback",
+    "product_commit": "SELF: resolved from the immutable tag commit by exact-SHA CI",
+    "transform_sha256": "bd99a4c9078b1560fadca91c2e4112dbc7cb5c18eb561db5bc89255ac8f681b2",
     "version": "3.1.49.1"
+  },
+  "generated_assets": {
+    "php_next": {
+      "branch": "php-next-builds",
+      "commit": "c9ce635313dd326b3947a5d5c37b7f36307e665e",
+      "manifest_entries": 13,
+      "manifest_sha256": "902a37be9f6154f32fcf3e3433407f3345711f0f6ebe0b0281f347c644b912f7",
+      "php_ref": "master",
+      "php_version": "8.6.0-dev",
+      "provenance_boundary": "The immutable generated-assets commit and payload hashes are exact; upstream metadata records php-src ref master but not its resolved commit.",
+      "repository": "https://github.com/WordPress/wordpress-playground",
+      "upstream_manifest_sha256": "861a8095c4cd754ab4b87d4012857cc4f16ef22ae20b5c02bf564766c22d181a",
+      "wasm_sha256": {
+        "asyncify": "3df97dd7be2219fc3d2a549b3a4ec89780f413d1dda885f10e1a5c812322fbc1",
+        "jspi": "8874f48796c16a0c87329a8adb4ade3c0188d07635d2924e48039231f2dba8e6"
+      },
+      "workflow_run": 30336711421,
+      "workflow_source_commit": "3ee823249d1057b1c74e1cc8df76b5abcf1f52ba"
+    },
+    "wp_cli": {
+      "branch": "gh-pages",
+      "commit": "3191b8d62f41717e5c4033a73c059301f3b1ab95",
+      "gzip_semantics": "GNU gzip -n -9 over exact wp-cli.phar bytes",
+      "gzip_sha256": "0bb148cbfb50eff93e470ebf59675e54536cfc0033ebbb8d4096b0032a351212",
+      "path": "phar/wp-cli.phar",
+      "repository": "https://github.com/wp-cli/builds",
+      "sha256": "ce34ddd838f7351d6759068d09793f26755463b4a4610a5a5c0a97b68220d85c",
+      "url": "https://raw.githubusercontent.com/wp-cli/builds/3191b8d62f41717e5c4033a73c059301f3b1ab95/phar/wp-cli.phar"
+    }
   },
   "schema": "wenpai-upstream-lock/v1",
   "toolchain": {
+    "gzip": "1.12",
     "lockfile": "package-lock.json",
     "node": "22.23.0",
     "npm": "10.9.2",

@@ -1,0 +1,20 @@
+{
+  "build_logs": {
+    "n": {
+      "sha256": "82d4b817479f2d6558bda6be3792e165ae4456ff9dff38c81948be9017faf9fc",
+      "success_samples": 1
+    },
+    "o": {
+      "sha256": "98580d71193dfb7d8efd3131c8a9661cf6fbca15adc6090600aac01384f310ec",
+      "success_samples": 1
+    }
+  },
+  "build_mode": "serial; N completed and its normalized runtime was frozen before O started",
+  "collision_error_lines": [],
+  "collision_error_samples": 0,
+  "fixed_identity_scope": "NODE_OPTIONS is set only on the website build command; npm ci/lint/type/unit and release operations do not load the preloader",
+  "schema": "wenpai-node-preloader-collision-audit/v1",
+  "status": "PASS",
+  "temp_residual_paths": [],
+  "temp_residual_samples": 0
+}

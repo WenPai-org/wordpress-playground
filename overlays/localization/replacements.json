@@ -1072,6 +1072,48 @@
       "new": "aria-label=\"导出到 GitHub 表单\"",
       "expectedCount": 1,
       "category": "download-export-accessibility"
+    },
+    {
+      "path": "packages/playground/website/src/components/site-manager/site-settings-form/site-settings-action-footer.tsx",
+      "old": "\t\t\t\t\tApply to this Playground",
+      "new": "\t\t\t\t\t应用到此 Playground",
+      "expectedCount": 1,
+      "category": "site-management"
+    },
+    {
+      "path": "packages/playground/website/src/components/site-manager/site-settings-form/site-settings-action-footer.tsx",
+      "old": "\t\t\t\t\tCreate a fresh Playground",
+      "new": "\t\t\t\t\t创建新的 Playground",
+      "expectedCount": 1,
+      "category": "site-management"
+    },
+    {
+      "path": "packages/playground/website/src/components/site-manager/site-settings-form/site-settings-action-footer.tsx",
+      "old": "\t\t\t\t\t\t\tStart a clean site. Your current Playground stays in",
+      "new": "\t\t\t\t\t\t\t启动一个全新站点。当前 Playground 将保留在",
+      "expectedCount": 2,
+      "category": "site-management"
+    },
+    {
+      "path": "packages/playground/website/src/components/site-manager/site-settings-form/site-settings-action-footer.tsx",
+      "old": "\t\t\t\t\t\t\tSaved Playgrounds.",
+      "new": "\t\t\t\t\t\t\t已保存的 Playground 中。",
+      "expectedCount": 1,
+      "category": "site-management"
+    },
+    {
+      "path": "packages/playground/website/src/components/site-manager/site-settings-form/site-settings-action-footer.tsx",
+      "old": "\t\t\t\t\t\t\tRecent autosaves until {MAX_AUTOSAVED_SITES} newer",
+      "new": "\t\t\t\t\t\t\t最近的自动保存中，直到被 {MAX_AUTOSAVED_SITES} 个更新的",
+      "expectedCount": 1,
+      "category": "site-management"
+    },
+    {
+      "path": "packages/playground/website/src/components/site-manager/site-settings-form/site-settings-action-footer.tsx",
+      "old": "\t\t\t\t\t\t\tautosaves replace it.",
+      "new": "\t\t\t\t\t\t\t自动保存替换。",
+      "expectedCount": 1,
+      "category": "site-management"
     }
   ]
 }

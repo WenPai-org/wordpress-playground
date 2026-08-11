@@ -1,13 +1,41 @@
 {
-  "input_count": 8,
+  "input_count": 25,
   "inputs": [
+    {
+      "path": ".forgejo/workflows",
+      "sha256": "0be2bf667861897a442bdacf888c5cda3475328588ba9660fce7e5a10f4d4b33"
+    },
+    {
+      "path": "LICENSE",
+      "sha256": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643"
+    },
+    {
+      "path": "NOTICE",
+      "sha256": "cf0fcd7b53086c93c27cc67c762d8ea6c4e34de1aec568eee3c8c35287c328c4"
+    },
+    {
+      "path": "ROLLBACK.md",
+      "sha256": "a7dbcb5128f844020f72039acd2ecfceb580c9adbcb1b23e10bb7171daeed8ab"
+    },
+    {
+      "path": "UPSTREAM.md",
+      "sha256": "e7ad1ba4aad00a03eec4d8bcb982faf57148a580d03a3e840204019108996052"
+    },
     {
       "path": "config",
       "sha256": "71e07c3524417461bd335741a9c32bda5282aee8a3ade8ec610239959a5c1c70"
     },
     {
+      "path": "docs/licenses",
+      "sha256": "fa87cbee6984b92a9eb136a2c50058d794a2bd1c8b6dbb83b8e066dc4c283f34"
+    },
+    {
       "path": "overlays",
-      "sha256": "c7ec047172d61d489655625128fc969677fc1b400206e1c0704768fb5e70d760"
+      "sha256": "f67aa26fcc9a2988ac4f99f78b8797d412c4fbbdaf15dddbfcd071ca24ee20a7"
+    },
+    {
+      "path": "tests",
+      "sha256": "acd1f9abc2727c10f1d9396239020bc433a0d29d3fbb1c2a85589052b5f67391"
     },
     {
       "path": "tools/apply-overlay.py",
@@ -15,7 +43,19 @@
     },
     {
       "path": "tools/build-runtime.py",
-      "sha256": "18a11d2eee0adeea6afd03c73b663df23575707cc931435f12fc91f30e5110a6"
+      "sha256": "fcc50dac466cfaa9f44eebbdcb0689658f10e15660bcd827d8942bbb00eebf95"
+    },
+    {
+      "path": "tools/compare-runtime-builds.py",
+      "sha256": "378b601baad602db609e798c42dbfe5707c05354f41ffbec8c9c43915503ba3a"
+    },
+    {
+      "path": "tools/deterministic-node-build.cjs",
+      "sha256": "1e440b7a248c98e413d2aa28b9a6a55fc7908fa9cecd8c424dbb084eeaf3693b"
+    },
+    {
+      "path": "tools/license-notice-audit.py",
+      "sha256": "92973953f0fa9a3cad0fa5d737b0a09a15fdf8c7cc8a7193637a99d1198c027b"
     },
     {
       "path": "tools/localization_overlay.py",
@@ -30,10 +70,38 @@
       "sha256": "fd90f8e08377dc92458931c5e7b45e70fe47e08cf52141bc7c3d1776186fe6ac"
     },
     {
+      "path": "tools/normalize-blueprint-validator.py",
+      "sha256": "e2bb32bc9071bdcb9ea53ba3f8f4f9661f1d89ad80f3432912ca67c3edc9e146"
+    },
+    {
+      "path": "tools/normalize-runtime.py",
+      "sha256": "783017fa1e09d69995705f0ebdd2c67872fdb619b07a419f36eb336b023581d8"
+    },
+    {
+      "path": "tools/release.py",
+      "sha256": "87a43502f9e114cbb6ea122ed434200b49c56a0e0127016c86717a3960593f5b"
+    },
+    {
       "path": "tools/security-scan.py",
       "sha256": "9dded29143462ea1de670a6a50c36683143f09a3c5800559f678f8e6fa9350c0"
+    },
+    {
+      "path": "tools/stable-watcher.py",
+      "sha256": "ba1dac277d415d70236a8b955e85879e772ffc3d22e2a26ebbe80e0d9d15ec08"
+    },
+    {
+      "path": "tools/sync-generated-assets.py",
+      "sha256": "4403dbc05524265ac5d188c4b532b6c618aad490ac21550b97e9197794391d09"
+    },
+    {
+      "path": "tools/transform-hash.py",
+      "sha256": "11252caba7db4a03b2aeffb613b33aa7d403ee2b5f26e77422839a07d8881005"
+    },
+    {
+      "path": "upstream-lock.json#downstream.transform_sha256=SELF",
+      "sha256": "6f86c372277737211d0fec106b0877cae5a8836ad7474bf910a415532b238f5d"
     }
   ],
   "schema": "wenpai-transform-digest/v1",
-  "transform_sha256": "0db7439acdb82c36323b0a1814e8896e5d8dcb886e756bd2fe1912aac2c1875e"
+  "transform_sha256": "bd99a4c9078b1560fadca91c2e4112dbc7cb5c18eb561db5bc89255ac8f681b2"
 }

@@ -15,6 +15,59 @@ jobs:
           python3 -m unittest discover -s tests -p 'test_*.py' -v
           python3 tools/localization_overlay.py catalog-check
           python3 tools/transform-hash.py -o evidence/transform-digest.json
+          python3 -c 'import json; a=json.load(open("upstream-lock.json"))["downstream"]["transform_sha256"]; b=json.load(open("evidence/transform-digest.json"))["transform_sha256"]; assert a==b,(a,b)'
           python3 tools/security-scan.py .
       - name: Workflow syntax smoke
         run: python3 -c "import pathlib; assert len(list(pathlib.Path('.forgejo/workflows').glob('*.yml'))) == 4"
+  exact-upstream-website:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Materialize exact upstream and generated assets
+        run: |
+          test "$(node -p 'process.versions.node')" = "22.23.0"
+          test "$(corepack npm@10.9.2 --version)" = "10.9.2"
+          tag=$(python3 -c 'import json; print(json.load(open("upstream-lock.json"))["upstream"]["tag"])')
+          commit=$(python3 -c 'import json; print(json.load(open("upstream-lock.json"))["upstream"]["commit"])')
+          git clone --depth=1 --branch "$tag" https://feicode.com/WPFork/wordpress-playground-upstream.git /tmp/upstream
+          test "$(git -C /tmp/upstream rev-parse HEAD)" = "$commit"
+          mkdir /tmp/source-archive
+          git -C /tmp/upstream archive "$commit" | tar -x -C /tmp/source-archive
+          python3 tools/source-manifest.py /tmp/source-archive --allow-internal-symlinks -o /tmp/source-manifest.json
+          python3 -c 'import json; a=json.load(open("upstream-lock.json"))["upstream"]["source_sha256"]; b=json.load(open("/tmp/source-manifest.json"))["manifest_sha256"]; assert a==b,(a,b)'
+          python3 tools/apply-overlay.py --upstream /tmp/source-archive --output /tmp/product-source-1 --report /tmp/overlay-report-1.json
+          python3 tools/apply-overlay.py --upstream /tmp/source-archive --output /tmp/product-source-2 --report /tmp/overlay-report-2.json
+          cmp /tmp/overlay-report-1.json /tmp/overlay-report-2.json
+          python3 tools/sync-generated-assets.py --source /tmp/product-source-1 --report /tmp/generated-assets-1.json
+          python3 tools/sync-generated-assets.py --source /tmp/product-source-2 --report /tmp/generated-assets-2.json
+          mkdir -p /tmp/notices-source
+          python3 tools/license-notice-audit.py --source /tmp/upstream --expected-commit "$commit" --inventory docs/licenses/third-party-inventory.json --output /tmp/notices-source/license-notice-audit-source.json --node-notices /tmp/notices-source/node-license-notices.json
+      - name: Two independent exact website builds and artifact comparison
+        run: |
+          python3 tools/transform-hash.py -o /tmp/transform.json
+          transform=$(python3 -c 'import json; print(json.load(open("/tmp/transform.json"))["transform_sha256"])')
+          test "$transform" = "$(python3 -c 'import json; print(json.load(open("upstream-lock.json"))["downstream"]["transform_sha256"])')"
+          epoch=$(python3 -c 'import json; print(json.load(open("upstream-lock.json"))["toolchain"]["source_date_epoch"])')
+          version=$(python3 -c 'import json; print(json.load(open("upstream-lock.json"))["downstream"]["version"])')
+          commit=$(python3 -c 'import json; print(json.load(open("upstream-lock.json"))["upstream"]["commit"])')
+          source_sha=$(python3 -c 'import json; print(json.load(open("upstream-lock.json"))["upstream"]["source_sha256"])')
+          for number in 1 2; do
+            source="/tmp/product-source-$number"
+            (cd "$source" && corepack npm@10.9.2 ci --ignore-scripts)
+            (cd "$source" && corepack npm@10.9.2 exec nx lint playground-website --parallel=1)
+            (cd "$source" && corepack npm@10.9.2 exec nx typecheck playground-website --parallel=1)
+            (cd "$source" && corepack npm@10.9.2 exec nx test playground-website --parallel=1)
+            python3 tools/normalize-blueprint-validator.py --source "$source" --output "/tmp/blueprint-validator-normalization-$number.json"
+            rm -rf "$source/dist"
+            (cd "$source" && SOURCE_DATE_EPOCH="$epoch" TZ=UTC LC_ALL=C NX_DAEMON=false NX_PARALLEL=1 NODE_OPTIONS="--require=$GITHUB_WORKSPACE/tools/deterministic-node-build.cjs" corepack npm@10.9.2 exec nx build playground-website --skip-nx-cache --parallel=1)
+            runtime="$source/dist/packages/playground/wasm-wordpress-net"
+            python3 tools/normalize-runtime.py --runtime "$runtime" --output "/tmp/runtime-normalization-$number.json"
+            mkdir -p "/tmp/notices-$number"
+            python3 tools/license-notice-audit.py --source /tmp/upstream --runtime "$runtime" --expected-commit "$commit" --inventory docs/licenses/third-party-inventory.json --output "/tmp/notices-$number/license-notice-audit-runtime.json" --node-notices /tmp/notices-source/node-license-notices.json
+            python3 tools/build-runtime.py --source "$source" --runtime-dir dist/packages/playground/wasm-wordpress-net --out-dir "/tmp/build-$number" --version "$version" --source-sha "$source_sha" --transform-sha "$transform" --product-commit "$GITHUB_SHA" --source-date-epoch "$epoch" --package-lock package-lock.json --enforce-generated-assets --notice-audit /tmp/notices-source/license-notice-audit-source.json --notice-audit "/tmp/notices-$number/license-notice-audit-runtime.json" --node-notices /tmp/notices-source/node-license-notices.json
+            if [ "$number" = 1 ]; then rm -rf "$source/node_modules" "$source/dist"; fi
+          done
+          python3 tools/compare-runtime-builds.py --manifest-a /tmp/build-1/runtime-manifest.json --manifest-b /tmp/build-2/runtime-manifest.json --artifact-a /tmp/build-1/*.tar.gz --artifact-b /tmp/build-2/*.tar.gz --output /tmp/build-determinism.json
+          cmp /tmp/build-1/artifact-set.json /tmp/build-2/artifact-set.json
+          cmp /tmp/runtime-normalization-1.json /tmp/runtime-normalization-2.json

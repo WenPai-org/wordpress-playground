@@ -1,0 +1,129 @@
+diff --git a/packages/playground/website/src/components/dock/dock-corner-launcher.spec.tsx b/packages/playground/website/src/components/dock/dock-corner-launcher.spec.tsx
+index e4be5e5..25ab4f6 100644
+--- a/packages/playground/website/src/components/dock/dock-corner-launcher.spec.tsx
++++ b/packages/playground/website/src/components/dock/dock-corner-launcher.spec.tsx
+@@ -10,9 +10,9 @@ describe('DockCornerLauncher', () => {
+ 			</DockCornerLauncher>
+ 		);
+ 
+-		expect(markup).toContain('aria-label="Show Playground tools"');
++		expect(markup).toContain('aria-label="显示 Playground 工具"');
+ 		expect(markup).toContain(
+-			'title="Drag out or click to show Playground tools"'
++			'title="拖出或点击以显示 Playground 工具"'
+ 		);
+ 		expect(markup).toContain('WP');
+ 	});
+diff --git a/packages/playground/website/src/components/dock/dock-pane.spec.tsx b/packages/playground/website/src/components/dock/dock-pane.spec.tsx
+index 16edb79..46fccd9 100644
+--- a/packages/playground/website/src/components/dock/dock-pane.spec.tsx
++++ b/packages/playground/website/src/components/dock/dock-pane.spec.tsx
+@@ -59,7 +59,7 @@ describe('DockPane', () => {
+ 			</DockPane>
+ 		);
+ 
+-		expect(markup).toContain('aria-label="Close"');
++		expect(markup).toContain('aria-label="关闭"');
+ 		expect(markup).toContain('aria-describedby=');
+ 		expect(markup).toContain(
+ 			'title="Wait for the current action to finish"'
+diff --git a/packages/playground/website/src/components/dock/dock-toggle-pill.spec.tsx b/packages/playground/website/src/components/dock/dock-toggle-pill.spec.tsx
+index 0cc9f66..38ae38f 100644
+--- a/packages/playground/website/src/components/dock/dock-toggle-pill.spec.tsx
++++ b/packages/playground/website/src/components/dock/dock-toggle-pill.spec.tsx
+@@ -12,12 +12,12 @@ describe('DockTogglePill', () => {
+ 			/>
+ 		);
+ 
+-		expect(markup).toContain('aria-label="Show tools"');
++		expect(markup).toContain('aria-label="显示工具"');
+ 		expect(markup).toContain('aria-expanded="false"');
+-		expect(markup).toContain('title="Show tools"');
+-		expect(markup).toContain('aria-label="Exit full width"');
++		expect(markup).toContain('title="显示工具"');
++		expect(markup).toContain('aria-label="退出全宽"');
+ 		expect(markup).toContain('aria-pressed="true"');
+-		expect(markup).toContain('title="Exit full width"');
++		expect(markup).toContain('title="退出全宽"');
+ 	});
+ 
+ 	it('labels the expanded and floating actions', () => {
+@@ -30,9 +30,9 @@ describe('DockTogglePill', () => {
+ 			/>
+ 		);
+ 
+-		expect(markup).toContain('aria-label="Hide tools"');
++		expect(markup).toContain('aria-label="隐藏工具"');
+ 		expect(markup).toContain('aria-expanded="true"');
+-		expect(markup).toContain('aria-label="Full width"');
++		expect(markup).toContain('aria-label="全宽"');
+ 		expect(markup).toContain('aria-pressed="false"');
+ 	});
+ 
+@@ -47,9 +47,9 @@ describe('DockTogglePill', () => {
+ 			/>
+ 		);
+ 
+-		expect(markup).toContain('title="Tools cannot be hidden right now"');
++		expect(markup).toContain('title="当前无法隐藏工具"');
+ 		expect(markup).toContain(
+-			'aria-label="Tools cannot be hidden right now"'
++			'aria-label="当前无法隐藏工具"'
+ 		);
+ 		const buttons = markup.match(/<button\b[^>]*>/g);
+ 		expect(buttons).toHaveLength(2);
+diff --git a/packages/playground/website/src/components/site-manager/site-settings-form/site-settings-action-footer.spec.tsx b/packages/playground/website/src/components/site-manager/site-settings-form/site-settings-action-footer.spec.tsx
+index bc741e2..9911996 100644
+--- a/packages/playground/website/src/components/site-manager/site-settings-form/site-settings-action-footer.spec.tsx
++++ b/packages/playground/website/src/components/site-manager/site-settings-form/site-settings-action-footer.spec.tsx
+@@ -71,8 +71,8 @@ describe('settings action footer', () => {
+ 			);
+ 		});
+ 
+-		expect(getButton('Apply to this Playground').disabled).toBe(true);
+-		expect(getButton('More settings actions').disabled).toBe(true);
++		expect(getButton('应用到此 Playground').disabled).toBe(true);
++		expect(getButton('更多设置操作').disabled).toBe(true);
+ 	});
+ 
+ 	it('uses the only available action as the primary action', () => {
+@@ -91,7 +91,7 @@ describe('settings action footer', () => {
+ 			);
+ 		});
+ 
+-		const primaryAction = getButton('Create a fresh Playground');
++		const primaryAction = getButton('创建新的 Playground');
+ 		expect(primaryAction.disabled).toBe(false);
+ 		act(() => primaryAction.click());
+ 		expect(onCreateFresh).toHaveBeenCalledWith(defaults);
+@@ -112,7 +112,7 @@ describe('settings action footer', () => {
+ 			);
+ 		});
+ 
+-		expect(getButton('Apply to this Playground').disabled).toBe(false);
++		expect(getButton('应用到此 Playground').disabled).toBe(false);
+ 	});
+ 
+ 	it('focuses the only available action when the menu opens', async () => {
+@@ -130,10 +130,10 @@ describe('settings action footer', () => {
+ 			);
+ 		});
+ 
+-		await act(async () => getButton('More settings actions').click());
++		await act(async () => getButton('更多设置操作').click());
+ 
+ 		expect(document.activeElement?.textContent).toContain(
+-			'Create a fresh Playground'
++			'创建新的 Playground'
+ 		);
+ 	});
+ 
+@@ -148,7 +148,7 @@ describe('settings action footer', () => {
+ 		});
+ 
+ 		expect(
+-			getButton('Discard current work & create a fresh Playground')
++			getButton('丢弃当前工作并创建新的 Playground')
+ 				.disabled
+ 		).toBe(true);
+ 		expect(container.querySelector('[role="alert"]')?.textContent).toBe(

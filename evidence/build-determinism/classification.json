@@ -1,0 +1,35 @@
+{
+  "schema": "wenpai-build-entropy-classification/v1",
+  "status": "PASS",
+  "failed_samples": [
+    {
+      "builds": "initial A/B",
+      "entry_count_each": 25298,
+      "differences": {"only_a": 60, "only_b": 60, "changed": 21},
+      "cause": "Vite/Rollup reference placeholders embedded in sourcemap sourcesContent",
+      "fix": "normalize only the exact placeholder tokens in .map files"
+    },
+    {
+      "builds": "D/E",
+      "entry_count_each": 25312,
+      "differences": {"only_a": 6, "only_b": 6, "changed": 18},
+      "cause": "ts-json-schema-generator-v2 declaration-offset aliases in the generated validator",
+      "fix": "canonical first-seen alias sequence in source generator and pre-build normalizer"
+    },
+    {
+      "builds": "H/I and L/M",
+      "cause": "declaration-offset aliases also remained in blueprint-schema.json, followed by Vite client dependency-cache identity entropy changing Rollup module/minifier ordering",
+      "fix": "canonicalize the portable schema before all consumers; build-only deterministic Node identity derived from SOURCE_DATE_EPOCH"
+    }
+  ],
+  "passing_sample": {
+    "builds": "independent clean N/O",
+    "entry_count_each": 25312,
+    "raw_runtime_manifest_sha256": "4f60b0bf566c4c5a872e9627556345c54ffb73ba0ae72537e18f09164454314f",
+    "mapped_product_manifest_sha256": "7ead800bc319bd655348d3a214a9acd3a5c6ddfb2e8d16caf3b733e9aa76c834",
+    "artifact_sha256": "4ec0fdaa08e9750beb21fdde2be891174a26a3c851655e6d044d5e219fc5d4ed",
+    "artifact_size": 649717690,
+    "differences": {"only_a": 0, "only_b": 0, "changed": 0},
+    "byte_identical": true
+  }
+}
