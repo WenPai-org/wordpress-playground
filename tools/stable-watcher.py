@@ -149,7 +149,20 @@ lock["upstream"].update({"tag": tag, "commit": commit,
                          "source_sha256": source["manifest_sha256"],
                          "source_manifest_entries": source["entry_count"]})
 branch = f"bot/upstream-{tag}"
-subprocess.run(["git", "diff", "--quiet"], check=True)
+# The watcher report is intentionally written before candidate creation. Refuse
+# unrelated workspace mutations while allowing only that report to differ.
+repo_root = args.lock.resolve().parent
+try:
+    allowed_report = args.output.resolve().relative_to(repo_root).as_posix()
+except ValueError:
+    allowed_report = None
+unexpected = []
+for line in subprocess.check_output(["git", "status", "--porcelain"], text=True).splitlines():
+    path = line[3:].split(" -> ")[-1]
+    if path != allowed_report:
+        unexpected.append(line)
+if unexpected:
+    raise SystemExit("BLOCKED unrelated product worktree mutations: " + "; ".join(unexpected))
 subprocess.run(["git", "checkout", "-b", branch], check=True)
 write_json(args.lock, lock)
 write_json(args.lock.parent / "evidence" / f"source-manifest-{tag}.json", source)
