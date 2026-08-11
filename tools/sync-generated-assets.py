@@ -25,9 +25,11 @@ args = parser.parse_args()
 
 source = args.source.resolve(strict=True)
 locked = json.loads(args.lock.read_text())["generated_assets"]["php_next"]
-repository = locked["repository"]
+canonical_repository = locked["repository"]
+repository = locked.get("mirror_repository", canonical_repository)
 branch = locked["branch"]
 commit = locked["commit"]
+mirror_ref = locked.get("mirror_ref", commit)
 target = source / "packages/playground/website/public/php-next"
 
 
@@ -55,10 +57,14 @@ with tempfile.TemporaryDirectory(prefix="wenpai-php-next-", dir=source.parent) a
                                        text=True).strip()
     if resolved != commit:
         raise SystemExit(f"BLOCKED php-next exact commit mismatch expected={commit} actual={resolved}")
-    branch_line = subprocess.check_output(
-        ["git", "ls-remote", repository, f"refs/heads/{branch}"], text=True
+    mirror_line = subprocess.check_output(
+        ["git", "ls-remote", repository, mirror_ref], text=True
     ).strip()
-    branch_head = branch_line.split()[0] if branch_line else None
+    mirror_head = mirror_line.split()[0] if mirror_line else None
+    if mirror_head != commit:
+        raise SystemExit(
+            f"BLOCKED php-next mirror ref mismatch expected={commit} actual={mirror_head}"
+        )
     archive = subprocess.check_output(["git", "-C", str(bare), "archive", commit])
     extracted = temporary / "tree"
     extracted.mkdir()
@@ -103,10 +109,11 @@ report = {
     "schema": "wenpai-generated-assets-sync/v1",
     "status": "PASS",
     "asset": "php-next",
+    "canonical_repository": canonical_repository,
     "repository": repository,
     "branch": branch,
-    "observed_branch_head": branch_head,
-    "branch_drift": branch_head != commit,
+    "mirror_ref": mirror_ref,
+    "mirror_ref_head": mirror_head,
     "commit": commit,
     "target": target.relative_to(source).as_posix(),
     "manifest_entries": manifest["entry_count"],

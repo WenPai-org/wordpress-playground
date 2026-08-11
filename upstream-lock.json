@@ -2,7 +2,7 @@
   "downstream": {
     "artifact_sha256": "SIDECAR: authoritative after deterministic archive creation and anonymous Release readback",
     "product_commit": "SELF: resolved from the immutable tag commit by exact-SHA CI",
-    "transform_sha256": "de5a306355c65be15c2c5b59202f4e12c6a20d29c7176417171e05991c7c1678",
+    "transform_sha256": "535200d21abadaa56d31e73ea729dc15bcc8abc2113b9d1c4706f51d11a58c20",
     "version": "3.1.49.1"
   },
   "generated_assets": {
@@ -15,6 +15,8 @@
       "php_version": "8.6.0-dev",
       "provenance_boundary": "The immutable generated-assets commit and payload hashes are exact; upstream metadata records php-src ref master but not its resolved commit.",
       "repository": "https://github.com/WordPress/wordpress-playground",
+      "mirror_repository": "https://feicode.com/WPFork/wordpress-playground-upstream.git",
+      "mirror_ref": "refs/wenpai/generated/php-next/c9ce635313dd326b3947a5d5c37b7f36307e665e",
       "upstream_manifest_sha256": "861a8095c4cd754ab4b87d4012857cc4f16ef22ae20b5c02bf564766c22d181a",
       "wasm_sha256": {
         "asyncify": "3df97dd7be2219fc3d2a549b3a4ec89780f413d1dda885f10e1a5c812322fbc1",

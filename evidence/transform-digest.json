@@ -91,7 +91,7 @@
     },
     {
       "path": "tools/sync-generated-assets.py",
-      "sha256": "bfbffd1674144bdb4dadf0c73dbf289a9c9fab1d51ebcc1dac51d322fa376224"
+      "sha256": "d0a378384673da4b02bcc4580921c6f66b4c68df4912878529379ce349618990"
     },
     {
       "path": "tools/transform-hash.py",
@@ -99,9 +99,9 @@
     },
     {
       "path": "upstream-lock.json#downstream.transform_sha256=SELF",
-      "sha256": "6f86c372277737211d0fec106b0877cae5a8836ad7474bf910a415532b238f5d"
+      "sha256": "37a4561a11d65cfa8e30b752fc2877fce529af9060111dcd3b4ec1786f2cda20"
     }
   ],
   "schema": "wenpai-transform-digest/v1",
-  "transform_sha256": "de5a306355c65be15c2c5b59202f4e12c6a20d29c7176417171e05991c7c1678"
+  "transform_sha256": "535200d21abadaa56d31e73ea729dc15bcc8abc2113b9d1c4706f51d11a58c20"
 }
