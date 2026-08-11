@@ -157,7 +157,7 @@ try:
 except ValueError:
     allowed_report = None
 unexpected = []
-for line in subprocess.check_output(["git", "status", "--porcelain"], text=True).splitlines():
+for line in subprocess.check_output(["git", "status", "--porcelain", "--untracked-files=all"], text=True).splitlines():
     path = line[3:].split(" -> ")[-1]
     if path != allowed_report:
         unexpected.append(line)
