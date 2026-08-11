@@ -223,8 +223,6 @@ def atomic_write(target: Path, payload: bytes, mode: int, expected_sha256: str) 
             view = memoryview(payload)
             for offset in range(0, len(view), 1024 * 1024):
                 output.write(view[offset:offset + 1024 * 1024])
-            output.flush()
-            os.fsync(output.fileno())
         temporary.chmod(mode)
         if temporary.stat().st_size != len(payload) or sha256_file(temporary) != expected_sha256:
             fail(f"temporary payload verification failed: {target.name}")
