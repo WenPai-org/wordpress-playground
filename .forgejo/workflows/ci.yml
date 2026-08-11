@@ -13,6 +13,8 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - name: Verify locked build runtime
         run: |
           test "$(node -p 'process.versions.node')" = "22.23.0"
@@ -33,6 +35,8 @@ jobs:
     timeout-minutes: 120
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - name: Verify locked build runtime
         run: |
           test "$(node -p 'process.versions.node')" = "22.23.0"
