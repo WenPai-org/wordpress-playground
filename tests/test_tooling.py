@@ -119,10 +119,11 @@ class PipelineTests(unittest.TestCase):
 -English
 +中文
 """)
+            env = dict(os.environ, GIT_CEILING_DIRECTORIES=str(nested.parent))
             subprocess.run(["git", "apply", "--no-index", "--check", str(patch)],
-                           cwd=nested, check=True, capture_output=True)
+                           cwd=nested, env=env, check=True, capture_output=True)
             subprocess.run(["git", "apply", "--no-index", str(patch)],
-                           cwd=nested, check=True, capture_output=True)
+                           cwd=nested, env=env, check=True, capture_output=True)
             self.assertEqual(target.read_text(), "中文\n")
 
     def test_apply_overlay_runs_localization_apply_check_and_scan(self):

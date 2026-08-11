@@ -76,8 +76,8 @@ jobs:
             if grep -Fq "getButton('应用到此 Playground')" "$footer_spec" && grep -Fq 'aria-label="显示工具"' "$dock_spec"; then
               : # localized contract preserved by dependency installation
             else
-              git -C "$source" apply --no-index --check --whitespace=error-all "$test_patch"
-              git -C "$source" apply --no-index --whitespace=error-all "$test_patch"
+              GIT_CEILING_DIRECTORIES="$(dirname "$source")" git -C "$source" apply --no-index --check --whitespace=error-all "$test_patch"
+              GIT_CEILING_DIRECTORIES="$(dirname "$source")" git -C "$source" apply --no-index --whitespace=error-all "$test_patch"
             fi
             grep -Fq "getButton('应用到此 Playground')" "$footer_spec"
             grep -Fq 'aria-label="显示工具"' "$dock_spec"

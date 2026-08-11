@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Materialize an exact upstream tree and apply the small downstream overlay."""
 import argparse
+import os
 import json
 from pathlib import Path
 import shutil
@@ -29,9 +30,13 @@ shutil.copytree(upstream, output, symlinks=True, ignore=shutil.ignore_patterns("
 changed: list[str] = []
 
 patches = sorted((overlay / "patches").glob("*.patch")) if (overlay / "patches").is_dir() else []
+# The output may live below the product repository in CI. Prevent Git from
+# discovering that parent index; otherwise `git apply` reports success while
+# writing relative to the parent worktree instead of this materialized tree.
+patch_env = dict(os.environ, GIT_CEILING_DIRECTORIES=str(output.parent))
 for patch in patches:
-    subprocess.run(["git", "apply", "--no-index", "--check", "--whitespace=error-all", str(patch)], cwd=output, check=True)
-    subprocess.run(["git", "apply", "--no-index", "--whitespace=error-all", str(patch)], cwd=output, check=True)
+    subprocess.run(["git", "apply", "--no-index", "--check", "--whitespace=error-all", str(patch)], cwd=output, env=patch_env, check=True)
+    subprocess.run(["git", "apply", "--no-index", "--whitespace=error-all", str(patch)], cwd=output, env=patch_env, check=True)
     changed.append(f"patch:{patch.name}")
 
 localization_tool = repo / "tools" / "localization_overlay.py"
