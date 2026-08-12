@@ -75,6 +75,18 @@ class LicenseNoticeAuditTests(unittest.TestCase):
         _, failures = AUDIT.audit_runtime_patterns(component, records)
         self.assertIn("SHA-256 mismatch", failures[0])
 
+    def test_runtime_entrypoint_mapping_audits_final_namespace_and_fails_closed(self):
+        records = [
+            {"path": "index.html", "name": "index.html", "suffix": ".html", "sha256": "a" * 64},
+            {"path": "remote.html", "name": "remote.html", "suffix": ".html", "sha256": "b" * 64},
+        ]
+        mapped = AUDIT.apply_runtime_path_mapping(records, ["index.html=playground.html"])
+        self.assertEqual(["playground.html", "remote.html"], [item["path"] for item in mapped])
+        with self.assertRaisesRegex(ValueError, "sources missing"):
+            AUDIT.apply_runtime_path_mapping(records, ["missing.html=playground.html"])
+        with self.assertRaisesRegex(ValueError, "collision"):
+            AUDIT.apply_runtime_path_mapping(records, ["index.html=remote.html"])
+
     def test_required_runtime_components_declare_explicit_patterns_and_notice(self):
         root = Path(__file__).parents[1]
         inventory = json.loads((root / "docs/licenses/third-party-inventory.json").read_text())

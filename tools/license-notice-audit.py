@@ -99,6 +99,37 @@ def collect_runtime_records(runtime: Path | None, runtime_archive: Path | None) 
     return sorted(records, key=lambda item: item["path"].encode("utf-8"))
 
 
+def apply_runtime_path_mapping(records: list[dict], mappings: list[str]) -> list[dict]:
+    """Apply the same explicit entrypoint mapping used by build-runtime.py.
+
+    The notice audit runs before the archive is assembled so its evidence can
+    be embedded in that archive.  Mapping paths here lets it audit the final
+    product namespace without copying or mutating the fresh build output.
+    """
+    parsed: dict[str, str] = {}
+    for value in mappings:
+        source, separator, target = value.partition("=")
+        if not separator or not source or not target or source in parsed:
+            raise ValueError(f"invalid or duplicate runtime path mapping: {value!r}")
+        if Path(source).is_absolute() or Path(target).is_absolute() or ".." in Path(source).parts or ".." in Path(target).parts:
+            raise ValueError(f"unsafe runtime path mapping: {value!r}")
+        parsed[source] = target
+    mapped, seen = [], set()
+    for item in records:
+        record = dict(item)
+        original = record["path"]
+        record["path"] = parsed.get(original, original)
+        record["name"] = Path(record["path"]).name
+        if record["path"] in seen:
+            raise ValueError(f"runtime path mapping collision: {record['path']}")
+        seen.add(record["path"])
+        mapped.append(record)
+    missing = sorted(set(parsed) - {item["path"] for item in records})
+    if missing:
+        raise ValueError(f"runtime path mapping sources missing: {missing}")
+    return sorted(mapped, key=lambda item: item["path"].encode("utf-8"))
+
+
 def audit_runtime_patterns(component: dict, records: list[dict]) -> tuple[list[dict], list[str]]:
     """Verify every explicit component/runtime relationship independently."""
     results, failures = [], []
@@ -198,6 +229,8 @@ def main() -> int:
     parser.add_argument("--node-notices", type=Path, required=True)
     parser.add_argument("--allow-tracked-generated", action="store_true",
                         help="allow only the two known Blueprint build-generated files")
+    parser.add_argument("--runtime-path-map", action="append", default=[],
+                        help="virtual final-product path mapping, SOURCE=TARGET")
     args = parser.parse_args()
     source = args.source.resolve()
     inventory = json.loads(args.inventory.read_text())
@@ -245,6 +278,10 @@ def main() -> int:
 
     runtime_present = args.runtime is not None or args.runtime_archive is not None
     runtime_records = collect_runtime_records(args.runtime, args.runtime_archive)
+    try:
+        runtime_records = apply_runtime_path_mapping(runtime_records, args.runtime_path_map)
+    except ValueError as error:
+        failures.append(str(error))
     component_results = []
     for component in inventory.get("components", []):
         missing_fields = [field for field in ("id", "name", "version", "license", "source",
@@ -361,6 +398,7 @@ def main() -> int:
         "node_package_samples": notices["package_samples"],
         "node_unknown_licenses": unknown_node,
         "runtime": runtime_report,
+        "runtime_path_mapping": args.runtime_path_map,
         "failures": failures,
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
