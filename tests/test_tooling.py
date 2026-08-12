@@ -86,27 +86,15 @@ class PipelineTests(unittest.TestCase):
                 "sha256": hashlib.sha256(payload).hexdigest(),
                 "gzip_sha256": "2" * 64,
             }}}))
-            bin_dir = root / "bin"
-            bin_dir.mkdir()
-            curl = bin_dir / "curl"
             fixture = root / "fixture"
             fixture.write_bytes(payload)
-            curl.write_text("""#!/bin/sh
-while [ "$#" -gt 0 ]; do
-  if [ "$1" = "--output" ]; then shift; output=$1; fi
-  shift
-done
-cp "$FAKE_CURL_SOURCE" "$output"
-""")
-            curl.chmod(0o755)
             output = root / "generated" / "wp-cli.phar"
             report = root / "report.json"
-            env = dict(os.environ, PATH=f"{bin_dir}:{os.environ['PATH']}",
-                       FAKE_CURL_SOURCE=str(fixture))
             subprocess.run([
                 sys.executable, str(ROOT / "tools/prefetch-wp-cli.py"),
                 "--lock", str(lock), "--output", str(output), "--report", str(report),
-            ], check=True, capture_output=True, text=True, env=env)
+                "--source-file", str(fixture),
+            ], check=True, capture_output=True, text=True)
             self.assertEqual(payload, output.read_bytes())
             self.assertEqual("PASS", json.loads(report.read_text())["status"])
 

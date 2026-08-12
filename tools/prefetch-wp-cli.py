@@ -8,6 +8,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import shutil
 import subprocess
 import tempfile
 
@@ -19,6 +20,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--output", type=Path, required=True)
 parser.add_argument("--report", type=Path)
 parser.add_argument("--lock", type=Path, default=ROOT / "upstream-lock.json")
+parser.add_argument("--source-file", type=Path,
+                    help="Offline candidate payload; it is still checked against the exact lock")
 args = parser.parse_args()
 
 lock = json.loads(args.lock.read_text())
@@ -39,13 +42,21 @@ fd, temporary = tempfile.mkstemp(prefix=f".{output.name}.", dir=output.parent)
 os.close(fd)
 temporary_path = Path(temporary)
 try:
-    subprocess.run([
-        "curl", "--fail", "--location", "--silent", "--show-error",
-        "--retry", "5", "--retry-all-errors", "--retry-delay", "5",
-        "--connect-timeout", "30", "--max-time", "600",
-        "--user-agent", "WenPai-Release/1", "--output", str(temporary_path),
-        wp_cli["url"],
-    ], check=True)
+    if args.source_file:
+        source_file = args.source_file.resolve(strict=True)
+        if not source_file.is_file():
+            raise SystemExit(f"BLOCKED WP-CLI source file is not regular: {source_file}")
+        shutil.copyfile(source_file, temporary_path)
+        transport = "offline-source-file"
+    else:
+        subprocess.run([
+            "curl", "--fail", "--location", "--silent", "--show-error",
+            "--retry", "5", "--retry-all-errors", "--retry-delay", "5",
+            "--connect-timeout", "30", "--max-time", "600",
+            "--user-agent", "WenPai-Release/1", "--output", str(temporary_path),
+            wp_cli["url"],
+        ], check=True)
+        transport = "commit-pinned-url"
     payload_sha = hashlib.sha256(temporary_path.read_bytes()).hexdigest()
     if payload_sha != wp_cli["sha256"]:
         raise SystemExit(
@@ -66,6 +77,7 @@ report = {
     "bytes": output.stat().st_size,
     "gzip_sha256": wp_cli["gzip_sha256"],
     "consumer": "normalize-runtime.py --wp-cli-payload",
+    "transport": transport,
 }
 if args.report:
     write_json(args.report, report)
