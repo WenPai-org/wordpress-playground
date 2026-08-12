@@ -82,7 +82,11 @@ jobs:
           source_sha=$(python3 -c 'import json; print(json.load(open("upstream-lock.json"))["upstream"]["source_sha256"])')
           for number in 1 2; do
             source=".ci-work/product-source-$number"
-            (cd "$source" && corepack npm@10.9.2 ci --ignore-scripts)
+            for attempt in 1 2 3; do
+              (cd "$source" && npm_config_fetch_retries=5 npm_config_fetch_retry_mintimeout=10000 npm_config_fetch_retry_maxtimeout=120000 npm_config_fetch_timeout=600000 corepack npm@10.9.2 ci --ignore-scripts) && break
+              test "$attempt" != 3
+              sleep $((attempt * 20))
+            done
             test_patch="$GITHUB_WORKSPACE/overlays/patches/0001-localization-test-contract.patch"
             footer_spec="$source/packages/playground/website/src/components/site-manager/site-settings-form/site-settings-action-footer.spec.tsx"
             dock_spec="$source/packages/playground/website/src/components/dock/dock-toggle-pill.spec.tsx"

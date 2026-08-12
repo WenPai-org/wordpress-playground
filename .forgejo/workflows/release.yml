@@ -69,7 +69,11 @@ jobs:
       - name: Upstream relevant gates and website build
         run: |
           for source in .ci-work/product-source-1 .ci-work/product-source-2; do
-            (cd "$source" && corepack npm@10.9.2 ci --ignore-scripts)
+            for attempt in 1 2 3; do
+              (cd "$source" && npm_config_fetch_retries=5 npm_config_fetch_retry_mintimeout=10000 npm_config_fetch_retry_maxtimeout=120000 npm_config_fetch_timeout=600000 corepack npm@10.9.2 ci --ignore-scripts) && break
+              test "$attempt" != 3
+              sleep $((attempt * 20))
+            done
             test_patch="$GITHUB_WORKSPACE/overlays/patches/0001-localization-test-contract.patch"
             footer_spec="$source/packages/playground/website/src/components/site-manager/site-settings-form/site-settings-action-footer.spec.tsx"
             dock_spec="$source/packages/playground/website/src/components/dock/dock-toggle-pill.spec.tsx"
