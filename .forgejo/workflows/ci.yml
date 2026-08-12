@@ -32,7 +32,10 @@ jobs:
     runs-on: ubuntu-22.04
     container:
       image: node:22.23.0-bookworm
-    timeout-minutes: 240
+    # The exact dual fresh build is intentionally serial so the two builds do
+    # not race on runner CPU/memory or share mutable outputs. The governed
+    # runner ceiling is 6h; this job uses the same explicit bound.
+    timeout-minutes: 360
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
