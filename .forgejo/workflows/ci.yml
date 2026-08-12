@@ -112,7 +112,7 @@ jobs:
             fi
             python3 tools/normalize-blueprint-validator.py --source "$source" --output ".ci-work/blueprint-validator-normalization-$number.json"
             rm -rf "$source/dist"
-            (cd "$source" && SOURCE_DATE_EPOCH="$epoch" TZ=UTC LC_ALL=C NX_DAEMON=false NX_PARALLEL=1 NODE_OPTIONS="--require=$GITHUB_WORKSPACE/tools/deterministic-node-build.cjs" corepack npm@10.9.2 exec nx build playground-website --skip-nx-cache --parallel=1)
+            (cd "$source" && SOURCE_DATE_EPOCH="$epoch" TZ=UTC LC_ALL=C WENPAI_WP_CLI_PAYLOAD="$GITHUB_WORKSPACE/.ci-work/generated-assets/wp-cli.phar" NX_DAEMON=false NX_PARALLEL=1 NODE_OPTIONS="--require=$GITHUB_WORKSPACE/tools/deterministic-node-build.cjs" corepack npm@10.9.2 exec nx build playground-website --skip-nx-cache --parallel=1)
             runtime="$source/dist/packages/playground/wasm-wordpress-net"
             python3 tools/normalize-runtime.py --runtime "$runtime" --wp-cli-payload .ci-work/generated-assets/wp-cli.phar --output ".ci-work/runtime-normalization-$number.json"
             mkdir -p ".ci-work/notices-$number"

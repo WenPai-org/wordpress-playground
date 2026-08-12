@@ -408,3 +408,13 @@ class ExportIgnoredAssetRestoreTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+class LockedWpCliBuildInputTests(unittest.TestCase):
+    def test_upstream_build_uses_locked_payload_not_network(self):
+        patch = (ROOT / "overlays/patches/0003-locked-wp-cli-build-input.patch").read_text()
+        self.assertIn("WENPAI_WP_CLI_PAYLOAD", patch)
+        self.assertIn("gzip -n -9", patch)
+        self.assertIn("-curl https://raw.githubusercontent.com/wp-cli/builds", patch)
+        for workflow in ["ci.yml", "release.yml"]:
+            text = (ROOT / ".forgejo/workflows" / workflow).read_text()
+            self.assertIn('WENPAI_WP_CLI_PAYLOAD="$GITHUB_WORKSPACE/.ci-work/generated-assets/wp-cli.phar"', text)
