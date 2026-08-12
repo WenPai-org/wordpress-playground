@@ -1,9 +1,9 @@
 {
-  "elapsed": "0:35.11",
-  "entry_count": 22225,
+  "elapsed": "0:19.80",
+  "entry_count": 22239,
   "exit_status": 0,
-  "filesystem_outputs": 2969080,
-  "maximum_resident_set_kbytes": 617476,
+  "filesystem_outputs": 2981608,
+  "maximum_resident_set_kbytes": 617468,
   "schema": "wenpai-upstream-export-ignored-restore-resource-evidence/v1",
   "source": "Elementary /usr/bin/time -v over exact local archive restore",
   "status": "PASS",

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Restore export-ignored build inputs from an immutable upstream Git commit.
 
-The destination is normally a tree produced by ``git archive``. Only the six
+The destination is normally a tree produced by ``git archive``. Only the seven
 hard-coded upstream build asset classes below may be restored. Git tree modes,
 paths, sizes and blob payloads are validated before any file is written.
 """
@@ -25,6 +25,7 @@ TAR_ROOT = "packages/playground/wordpress-builds/src/wordpress"
 PUBLIC_ROOT = "packages/playground/wordpress-builds/public"
 PHP_WEB_ROOT = "packages/php-wasm/web-builds"
 PHP_NODE_ROOT = "packages/php-wasm/node-builds"
+DEMOS_ROOT = "packages/playground/website/demos"
 GROUP_PATTERNS = {
     "wordpress_tar_zst": re.compile(rf"^{re.escape(TAR_ROOT)}/wp-[^/]+\.tar\.zst$"),
     "wordpress_remote_asset_paths": re.compile(rf"^{re.escape(PUBLIC_ROOT)}/wp-[^/]+/wordpress-remote-asset-paths$"),
@@ -32,6 +33,7 @@ GROUP_PATTERNS = {
     "wordpress_public_tree": re.compile(rf"^{re.escape(PUBLIC_ROOT)}/wp-[^/]+/.+$"),
     "php_wasm_web": re.compile(rf"^{re.escape(PHP_WEB_ROOT)}/.+\.wasm$"),
     "php_wasm_node": re.compile(rf"^{re.escape(PHP_NODE_ROOT)}/.+\.wasm$"),
+    "website_demos": re.compile(rf"^{re.escape(DEMOS_ROOT)}/[^/]+$"),
 }
 LOCK_PATTERNS = {
     "wordpress_tar_zst": f"{TAR_ROOT}/wp-*.tar.zst",
@@ -40,6 +42,7 @@ LOCK_PATTERNS = {
     "wordpress_public_tree": f"{PUBLIC_ROOT}/wp-*/* (excluding the two files above)",
     "php_wasm_web": f"{PHP_WEB_ROOT}/**/*.wasm",
     "php_wasm_node": f"{PHP_NODE_ROOT}/**/*.wasm",
+    "website_demos": f"{DEMOS_ROOT}/*",
 }
 
 
@@ -68,11 +71,13 @@ def classify(path: str) -> str | None:
         return "php_wasm_web"
     if GROUP_PATTERNS["php_wasm_node"].fullmatch(path):
         return "php_wasm_node"
+    if GROUP_PATTERNS["website_demos"].fullmatch(path):
+        return "website_demos"
     return None
 
 
 def parse_tree(repository: Path, commit: str) -> dict[str, list[dict]]:
-    raw = run_git(repository, ["ls-tree", "-r", "-z", "-l", commit, "--", TAR_ROOT, PUBLIC_ROOT, PHP_WEB_ROOT, PHP_NODE_ROOT], binary=True)
+    raw = run_git(repository, ["ls-tree", "-r", "-z", "-l", commit, "--", TAR_ROOT, PUBLIC_ROOT, PHP_WEB_ROOT, PHP_NODE_ROOT, DEMOS_ROOT], binary=True)
     groups: dict[str, list[dict]] = {name: [] for name in GROUP_PATTERNS}
     seen_case: dict[str, str] = {}
     seen_nfc: dict[str, str] = {}
@@ -212,6 +217,10 @@ def assert_no_extra(destination: Path, expected: set[str]) -> None:
         for candidate, relative in walk_governed(wasm_root, destination) or ():
             if candidate.is_file() and relative.endswith(".wasm") and relative not in expected:
                 fail(f"untracked/extra governed destination file: {relative}")
+
+    for candidate, relative in walk_governed(destination / DEMOS_ROOT, destination) or ():
+        if candidate.is_file() and relative not in expected:
+            fail(f"untracked/extra governed destination file: {relative}")
 
 
 def atomic_write(target: Path, payload: bytes, mode: int, expected_sha256: str) -> None:

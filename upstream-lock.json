@@ -2,7 +2,7 @@
   "downstream": {
     "artifact_sha256": "SIDECAR: authoritative after deterministic archive creation and anonymous Release readback",
     "product_commit": "SELF: resolved from the immutable tag commit by exact-SHA CI",
-    "transform_sha256": "827bc879188ae613134c8548cb718e5fc56d072d54855c2d555bab31b89076f7",
+    "transform_sha256": "9bda3e52b2ec0084faf95752179713be14f8ed5459d3f042db6c787840bd0efc",
     "version": "3.1.49.1"
   },
   "generated_assets": {
@@ -39,6 +39,12 @@
           "manifest_sha256": "ea133c1911d4fa08599bf9e67db2b706d7cf185c399a39ae2d4ba73c158f1d0b",
           "path_whitelist": "packages/php-wasm/web-builds/**/*.wasm",
           "total_bytes": 261264839
+        },
+        "website_demos": {
+          "entry_count": 14,
+          "manifest_sha256": "a59dad171bb6a7a66e95903ed62bfaa1aab989a5ad3251fc3a300379ab455f1b",
+          "path_whitelist": "packages/playground/website/demos/*",
+          "total_bytes": 6377959
         },
         "wordpress_public_tree": {
           "entry_count": 22164,

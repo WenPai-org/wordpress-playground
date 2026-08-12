@@ -278,6 +278,7 @@ class ExportIgnoredAssetRestoreTests(unittest.TestCase):
             "packages/playground/wordpress-builds/public/wp-beta/wp-admin/css/deep/admin.css": b"css",
             "packages/php-wasm/web-builds/8-5/asyncify/8_5_8/php_8_5.wasm": b"web-wasm",
             "packages/php-wasm/node-builds/8-5/jspi/8_5_8/php_8_5.wasm": b"node-wasm",
+            "packages/playground/website/demos/index.html": b"<title>demo</title>",
         }
         for relative, payload in files.items():
             target = self.repository / relative
@@ -288,6 +289,7 @@ class ExportIgnoredAssetRestoreTests(unittest.TestCase):
             "packages/playground/wordpress-builds/src/wordpress/**/*.tar.zst export-ignore\n"
             "packages/php-wasm/web-builds/**/*.wasm export-ignore\n"
             "packages/php-wasm/node-builds/**/*.wasm export-ignore\n"
+            "packages/playground/website/demos/* export-ignore\n"
         )
         subprocess.run(["git", "init", "-q"], cwd=self.repository, check=True)
         subprocess.run(["git", "add", "."], cwd=self.repository, check=True)
@@ -318,18 +320,18 @@ class ExportIgnoredAssetRestoreTests(unittest.TestCase):
              "--repository", str(self.repository), "--destination", str(self.destination),
              "--lock", str(self.lock)], check=check, capture_output=True, text=True)
 
-    def test_restores_all_six_nonzero_tracked_groups_idempotently(self):
+    def test_restores_all_seven_nonzero_tracked_groups_idempotently(self):
         result = self.run_restore()
         report = json.loads(result.stdout.splitlines()[0])
-        self.assertEqual(report["entry_count"], 6)
-        self.assertEqual(report["restored"], 6)
+        self.assertEqual(report["entry_count"], 7)
+        self.assertEqual(report["restored"], 7)
         self.assertEqual(set(report["groups"]), {
             "wordpress_tar_zst", "wordpress_remote_asset_paths", "wordpress_static_zip",
-            "wordpress_public_tree", "php_wasm_web", "php_wasm_node",
+            "wordpress_public_tree", "php_wasm_web", "php_wasm_node", "website_demos",
         })
         self.assertTrue(all(group["entry_count"] == 1 for group in report["groups"].values()))
         second = self.run_restore()
-        self.assertEqual(json.loads(second.stdout.splitlines()[0])["already_present"], 6)
+        self.assertEqual(json.loads(second.stdout.splitlines()[0])["already_present"], 7)
 
     def test_rejects_tracked_symlink_in_whitelisted_tree(self):
         link = self.repository / "packages/playground/wordpress-builds/public/wp-beta/tracked-link"
