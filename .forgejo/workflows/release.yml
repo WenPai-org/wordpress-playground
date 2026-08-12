@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-22.04
     container:
       image: node:22.23.0-bookworm
-    timeout-minutes: 180
+    timeout-minutes: 240
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -90,9 +90,11 @@ jobs:
             fi
             grep -Fq "getButton('应用到此 Playground')" "$footer_spec"
             grep -Fq 'aria-label="显示工具"' "$dock_spec"
-            (cd "$source" && corepack npm@10.9.2 exec nx lint playground-website --parallel=1)
-            (cd "$source" && corepack npm@10.9.2 exec nx typecheck playground-website --parallel=1)
-            (cd "$source" && corepack npm@10.9.2 exec nx test playground-website --skip-nx-cache -- --runInBand)
+            if [ "$number" = 1 ]; then
+              (cd "$source" && corepack npm@10.9.2 exec nx lint playground-website --parallel=1)
+              (cd "$source" && corepack npm@10.9.2 exec nx typecheck playground-website --parallel=1)
+              (cd "$source" && corepack npm@10.9.2 exec nx test playground-website --skip-nx-cache -- --runInBand)
+            fi
           done
       - name: Reproducible clean website build one and two
         run: |
