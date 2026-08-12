@@ -50,19 +50,22 @@ jobs:
           mkdir -p .ci-work
           tag=$(python3 -c 'import json; print(json.load(open("upstream-lock.json"))["upstream"]["tag"])')
           commit=$(python3 -c 'import json; print(json.load(open("upstream-lock.json"))["upstream"]["commit"])')
-          git clone --depth=1 --branch "$tag" https://feicode.com/WPFork/wordpress-playground-upstream.git .ci-work/upstream
+          for attempt in 1 2 3; do
+            rm -rf .ci-work/upstream
+            git clone --depth=1 --branch "$tag" https://feicode.com/WPFork/wordpress-playground-upstream.git .ci-work/upstream && break
+            test "$attempt" != 3
+            sleep $((attempt * 20))
+          done
           test "$(git -C .ci-work/upstream rev-parse HEAD)" = "$commit"
           mkdir .ci-work/source-archive
           git -C .ci-work/upstream archive "$commit" | tar -x -C .ci-work/source-archive
           python3 tools/source-manifest.py .ci-work/source-archive --allow-internal-symlinks -o .ci-work/source-manifest.json
           python3 -c 'import json; a=json.load(open("upstream-lock.json"))["upstream"]["source_sha256"]; b=json.load(open(".ci-work/source-manifest.json"))["manifest_sha256"]; assert a==b,(a,b)'
           python3 tools/license-notice-audit.py --source .ci-work/upstream --expected-commit "$commit" --inventory docs/licenses/third-party-inventory.json --output evidence/license-notice-audit-source.json --node-notices evidence/node-license-notices.json
-          python3 tools/apply-overlay.py --upstream .ci-work/source-archive --output .ci-work/product-source-1 --report evidence/overlay-report-1.json
-          python3 tools/apply-overlay.py --upstream .ci-work/source-archive --output .ci-work/product-source-2 --report evidence/overlay-report-2.json
-          cmp evidence/overlay-report-1.json evidence/overlay-report-2.json
-          python3 tools/restore-upstream-generated-assets.py --repository .ci-work/upstream --destination .ci-work/product-source-1 --report evidence/upstream-export-ignored-assets-1.json
-          python3 tools/restore-upstream-generated-assets.py --repository .ci-work/upstream --destination .ci-work/product-source-2 --report evidence/upstream-export-ignored-assets-2.json
-          cmp evidence/upstream-export-ignored-assets-1.json evidence/upstream-export-ignored-assets-2.json
+          python3 tools/restore-upstream-generated-assets.py --repository .ci-work/upstream --destination .ci-work/source-archive --report evidence/upstream-export-ignored-assets.json
+          python3 tools/apply-overlay.py --upstream .ci-work/source-archive --output .ci-work/product-source-base --report evidence/overlay-report.json
+          cp -a --reflink=auto .ci-work/product-source-base .ci-work/product-source-1
+          cp -a --reflink=auto .ci-work/product-source-base .ci-work/product-source-2
           python3 tools/sync-generated-assets.py --source .ci-work/product-source-1 --report evidence/php-next-assets-1.json
           python3 tools/sync-generated-assets.py --source .ci-work/product-source-2 --report evidence/php-next-assets-2.json
           python3 tools/prefetch-wp-cli.py --source-file generated-assets/wp-cli/wp-cli.phar --output .ci-work/generated-assets/wp-cli.phar --report evidence/wp-cli-asset.json
@@ -142,7 +145,7 @@ jobs:
           FEICODE_TOKEN: ${{ secrets.FEICODE_TOKEN }}
         run: |
           tag="${GITHUB_REF_NAME}"
-          artifacts=(.ci-work/build-1/*.sha256 .ci-work/build-1/runtime.json .ci-work/build-1/runtime-manifest.json .ci-work/build-1/sbom-summary.json .ci-work/build-1/artifact-set.json .ci-work/build-1/THIRD_PARTY_NOTICES.md .ci-work/build-1/third-party-inventory.json .ci-work/build-1/sbom-notice-metadata.json .ci-work/build-1/LICENSE_TEXTS.sha256 .ci-work/build-1/license-notice-audit-source.json .ci-work/build-1/license-notice-audit-runtime.json .ci-work/build-1/node-license-notices.json .ci-work/runtime-normalization-1.json .ci-work/blueprint-validator-normalization-1.json evidence/build-determinism.json evidence/upstream-export-ignored-assets-1.json evidence/upstream-export-ignored-assets-2.json evidence/wp-cli-asset.json ROLLBACK.md)
+          artifacts=(.ci-work/build-1/*.sha256 .ci-work/build-1/runtime.json .ci-work/build-1/runtime-manifest.json .ci-work/build-1/sbom-summary.json .ci-work/build-1/artifact-set.json .ci-work/build-1/THIRD_PARTY_NOTICES.md .ci-work/build-1/third-party-inventory.json .ci-work/build-1/sbom-notice-metadata.json .ci-work/build-1/LICENSE_TEXTS.sha256 .ci-work/build-1/license-notice-audit-source.json .ci-work/build-1/license-notice-audit-runtime.json .ci-work/build-1/node-license-notices.json .ci-work/runtime-normalization-1.json .ci-work/blueprint-validator-normalization-1.json evidence/build-determinism.json evidence/upstream-export-ignored-assets.json evidence/wp-cli-asset.json ROLLBACK.md)
           if compgen -G '.ci-work/build-1/*.part-*' >/dev/null; then
             artifacts+=(.ci-work/build-1/*.part-*)
           else

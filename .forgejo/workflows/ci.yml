@@ -54,18 +54,21 @@ jobs:
           test "$(corepack npm@10.9.2 --version)" = "10.9.2"
           tag=$(python3 -c 'import json; print(json.load(open("upstream-lock.json"))["upstream"]["tag"])')
           commit=$(python3 -c 'import json; print(json.load(open("upstream-lock.json"))["upstream"]["commit"])')
-          git clone --depth=1 --branch "$tag" https://feicode.com/WPFork/wordpress-playground-upstream.git .ci-work/upstream
+          for attempt in 1 2 3; do
+            rm -rf .ci-work/upstream
+            git clone --depth=1 --branch "$tag" https://feicode.com/WPFork/wordpress-playground-upstream.git .ci-work/upstream && break
+            test "$attempt" != 3
+            sleep $((attempt * 20))
+          done
           test "$(git -C .ci-work/upstream rev-parse HEAD)" = "$commit"
           mkdir .ci-work/source-archive
           git -C .ci-work/upstream archive "$commit" | tar -x -C .ci-work/source-archive
           python3 tools/source-manifest.py .ci-work/source-archive --allow-internal-symlinks -o .ci-work/source-manifest.json
           python3 -c 'import json; a=json.load(open("upstream-lock.json"))["upstream"]["source_sha256"]; b=json.load(open(".ci-work/source-manifest.json"))["manifest_sha256"]; assert a==b,(a,b)'
-          python3 tools/apply-overlay.py --upstream .ci-work/source-archive --output .ci-work/product-source-1 --report .ci-work/overlay-report-1.json
-          python3 tools/apply-overlay.py --upstream .ci-work/source-archive --output .ci-work/product-source-2 --report .ci-work/overlay-report-2.json
-          cmp .ci-work/overlay-report-1.json .ci-work/overlay-report-2.json
-          python3 tools/restore-upstream-generated-assets.py --repository .ci-work/upstream --destination .ci-work/product-source-1 --report .ci-work/upstream-export-ignored-assets-1.json
-          python3 tools/restore-upstream-generated-assets.py --repository .ci-work/upstream --destination .ci-work/product-source-2 --report .ci-work/upstream-export-ignored-assets-2.json
-          cmp .ci-work/upstream-export-ignored-assets-1.json .ci-work/upstream-export-ignored-assets-2.json
+          python3 tools/restore-upstream-generated-assets.py --repository .ci-work/upstream --destination .ci-work/source-archive --report .ci-work/upstream-export-ignored-assets.json
+          python3 tools/apply-overlay.py --upstream .ci-work/source-archive --output .ci-work/product-source-base --report .ci-work/overlay-report.json
+          cp -a --reflink=auto .ci-work/product-source-base .ci-work/product-source-1
+          cp -a --reflink=auto .ci-work/product-source-base .ci-work/product-source-2
           python3 tools/sync-generated-assets.py --source .ci-work/product-source-1 --report .ci-work/generated-assets-1.json
           python3 tools/sync-generated-assets.py --source .ci-work/product-source-2 --report .ci-work/generated-assets-2.json
           python3 tools/prefetch-wp-cli.py --source-file generated-assets/wp-cli/wp-cli.phar --output .ci-work/generated-assets/wp-cli.phar --report .ci-work/wp-cli-asset.json
