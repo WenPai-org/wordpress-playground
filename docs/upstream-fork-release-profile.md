@@ -69,7 +69,7 @@
 |---|---|
 | lock | `upstream-lock.json` |
 | source 摘要 | SHA-256 over canonical JSON of normalized `path,type,executable,content SHA`; 当前 4977 条 |
-| transform 摘要 | `config/`, `overlays/`, apply/build/security/manifest 工具；`tools/transform-hash.py` |
+| transform 摘要 | 28 个受治理输入：workflow、许可证/NOTICE、生成资产、配置、overlay、测试及构建/发布/同步/审计/归一工具；`tools/transform-hash.py` |
 | mtime | `SOURCE_DATE_EPOCH=1786355284`（upstream commit timestamp） |
 | 权限/排序 | 目录 0755；文件 0644；原可执行文件 0755；UTF-8 bytewise 路径顺序 |
 | archive | deterministic PAX tar + gzip level 9 + empty gzip filename + fixed mtime/uid/gid |
@@ -99,7 +99,7 @@
 
 | Workflow | 触发 | runner | 权限 | 判据 |
 |---|---|---|---|---|
-| `ci.yml` | push/PR | `ubuntu-latest`（真实 watcher run 15 已回读 runner 可用） | contents read | Python 单测、exact upstream lint/type/unit、notice、两个独立 fresh build 与 artifact 字节比较 |
+| `ci.yml` | push/PR | `ubuntu-22.04`（真实 watcher run 15 已回读 runner 可用） | contents read | Python 单测、exact upstream lint/type/unit、notice、两个独立 fresh build 与 artifact 字节比较 |
 | `translations.yml` | manual + 每日错峰 | 同上 | contents read；候选写入走 PR | catalog 非零提取、placeholder/token、zh_CN；失败 WARN且不发 Release |
 | `upstream-sync.yml` | manual + 每 6 小时 | 同上 | contents/pull request write | stable detection、canonical/mirror peeled 对账、source hash、candidate PR |
 | `release.yml` | tag/manual | 同上 | contents/release write | exact product SHA、双构建、非零测试、附件、匿名公开回读 SHA |
@@ -118,11 +118,11 @@
 
 | 检查 | 命令/证据 | 状态 |
 |---|---|---|
-| 工具 unit | 30 tests：28 PASS / 2 host/exact-source SKIP；exact-source 单元另为 369/369 PASS | PASS |
-| upstream lint/type/unit/relevant | exact upstream package scripts；逐项记录实际样本和未跑项 | PENDING |
+| 工具 unit | 39 tests：37 PASS / 2 host/exact-source SKIP；exact-source website 单元另为 369/369 PASS | PASS |
+| upstream lint/type/unit/relevant | exact upstream `lint:js`、`typecheck` 与 website unit；369/369 非零单元样本 | PASS |
 | source/transform/protected/residual | source 4977 entries；overlay/catalog 164；security 63 samples/105 paths/0 finding；final transform 随 Release commit锁定 | PASS |
-| 双构建一致 | 两个隔离 worktree tar SHA + manifest SHA | PENDING |
-| runtime manifest/SHA/SBOM | `tools/build-runtime.py` | PENDING |
+| 双构建一致 | Elementary N/O 两个 fresh tree：25,312 entries，差异 0；两份 649,717,690-byte artifact SHA 均为 `4ec0fdaa08e9750beb21fdde2be891174a26a3c851655e6d044d5e219fc5d4ed`；Release exact-SHA workflow仍须复核 | PASS |
+| runtime manifest/SHA/SBOM | N/O runtime manifest 均为 `7ead800bc319bd655348d3a214a9acd3a5c6ddfb2e8d16caf3b733e9aa76c834`，各 25,312 entries；26 notice组件、Node 3778 license unknown=0 | PASS |
 | HTML/worker/SW/JS/CSS/WASM MIME | staging/production HTTP probes，非零 URL | PENDING |
 | WordPress 7.0/PHP WASM | exact published assets启动 | PENDING |
 | Blueprint schema/真实启动 | 站点候选 42/42：单插件、组合、多站点、Minimal Admin/自定义后台均真实启动 | PASS |
@@ -148,13 +148,13 @@ PASS 必须记录 exact product SHA、命令/run、日期和非零样本。0 样
 | updater | play.wenpai.net 仅引用已验证 FeiCode Release URL + SHA |
 | production | 属本次任务但仍是独立可审计 A 级变更；staging展开、显式 manifest受控切换，不对站点根盲目 delete |
 | previous | 官方 runtime v3.1.49 artifact SHA `5ea2b9d227cd817d7fa1db47dc5d0a9577239b99d87e07bd4caa4f3a6effd44c`（部署前须现场回读） |
-| backup/rollback | `BLOCKED: 本次时间戳生产备份和可执行回滚脚本尚未创建；旧备份不能替代` |
+| backup/rollback | `PENDING: 部署事务将在切换前生成本次时间戳完整 runtime 备份、SHA、旧/新 manifest 与可执行回滚脚本；旧备份不替代本次备份` |
 
 ## 10. 运行记录
 
 | 日期 | upstream | product | CI/Release | artifact SHA | translation | 结论 |
 |---|---|---|---|---|---|---|
-| 2026-08-12 | `v3.1.49@4d9c20678ca7cbd7bb881dc0cc5f4e5739f6cc2d` | `2280c358a56fe6743f66e052a2470954aa0c21aa` | FeiCode CI run `49898` PASS；Release BLOCKED | 双构建 SHA 不一致，未发布 | zh_CN 157/157，residual 0 | BLOCKED |
+| 2026-08-12 | `v3.1.49@4d9c20678ca7cbd7bb881dc0cc5f4e5739f6cc2d` | candidate branch；最终 exact SHA 由合并/tag 锁定 | 工具门 PASS；exact-SHA CI/Release PENDING | VM N/O 双构 artifact SHA `4ec0fdaa08e9750beb21fdde2be891174a26a3c851655e6d044d5e219fc5d4ed`，公开附件 PENDING | zh_CN 164/164，residual 0；website unit 369/369 | PENDING |
 
 ## 11. 偏差记录
 
