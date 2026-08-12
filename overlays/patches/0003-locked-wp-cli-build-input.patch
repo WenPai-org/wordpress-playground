@@ -1,7 +1,7 @@
-diff --git a/a/packages/playground/website/project.json b/b/packages/playground/website/project.json
+diff --git a/packages/playground/website/project.json b/packages/playground/website/project.json
 index 8554523..012bcb0 100644
---- a/a/packages/playground/website/project.json
-+++ b/b/packages/playground/website/project.json
+--- a/packages/playground/website/project.json
++++ b/packages/playground/website/project.json
 @@ -22,8 +22,8 @@
  					"cp -r ./website/* ./wasm-wordpress-net/",
  					"cp -r ./website-extras/* ./wasm-wordpress-net/",
