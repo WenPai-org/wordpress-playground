@@ -82,11 +82,15 @@ jobs:
           source_sha=$(python3 -c 'import json; print(json.load(open("upstream-lock.json"))["upstream"]["source_sha256"])')
           for number in 1 2; do
             source=".ci-work/product-source-$number"
+            npm_cache="$GITHUB_WORKSPACE/.ci-work/npm-cache"
+            test "$(corepack npm@10.9.2 config get registry)" = "https://registry.npmjs.org/"
+            if [ "$number" = 1 ]; then install_mode=--prefer-offline; else install_mode=--offline; fi
             for attempt in 1 2 3; do
-              (cd "$source" && npm_config_fetch_retries=5 npm_config_fetch_retry_mintimeout=10000 npm_config_fetch_retry_maxtimeout=120000 npm_config_fetch_timeout=600000 corepack npm@10.9.2 ci --ignore-scripts) && break
+              (cd "$source" && npm_config_fetch_retries=5 npm_config_fetch_retry_mintimeout=10000 npm_config_fetch_retry_maxtimeout=120000 npm_config_fetch_timeout=600000 corepack npm@10.9.2 ci --ignore-scripts --cache "$npm_cache" "$install_mode") && break
               test "$attempt" != 3
               sleep $((attempt * 20))
             done
+            corepack npm@10.9.2 cache verify --cache "$npm_cache"
             test_patch="$GITHUB_WORKSPACE/overlays/patches/0001-localization-test-contract.patch"
             footer_spec="$source/packages/playground/website/src/components/site-manager/site-settings-form/site-settings-action-footer.spec.tsx"
             dock_spec="$source/packages/playground/website/src/components/dock/dock-toggle-pill.spec.tsx"
