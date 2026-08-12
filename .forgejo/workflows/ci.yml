@@ -68,7 +68,7 @@ jobs:
           cmp .ci-work/upstream-export-ignored-assets-1.json .ci-work/upstream-export-ignored-assets-2.json
           python3 tools/sync-generated-assets.py --source .ci-work/product-source-1 --report .ci-work/generated-assets-1.json
           python3 tools/sync-generated-assets.py --source .ci-work/product-source-2 --report .ci-work/generated-assets-2.json
-          python3 tools/prefetch-wp-cli.py --output .ci-work/generated-assets/wp-cli.phar --report .ci-work/wp-cli-asset.json
+          python3 tools/prefetch-wp-cli.py --source-file generated-assets/wp-cli/wp-cli.phar --output .ci-work/generated-assets/wp-cli.phar --report .ci-work/wp-cli-asset.json
           mkdir -p .ci-work/notices-source
           python3 tools/license-notice-audit.py --source .ci-work/upstream --expected-commit "$commit" --inventory docs/licenses/third-party-inventory.json --output .ci-work/notices-source/license-notice-audit-source.json --node-notices .ci-work/notices-source/node-license-notices.json
       - name: Two independent exact website builds and artifact comparison

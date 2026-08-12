@@ -65,7 +65,7 @@ jobs:
           cmp evidence/upstream-export-ignored-assets-1.json evidence/upstream-export-ignored-assets-2.json
           python3 tools/sync-generated-assets.py --source .ci-work/product-source-1 --report evidence/php-next-assets-1.json
           python3 tools/sync-generated-assets.py --source .ci-work/product-source-2 --report evidence/php-next-assets-2.json
-          python3 tools/prefetch-wp-cli.py --output .ci-work/generated-assets/wp-cli.phar --report evidence/wp-cli-asset.json
+          python3 tools/prefetch-wp-cli.py --source-file generated-assets/wp-cli/wp-cli.phar --output .ci-work/generated-assets/wp-cli.phar --report evidence/wp-cli-asset.json
       - name: Upstream relevant gates and website build
         run: |
           for source in .ci-work/product-source-1 .ci-work/product-source-2; do

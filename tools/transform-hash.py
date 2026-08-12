@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 from manifest import digest_inputs, write_json
 
-DEFAULTS = [".forgejo/workflows", "config", "overlays", "tests",
+DEFAULTS = [".forgejo/workflows", "config", "generated-assets", "overlays", "tests",
             "LICENSE", "NOTICE", "UPSTREAM.md", "ROLLBACK.md", "docs/licenses",
             "tools/apply-overlay.py", "tools/build-runtime.py",
             "tools/localization_overlay.py", "tools/localization_scan.py",
