@@ -6,6 +6,6 @@ The initial source is the peeled commit `4d9c20678ca7cbd7bb881dc0cc5f4e5739f6cc2
 
 The product repository deliberately does **not** vendor the upstream monorepo. CI materializes the exact tag from the read-only mirror, verifies it against canonical and the recorded source manifest, then applies `overlays/` and product configuration in an isolated worktree. Product changes must not be pushed into the mirror.
 
-Copyright remains with the individual WordPress Playground and dependency contributors. Upstream is distributed under GPL-2.0-or-later; see `LICENSE`. WordPress, PHP, WASM binaries, fonts, Node packages, and other bundled assets may carry additional notices or compatible licenses. The release SBOM is a dependency summary, not a substitute for the still-required per-binary license audit.
+Copyright remains with the individual WordPress Playground and dependency contributors. Upstream is distributed under GPL-2.0-or-later; see `LICENSE`. WordPress, PHP, WASM binaries, fonts, Node packages, and other bundled assets carry the additional notices recorded in `docs/licenses/third-party-inventory.json` and `docs/licenses/THIRD_PARTY_NOTICES.md`. The Release SBOM is a dependency summary, not a substitute for the fail-closed exact-source and runtime audit produced by `tools/license-notice-audit.py`.
 
 “WordPress” is a trademark of the WordPress Foundation. WenPai branding must not imply upstream endorsement. The downstream UI may retain upstream names where required for attribution, interoperability, or license notices.

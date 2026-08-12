@@ -10,53 +10,147 @@ concurrency:
   cancel-in-progress: false
 jobs:
   exact-build-release:
-    runs-on: ubuntu-latest
-    timeout-minutes: 120
+    runs-on: ubuntu-22.04
+    container:
+      image: node:22.23.0-bookworm
+    timeout-minutes: 360
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           fetch-depth: 0
+      - name: Verify locked build runtime
+        run: |
+          test "$(node -p 'process.versions.node')" = "22.23.0"
+          python3 -c 'import sys; assert sys.version_info[:2] == (3, 11)'
       - name: Exact product tag and tooling gates
         run: |
           test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          case "${GITHUB_REF}" in
+            refs/tags/v*) ;;
+            *) echo "BLOCKED release must run from an immutable tag, got ${GITHUB_REF}" >&2; exit 1 ;;
+          esac
+          tag="${GITHUB_REF#refs/tags/}"
+          [[ "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]] || {
+            echo "BLOCKED invalid downstream release tag: $tag" >&2
+            exit 1
+          }
+          test "$(git rev-parse "refs/tags/$tag^{commit}")" = "${GITHUB_SHA}"
           test "$(node -p 'process.versions.node')" = "22.23.0"
+          for attempt in 1 2 3 4 5; do
+            corepack prepare npm@10.9.2 --activate && break
+            test "$attempt" != 5
+            sleep $((attempt * 10))
+          done
           test "$(corepack npm@10.9.2 --version)" = "10.9.2"
           python3 -m unittest discover -s tests -p 'test_*.py' -v
           python3 tools/security-scan.py .
       - name: Materialize, verify and localize exact upstream
         run: |
+          rm -rf .ci-work
+          mkdir -p .ci-work
           tag=$(python3 -c 'import json; print(json.load(open("upstream-lock.json"))["upstream"]["tag"])')
           commit=$(python3 -c 'import json; print(json.load(open("upstream-lock.json"))["upstream"]["commit"])')
-          git clone --depth=1 --branch "$tag" https://feicode.com/WPFork/wordpress-playground-upstream.git /tmp/upstream
-          test "$(git -C /tmp/upstream rev-parse HEAD)" = "$commit"
-          mkdir /tmp/source-archive
-          git -C /tmp/upstream archive "$commit" | tar -x -C /tmp/source-archive
-          python3 tools/source-manifest.py /tmp/source-archive --allow-internal-symlinks -o /tmp/source-manifest.json
-          python3 -c 'import json; a=json.load(open("upstream-lock.json"))["upstream"]["source_sha256"]; b=json.load(open("/tmp/source-manifest.json"))["manifest_sha256"]; assert a==b,(a,b)'
-          python3 tools/apply-overlay.py --upstream /tmp/upstream --output /tmp/product-source --report evidence/overlay-report.json
+          for attempt in 1 2 3; do
+            rm -rf .ci-work/upstream
+            git clone --depth=1 --branch "$tag" https://feicode.com/WPFork/wordpress-playground-upstream.git .ci-work/upstream && break
+            test "$attempt" != 3
+            sleep $((attempt * 20))
+          done
+          test "$(git -C .ci-work/upstream rev-parse HEAD)" = "$commit"
+          mkdir .ci-work/source-archive
+          git -C .ci-work/upstream archive "$commit" | tar -x -C .ci-work/source-archive
+          python3 tools/source-manifest.py .ci-work/source-archive --allow-internal-symlinks -o .ci-work/source-manifest.json
+          python3 -c 'import json; a=json.load(open("upstream-lock.json"))["upstream"]["source_sha256"]; b=json.load(open(".ci-work/source-manifest.json"))["manifest_sha256"]; assert a==b,(a,b)'
+          python3 tools/license-notice-audit.py --source .ci-work/upstream --expected-commit "$commit" --inventory docs/licenses/third-party-inventory.json --output evidence/license-notice-audit-source.json --node-notices evidence/node-license-notices.json
+          python3 tools/restore-upstream-generated-assets.py --repository .ci-work/upstream --destination .ci-work/source-archive --report evidence/upstream-export-ignored-assets.json
+          python3 tools/apply-overlay.py --upstream .ci-work/source-archive --output .ci-work/product-source-base --report evidence/overlay-report.json
+          cp -a --reflink=auto .ci-work/product-source-base .ci-work/product-source-1
+          cp -a --reflink=auto .ci-work/product-source-base .ci-work/product-source-2
+          python3 tools/sync-generated-assets.py --source .ci-work/product-source-1 --report evidence/php-next-assets-1.json
+          python3 tools/sync-generated-assets.py --source .ci-work/product-source-2 --report evidence/php-next-assets-2.json
+          python3 tools/prefetch-wp-cli.py --source-file generated-assets/wp-cli/wp-cli.phar --output .ci-work/generated-assets/wp-cli.phar --report evidence/wp-cli-asset.json
       - name: Upstream relevant gates and website build
         run: |
-          cd /tmp/product-source
-          corepack npm@10.9.2 ci --ignore-scripts
-          corepack npm@10.9.2 exec nx lint playground-website
-          corepack npm@10.9.2 exec nx typecheck playground-website
-          corepack npm@10.9.2 exec nx test playground-website
+          for number in 1 2; do
+            source=".ci-work/product-source-$number"
+            npm_cache="$GITHUB_WORKSPACE/.ci-work/npm-cache"
+            test "$(corepack npm@10.9.2 config get registry)" = "https://registry.npmjs.org/"
+            if [ "$number" = 1 ]; then install_mode=--prefer-offline; else install_mode=--offline; fi
+            for attempt in 1 2 3; do
+              (cd "$source" && npm_config_fetch_retries=5 npm_config_fetch_retry_mintimeout=10000 npm_config_fetch_retry_maxtimeout=120000 npm_config_fetch_timeout=600000 corepack npm@10.9.2 ci --ignore-scripts --cache "$npm_cache" "$install_mode") && break
+              test "$attempt" != 3
+              sleep $((attempt * 20))
+            done
+            corepack npm@10.9.2 cache verify --cache "$npm_cache"
+            test_patch="$GITHUB_WORKSPACE/overlays/patches/0001-localization-test-contract.patch"
+            footer_spec="$source/packages/playground/website/src/components/site-manager/site-settings-form/site-settings-action-footer.spec.tsx"
+            dock_spec="$source/packages/playground/website/src/components/dock/dock-toggle-pill.spec.tsx"
+            if grep -Fq "getButton('应用到此 Playground')" "$footer_spec" && grep -Fq 'aria-label="显示工具"' "$dock_spec"; then
+              : # localized contract preserved by dependency installation
+            else
+              GIT_CEILING_DIRECTORIES="$(dirname "$source")" git -C "$source" apply --no-index --check --whitespace=error-all "$test_patch"
+              GIT_CEILING_DIRECTORIES="$(dirname "$source")" git -C "$source" apply --no-index --whitespace=error-all "$test_patch"
+            fi
+            grep -Fq "getButton('应用到此 Playground')" "$footer_spec"
+            grep -Fq 'aria-label="显示工具"' "$dock_spec"
+            if [ "$number" = 1 ]; then
+              (cd "$source" && corepack npm@10.9.2 exec nx lint playground-website --parallel=1)
+              (cd "$source" && corepack npm@10.9.2 exec nx typecheck playground-website --parallel=1)
+              (cd "$source" && corepack npm@10.9.2 exec nx test playground-website --skip-nx-cache -- --runInBand)
+            fi
+          done
       - name: Reproducible clean website build one and two
         run: |
-          python3 tools/transform-hash.py -o /tmp/transform.json
-          transform=$(python3 -c 'import json; print(json.load(open("/tmp/transform.json"))["transform_sha256"])')
+          python3 tools/transform-hash.py -o .ci-work/transform.json
+          transform=$(python3 -c 'import json; print(json.load(open(".ci-work/transform.json"))["transform_sha256"])')
+          test "$transform" = "$(python3 -c 'import json; print(json.load(open("upstream-lock.json"))["downstream"]["transform_sha256"])')"
           epoch=$(python3 -c 'import json; print(json.load(open("upstream-lock.json"))["toolchain"]["source_date_epoch"])')
           version=$(python3 -c 'import json; print(json.load(open("upstream-lock.json"))["downstream"]["version"])')
-          rm -rf /tmp/product-source/dist
-          (cd /tmp/product-source && SOURCE_DATE_EPOCH="$epoch" TZ=UTC LC_ALL=C npm run build:website)
-          python3 tools/build-runtime.py --source /tmp/product-source --runtime-dir dist/packages/playground/wasm-wordpress-net --out-dir /tmp/build-1 --version "$version" --source-sha "$(python3 -c 'import json; print(json.load(open("upstream-lock.json"))["upstream"]["source_sha256"])')" --transform-sha "$transform" --product-commit "$GITHUB_SHA" --source-date-epoch "$epoch" --package-lock package-lock.json
-          rm -rf /tmp/product-source/dist
-          (cd /tmp/product-source && SOURCE_DATE_EPOCH="$epoch" TZ=UTC LC_ALL=C npm run build:website)
-          python3 tools/build-runtime.py --source /tmp/product-source --runtime-dir dist/packages/playground/wasm-wordpress-net --out-dir /tmp/build-2 --version "$version" --source-sha "$(python3 -c 'import json; print(json.load(open("upstream-lock.json"))["upstream"]["source_sha256"])')" --transform-sha "$transform" --product-commit "$GITHUB_SHA" --source-date-epoch "$epoch" --package-lock package-lock.json
-          cmp /tmp/build-1/*.tar.gz /tmp/build-2/*.tar.gz
+          for number in 1 2; do
+            source=".ci-work/product-source-$number"
+            build=".ci-work/build-$number"
+            python3 tools/normalize-blueprint-validator.py --source "$source" --output ".ci-work/blueprint-validator-normalization-$number.json"
+            rm -rf "$source/dist"
+            (cd "$source" && SOURCE_DATE_EPOCH="$epoch" TZ=UTC LC_ALL=C WENPAI_WP_CLI_PAYLOAD="$GITHUB_WORKSPACE/.ci-work/generated-assets/wp-cli.phar" NX_DAEMON=false NX_PARALLEL=1 NODE_OPTIONS="--require=$GITHUB_WORKSPACE/tools/deterministic-node-build.cjs" corepack npm@10.9.2 exec nx build playground-website --skip-nx-cache --parallel=1)
+            python3 tools/normalize-runtime.py --runtime "$source/dist/packages/playground/wasm-wordpress-net" --wp-cli-payload .ci-work/generated-assets/wp-cli.phar --output ".ci-work/runtime-normalization-$number.json"
+            mkdir -p ".ci-work/notices-$number"
+            python3 tools/license-notice-audit.py --source .ci-work/upstream --runtime "$source/dist/packages/playground/wasm-wordpress-net" --runtime-path-map index.html=playground.html --expected-commit "$(python3 -c 'import json; print(json.load(open("upstream-lock.json"))["upstream"]["commit"])')" --inventory docs/licenses/third-party-inventory.json --output ".ci-work/notices-$number/license-notice-audit-runtime.json" --node-notices evidence/node-license-notices.json
+            python3 tools/build-runtime.py --source "$source" --runtime-dir dist/packages/playground/wasm-wordpress-net --out-dir "$build" --version "$version" --source-sha "$(python3 -c 'import json; print(json.load(open("upstream-lock.json"))["upstream"]["source_sha256"])')" --transform-sha "$transform" --product-commit "$GITHUB_SHA" --source-date-epoch "$epoch" --package-lock package-lock.json --enforce-generated-assets --notice-audit evidence/license-notice-audit-source.json --notice-audit ".ci-work/notices-$number/license-notice-audit-runtime.json" --node-notices evidence/node-license-notices.json
+            if [ "$number" = 1 ]; then rm -rf "$source/node_modules" "$source/dist"; fi
+          done
+          python3 tools/compare-runtime-builds.py \
+            --manifest-a .ci-work/build-1/runtime-manifest.json \
+            --manifest-b .ci-work/build-2/runtime-manifest.json \
+            --artifact-a .ci-work/build-1/*.tar.gz \
+            --artifact-b .ci-work/build-2/*.tar.gz \
+            --output evidence/build-determinism.json
+          cmp .ci-work/build-1/artifact-set.json .ci-work/build-2/artifact-set.json
+          cmp .ci-work/runtime-normalization-1.json .ci-work/runtime-normalization-2.json
+          test "$(python3 -c 'import json; print(json.load(open(".ci-work/build-1/runtime-manifest.json"))["entrypoint_mapping"]["index.html"])')" = playground.html
+          python3 - <<'PY'
+          import json
+          artifact=json.load(open('.ci-work/build-1/artifact-set.json'))
+          limit=artifact['max_attachment_bytes']
+          assert artifact['artifact_size'] > 0
+          assert artifact['part_count'] == len(artifact['parts']) > 0
+          assert all(0 < part['size'] <= limit for part in artifact['parts'])
+          if artifact['artifact_size'] <= limit:
+              assert artifact['part_count'] == 1
+          else:
+              assert artifact['part_count'] > 1
+              assert sum(part['size'] for part in artifact['parts']) == artifact['artifact_size']
+          PY
       - name: Idempotent Release and anonymous SHA readback
         env:
           FEICODE_TOKEN: ${{ secrets.FEICODE_TOKEN }}
         run: |
           tag="${GITHUB_REF_NAME}"
-          python3 tools/release.py --tag "$tag" --commit "$GITHUB_SHA" --artifact /tmp/build-1/*.tar.gz --artifact /tmp/build-1/*.sha256 --artifact /tmp/build-1/runtime.json --artifact /tmp/build-1/runtime-manifest.json --artifact /tmp/build-1/sbom-summary.json
+          artifacts=(.ci-work/build-1/*.sha256 .ci-work/build-1/runtime.json .ci-work/build-1/runtime-manifest.json .ci-work/build-1/sbom-summary.json .ci-work/build-1/artifact-set.json .ci-work/build-1/THIRD_PARTY_NOTICES.md .ci-work/build-1/third-party-inventory.json .ci-work/build-1/sbom-notice-metadata.json .ci-work/build-1/LICENSE_TEXTS.sha256 .ci-work/build-1/license-notice-audit-source.json .ci-work/build-1/license-notice-audit-runtime.json .ci-work/build-1/node-license-notices.json .ci-work/runtime-normalization-1.json .ci-work/blueprint-validator-normalization-1.json evidence/build-determinism.json evidence/upstream-export-ignored-assets.json evidence/wp-cli-asset.json ROLLBACK.md)
+          if compgen -G '.ci-work/build-1/*.part-*' >/dev/null; then
+            artifacts+=(.ci-work/build-1/*.part-*)
+          else
+            artifacts+=(.ci-work/build-1/*.tar.gz)
+          fi
+          args=()
+          for artifact in "${artifacts[@]}"; do args+=(--artifact "$artifact"); done
+          python3 tools/release.py --tag "$tag" --commit "$GITHUB_SHA" "${args[@]}"

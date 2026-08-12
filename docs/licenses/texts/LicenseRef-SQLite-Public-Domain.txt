@@ -1,0 +1,9 @@
+SQLite public-domain dedication
+
+The SQLite project states that all code authors dedicate their contributions
+to the public domain and that anyone may copy, modify, publish, use, compile,
+sell, or distribute the original SQLite code and compiled form for any purpose.
+
+Authoritative notice: https://sqlite.org/copyright.html
+This local summary is provenance metadata, not a modification of SQLite's
+public-domain dedication.

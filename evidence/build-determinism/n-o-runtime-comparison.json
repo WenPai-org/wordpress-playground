@@ -1,0 +1,18 @@
+{
+  "artifact": null,
+  "build_a": {
+    "entry_count": 25312,
+    "manifest_sha256": "4f60b0bf566c4c5a872e9627556345c54ffb73ba0ae72537e18f09164454314f"
+  },
+  "build_b": {
+    "entry_count": 25312,
+    "manifest_sha256": "4f60b0bf566c4c5a872e9627556345c54ffb73ba0ae72537e18f09164454314f"
+  },
+  "differences": {
+    "changed": [],
+    "only_a": [],
+    "only_b": []
+  },
+  "schema": "wenpai-build-determinism/v1",
+  "status": "PASS"
+}

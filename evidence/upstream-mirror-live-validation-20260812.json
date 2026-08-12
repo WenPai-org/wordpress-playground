@@ -1,0 +1,43 @@
+{
+  "schema": "wenpai-upstream-mirror-live-validation/v1",
+  "tested_at": "2026-08-12T00:50:00+08:00",
+  "repository": "WPFork/wordpress-playground-upstream",
+  "strategy": "shallow-layered-stable-tag-and-trunk",
+  "repository_api_mirror_flag": false,
+  "repository_actions_enabled": false,
+  "repository_issues_enabled": false,
+  "repository_pull_requests_enabled": false,
+  "receive_shallow_update": true,
+  "server_shallow_roots": [
+    "4d9c20678ca7cbd7bb881dc0cc5f4e5739f6cc2d",
+    "be483d400bcc6a82eb61f8d25fc0fa15d2077a64"
+  ],
+  "canonical": {
+    "trunk": "be483d400bcc6a82eb61f8d25fc0fa15d2077a64",
+    "stable_tag": "v3.1.49",
+    "stable_tag_object": "9774d4a942f671a089a31b87ee93b81aaea64170",
+    "stable_peeled_commit": "4d9c20678ca7cbd7bb881dc0cc5f4e5739f6cc2d"
+  },
+  "mirror": {
+    "trunk": "be483d400bcc6a82eb61f8d25fc0fa15d2077a64",
+    "stable_tag": "v3.1.49",
+    "stable_tag_object": "9774d4a942f671a089a31b87ee93b81aaea64170",
+    "stable_peeled_commit": "4d9c20678ca7cbd7bb881dc0cc5f4e5739f6cc2d"
+  },
+  "watcher": {
+    "stable_semver_samples": 334,
+    "status": "UNCHANGED",
+    "result": "PASS",
+    "workflow_database_id": 49913,
+    "workflow_run_url": "https://feicode.com/WenPai-org/wordpress-playground/actions/runs/15",
+    "workflow_status": "success",
+    "workflow_ref": "codex/initial-validation-20260812",
+    "workflow_commit": "bab97edc10e41627d1409b77a5ef7b88b5fabb91"
+  },
+  "fail_closed": {
+    "moved_stable_tag": "BLOCKED and exit 2",
+    "missing_token": "BLOCKED and exit 2",
+    "trunk_race": "force-with-lease rejects stale observed ref",
+    "direct_full_history_push": "not used"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "schema": "wenpai-playground-validation/v1",
+  "date": "2026-08-12",
+  "product_commit": "2280c358a56fe6743f66e052a2470954aa0c21aa",
+  "upstream": {
+    "tag": "v3.1.49",
+    "commit": "4d9c20678ca7cbd7bb881dc0cc5f4e5739f6cc2d",
+    "source_manifest_entries": 4977,
+    "source_sha256": "00dd34fde8625daac3ccf6c4fec527b87dd2cd8c0b486982270ee2f608534d79"
+  },
+  "gates": {
+    "product_ci": {"status": "PASS", "run_id": 49898, "samples": 11, "skipped": 2, "note": "FeiCode exact-SHA tooling run; exact-source and case-collision gates run separately on Linux"},
+    "linux_exact_source_tests": {"status": "PASS", "samples": 13, "failed": 0, "skipped": 0},
+    "localization": {"status": "PASS", "samples": 157, "translated": 157, "residuals": 0, "missing": 0},
+    "lint": {"status": "PASS", "samples": 1, "target": "playground-website"},
+    "typecheck": {"status": "PASS", "samples": 2, "target": "playground-website"},
+    "upstream_unit": {"status": "FAIL", "passed": 359, "failed": 10, "total": 369, "reason": "source-level Chinese replacements changed visible labels while upstream tests still assert English literals"},
+    "website_build": {"status": "PASS", "samples": 77, "clean_builds": 2},
+    "double_build": {
+      "status": "FAIL",
+      "runtime_entries_a": 25298,
+      "runtime_entries_b": 25298,
+      "manifest_a": "1b922cbe4d9e1081bacf67beebb22b4003c581c25cd6654c893ff5c435a048b7",
+      "manifest_b": "fe9a392eb87c5e01574fdac61da46f9092624bcd6f6c276a896dbfebf42a521a",
+      "artifact_a": "0bc8e89d27a0baa188b2eccb4f746b6a9e7dcb2297547e3cc35adb47aed0652e",
+      "artifact_b": "ea283a9a5c2231cf1f670198b04bd9cecde3246e13f479366577b697c4f05fc8",
+      "differing_runtime_paths": 73,
+      "reason": "fresh Vite/Nx builds produced different content hashes and source maps"
+    },
+    "mirror": {"status": "BLOCKED", "reason": "Forgejo pull-mirror creation did not initialize refs; full external mirror push failed HTTP 413; repository contains only bootstrap trunk"},
+    "license_notice": {"status": "BLOCKED", "reason": "complete human review for embedded WordPress/PHP-WASM/fonts/SQLite/generated assets is not closed"},
+    "public_release": {"status": "BLOCKED", "samples": 0},
+    "production_deploy": {"status": "BLOCKED", "samples": 0, "reason": "no gate-passing immutable public Release exists"}
+  }
+}

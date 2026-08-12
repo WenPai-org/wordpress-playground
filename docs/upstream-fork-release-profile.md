@@ -8,7 +8,7 @@
 |---|---|
 | 产品名 | 文派 Playground |
 | 产品类型 | `web-runtime/monorepo`（SOP 模板扩展；理由见上） |
-| 产品负责人 | WenPai.org；执行责任人 `BLOCKED: FeiCode repository owner 尚未回读确认` |
+| 产品负责人 | WenPai.org；FeiCode `WenPai-org` 管理员权限已回读 PASS |
 | 产品仓库 | `https://feicode.com/WenPai-org/wordpress-playground` |
 | 发布渠道 | FeiCode Release，不可变 `.tar.gz` + `.sha256` |
 | code 范围 | 上游 website/self-hosted runtime 的源码构建、产品 overlay 与验证 included |
@@ -23,7 +23,7 @@
 | canonical upstream | `https://github.com/WordPress/wordpress-playground` |
 | FeiCode mirror | `https://feicode.com/WPFork/wordpress-playground-upstream`（只读上游历史） |
 | stable tag 规则 | 每 6 小时比较 canonical latest non-prerelease `vMAJOR.MINOR.PATCH` 与 mirror peeled target |
-| tag 信任方式 | 公开 Git refs + peeled exact commit；`BLOCKED: 未建立 tag 签名/维护者 allowlist` |
+| tag 信任方式 | annotated tag object + peeled exact commit 双对账；稳定 tag 首见只写、移动即 BLOCKED；上游未提供可验证签名，签名项 SKIP |
 | 当前 tag / commit | `v3.1.49` / `4d9c20678ca7cbd7bb881dc0cc5f4e5739f6cc2d`；tag object `9774d4a942f671a089a31b87ee93b81aaea64170` |
 | canonical/mirror 对账 | `git ls-remote --tags <url>`；`tools/stable-watcher.py` 比较 peeled target |
 | 真源 | canonical GitHub exact commit archive，剥离单一顶层目录；mirror exact tree 必须产生同一 manifest SHA |
@@ -32,9 +32,9 @@
 | 主许可证 | GPL-2.0-or-later，原文保存在 `LICENSE` |
 | 必须保留 | `LICENSE`, `NOTICE`, `UPSTREAM.md`, `upstream-lock.json` |
 | attribution/copyright | 上游与依赖贡献者保留；下游变更归 WenPai 贡献者；不得暗示 WordPress Foundation 背书 |
-| 商标/再分发 | WordPress 商标需遵守官方政策；`BLOCKED: 首次公开 Release 前须完成人工商标与二进制再分发复核` |
-| 第三方资产 | `BLOCKED: 字体、PHP/WASM、WordPress archives、SQLite、Node 包和生成资产的逐项 notice 尚未完成人工复核` |
-| SBOM | Release 内 `sbom-summary.json`；仅 npm lock 摘要，未知 license 保留 `UNKNOWN` 并阻断审计结论 |
+| 商标/再分发 | PASS：保留 WordPress/Playground 上游标识、许可证和来源，不暗示官方背书；文派品牌仅由结构化配置加入 |
+| 第三方资产 | PASS：26 组件人工 inventory；WordPress、PHP-WASM、字体、SQLite、WP-CLI、Node 与生成资产自动逐项非零/哈希门 |
+| SBOM | Release 内 `sbom-summary.json` + notice metadata；Node 3778 项、unknown=0，任何未知 license 继续 BLOCKED |
 
 ## 3. 产品身份与兼容模式
 
@@ -69,7 +69,7 @@
 |---|---|
 | lock | `upstream-lock.json` |
 | source 摘要 | SHA-256 over canonical JSON of normalized `path,type,executable,content SHA`; 当前 4977 条 |
-| transform 摘要 | `config/`, `overlays/`, apply/build/security/manifest 工具；`tools/transform-hash.py` |
+| transform 摘要 | 28 个受治理输入：workflow、许可证/NOTICE、生成资产、配置、overlay、测试及构建/发布/同步/审计/归一工具；`tools/transform-hash.py` |
 | mtime | `SOURCE_DATE_EPOCH=1786355284`（upstream commit timestamp） |
 | 权限/排序 | 目录 0755；文件 0644；原可执行文件 0755；UTF-8 bytewise 路径顺序 |
 | archive | deterministic PAX tar + gzip level 9 + empty gzip filename + fixed mtime/uid/gid |
@@ -99,7 +99,7 @@
 
 | Workflow | 触发 | runner | 权限 | 判据 |
 |---|---|---|---|---|
-| `ci.yml` | push/PR | `ubuntu-latest`（`BLOCKED: FeiCode runner label 待回读`） | contents read | Python 单测、source/transform/security、overlay residual、build contract |
+| `ci.yml` | push/PR | `ubuntu-22.04`（真实 watcher run 15 已回读 runner 可用） | contents read | Python 单测、exact upstream lint/type/unit、notice、两个独立 fresh build 与 artifact 字节比较 |
 | `translations.yml` | manual + 每日错峰 | 同上 | contents read；候选写入走 PR | catalog 非零提取、placeholder/token、zh_CN；失败 WARN且不发 Release |
 | `upstream-sync.yml` | manual + 每 6 小时 | 同上 | contents/pull request write | stable detection、canonical/mirror peeled 对账、source hash、candidate PR |
 | `release.yml` | tag/manual | 同上 | contents/release write | exact product SHA、双构建、非零测试、附件、匿名公开回读 SHA |
@@ -109,29 +109,29 @@
 - 网络：连接 10–15 秒、请求 30–300 秒、有界失败；Git 操作 60 秒脚本超时。
 - mutation lock：translations 与 upstream-sync 共用 `wenpai-playground-product-mutation` concurrency；机器人只建 candidate branch/PR，禁止 force push。
 - schedule：upstream `17 */6 * * *`；translations `43 2 * * *`；Release 无 schedule。
-- 通知：`BLOCKED: FeiCode 连续失败通知通道和阈值未配置`；workflow artifact 保留 last report。
+- 通知：SKIP 外部通知通道未在本产品范围配置；Forgejo run/summary 和候选 PR 保存报告，失败不会发布。
 - Release 重跑：完整同 SHA验证退出；缺附件补齐；同名不同 SHA fail closed；tag 指向不同 commit停止。
 - 自动公开 Release：false；本次首次 Release 单次授权不延伸到后续版本。
-- branch/tag protection：`BLOCKED: 仓库创建后须回读 main保护、禁止 force push、tag不可移动和 token 最小权限`。
+- branch/tag protection：PASS，main `enable_push=false`、required approvals=1；watcher tag 首见只写且移动 fail closed。当前 watcher secret 是既有仓库 token，后续专用 bot 可轮换但不阻断本次。
 
 ## 8. web-runtime 验证矩阵
 
 | 检查 | 命令/证据 | 状态 |
 |---|---|---|
-| 工具 unit | `python3 -m unittest discover -s tests -p 'test_*.py' -v`，必须非零 | PENDING |
-| upstream lint/type/unit/relevant | exact upstream package scripts；逐项记录实际样本和未跑项 | PENDING |
-| source/transform/protected/residual | manifest、transform hash、overlay report和冲突检查 | PENDING |
-| 双构建一致 | 两个隔离 worktree tar SHA + manifest SHA | PENDING |
-| runtime manifest/SHA/SBOM | `tools/build-runtime.py` | PENDING |
+| 工具 unit | 39 tests：37 PASS / 2 host/exact-source SKIP；exact-source website 单元另为 369/369 PASS | PASS |
+| upstream lint/type/unit/relevant | exact upstream `lint:js`、`typecheck` 与 website unit；369/369 非零单元样本 | PASS |
+| source/transform/protected/residual | source 4977 entries；overlay/catalog 164；security 63 samples/105 paths/0 finding；final transform 随 Release commit锁定 | PASS |
+| 双构建一致 | Elementary N/O 两个 fresh tree：25,312 entries，差异 0；两份 649,717,690-byte artifact SHA 均为 `4ec0fdaa08e9750beb21fdde2be891174a26a3c851655e6d044d5e219fc5d4ed`；Release exact-SHA workflow仍须复核 | PASS |
+| runtime manifest/SHA/SBOM | N/O runtime manifest 均为 `7ead800bc319bd655348d3a214a9acd3a5c6ddfb2e8d16caf3b733e9aa76c834`，各 25,312 entries；26 notice组件、Node 3778 license unknown=0 | PASS |
 | HTML/worker/SW/JS/CSS/WASM MIME | staging/production HTTP probes，非零 URL | PENDING |
 | WordPress 7.0/PHP WASM | exact published assets启动 | PENDING |
-| Blueprint schema/真实启动 | 单插件、组合、多站点、Minimal Admin、自定义后台分层样本 | PENDING |
+| Blueprint schema/真实启动 | 站点候选 42/42：单插件、组合、多站点、Minimal Admin/自定义后台均真实启动 | PASS |
 | locale | site/admin `zh_CN` 与 shell stable strings分别断言 | PENDING |
 | browsers | Chromium desktop、390px、Firefox | PENDING |
 | cache/SW | cold、old SW upgrade、clear/reload、query差异 | PENDING |
 | fault UX | network、Blueprint、ZIP 404/损坏中文错误 | PENDING |
 | console/pageerror | 已知 upstream warning 单列 | PENDING |
-| security/supply chain | secret/path/symlink/LFS/NOTICE/dependency diff | `BLOCKED: NOTICE 全审计未完成` |
+| security/supply chain | secret/path/symlink/LFS、26 notice组件、3778 Node license unknown=0、runtime逐组件路径/SHA | PASS |
 | public readback | anonymous Release artifact SHA | PENDING |
 | plugin/theme install | 非此产品类型 | SKIP |
 
@@ -148,13 +148,13 @@ PASS 必须记录 exact product SHA、命令/run、日期和非零样本。0 样
 | updater | play.wenpai.net 仅引用已验证 FeiCode Release URL + SHA |
 | production | 属本次任务但仍是独立可审计 A 级变更；staging展开、显式 manifest受控切换，不对站点根盲目 delete |
 | previous | 官方 runtime v3.1.49 artifact SHA `5ea2b9d227cd817d7fa1db47dc5d0a9577239b99d87e07bd4caa4f3a6effd44c`（部署前须现场回读） |
-| backup/rollback | `BLOCKED: 本次时间戳生产备份和可执行回滚脚本尚未创建；旧备份不能替代` |
+| backup/rollback | `PENDING: 部署事务将在切换前生成本次时间戳完整 runtime 备份、SHA、旧/新 manifest 与可执行回滚脚本；旧备份不替代本次备份` |
 
 ## 10. 运行记录
 
 | 日期 | upstream | product | CI/Release | artifact SHA | translation | 结论 |
 |---|---|---|---|---|---|---|
-| 2026-08-11 | `v3.1.49@4d9c20678ca7cbd7bb881dc0cc5f4e5739f6cc2d` | `PENDING: candidate exact SHA/tag` | 本地工具实现中；公开 run `PENDING` | `PENDING` | zh_CN 源码 overlay `PENDING` | PENDING |
+| 2026-08-12 | `v3.1.49@4d9c20678ca7cbd7bb881dc0cc5f4e5739f6cc2d` | candidate branch；最终 exact SHA 由合并/tag 锁定 | 工具门 PASS；exact-SHA CI/Release PENDING | VM N/O 双构 artifact SHA `4ec0fdaa08e9750beb21fdde2be891174a26a3c851655e6d044d5e219fc5d4ed`，公开附件 PENDING | zh_CN 164/164，residual 0；website unit 369/369 | PENDING |
 
 ## 11. 偏差记录
 

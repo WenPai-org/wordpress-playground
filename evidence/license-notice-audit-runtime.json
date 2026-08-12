@@ -1,0 +1,280 @@
+{
+  "schema": "wenpai-license-notice-audit/v1",
+  "status": "PASS",
+  "expected_commit": "4d9c20678ca7cbd7bb881dc0cc5f4e5739f6cc2d",
+  "actual_commit": "4d9c20678ca7cbd7bb881dc0cc5f4e5739f6cc2d",
+  "tracked_source_changes": [
+    " M packages/playground/blueprints/public/blueprint-schema.json",
+    " M packages/playground/blueprints/public/blueprint-v2-schema-validator.js"
+  ],
+  "allowed_tracked_generated": true,
+  "inventory_sha256": "dc178d6285bb753ed9c73c6e0a9026c67227e40e895338ae4c770a4bd419b372",
+  "human_notices_sha256": "4122f0b4373837a2f1b1868b59f74a91b32a43ae39d8dc6a19d8754449994b36",
+  "license_texts": [
+    {
+      "id": "Apache-2.0",
+      "present": true,
+      "sha256": "074e6e32c86a4c0ef8b3ed25b721ca23aca83df277cd88106ef7177c354615ff"
+    },
+    {
+      "id": "BSD-2-Clause",
+      "present": true,
+      "sha256": "f32fb3b417a194167cfad068223fc975ba96c5960513a10f66a3c28720aec1df"
+    },
+    {
+      "id": "BSD-3-Clause",
+      "present": true,
+      "sha256": "5a93d5831e1297ab10fe643e1a631e83be392896da14ee2951285a79012df69d"
+    },
+    {
+      "id": "MIT",
+      "present": true,
+      "sha256": "b05785f9f18e6716bab63424b11454513b9943a222595b70411009202fc592b5"
+    },
+    {
+      "id": "NCSA",
+      "present": true,
+      "sha256": "b31bbfd06e221b39e1a877fb3f91b32fe9e88c87c1b46d11cd2bd5c822ec71e3"
+    },
+    {
+      "id": "PHP-3.01",
+      "present": true,
+      "sha256": "c288e228ae7ccd27a39a7d4011057c85769a85e5fa38e91e31cec1f5549b1e7e"
+    },
+    {
+      "id": "LGPL-2.1-or-later",
+      "present": true,
+      "sha256": "5749785c8bdefafcb5d798270ed0a967036fe2ca63dcedade1627565dfef81d2"
+    },
+    {
+      "id": "curl",
+      "present": true,
+      "sha256": "272d1239bdcef73bb98bac206168ca1040bd4a31296755fadfb7515bcea18df3"
+    },
+    {
+      "id": "IJG",
+      "present": true,
+      "sha256": "7658542977bfdced9e1059a6c934ce4281de76d103b831007b825917dc62511a"
+    },
+    {
+      "id": "Zlib",
+      "present": true,
+      "sha256": "bfb1112d49db5b1daecdfef24bd7e2f3ea0bafb33aa67aa0ab51e2bf8407c03d"
+    },
+    {
+      "id": "X11",
+      "present": true,
+      "sha256": "e1963c9958b93bc2578b34f8ae22cfe205e8c0e7d5be7235cfdbdefbf92a5423"
+    },
+    {
+      "id": "libpng-2.0",
+      "present": true,
+      "sha256": "f207d0f7375b977f76ce2437962c1c12a646f15cda3df48d5472ac95eb68e8ff"
+    },
+    {
+      "id": "OFL-1.1",
+      "present": true,
+      "sha256": "8eea8287e5876b539670cadb82e99f9a7afddec6f6730811be1daf25d2e9bcfd"
+    },
+    {
+      "id": "LicenseRef-SQLite-Public-Domain",
+      "present": true,
+      "sha256": "57bc3e0938169ae6985b0a49159d537312ca70cf323bf6e9d28583e8c4262c36"
+    }
+  ],
+  "inventory_components": 26,
+  "component_results": [
+    {
+      "id": "wordpress-core",
+      "matched_source_files": 3381,
+      "required": true
+    },
+    {
+      "id": "wordpress-playground",
+      "matched_source_files": 1,
+      "required": true
+    },
+    {
+      "id": "php",
+      "matched_source_files": 32,
+      "required": true
+    },
+    {
+      "id": "php-next",
+      "matched_source_files": 0,
+      "required": true
+    },
+    {
+      "id": "emscripten",
+      "matched_source_files": 1,
+      "required": true
+    },
+    {
+      "id": "sqlite",
+      "matched_source_files": 47,
+      "required": true
+    },
+    {
+      "id": "wp-cli",
+      "matched_source_files": 2,
+      "required": true
+    },
+    {
+      "id": "fonts",
+      "matched_source_files": 1097,
+      "required": true
+    },
+    {
+      "id": "php-lib-imagemagick",
+      "matched_source_files": 837,
+      "required": true
+    },
+    {
+      "id": "php-lib-aom",
+      "matched_source_files": 33,
+      "required": true
+    },
+    {
+      "id": "php-lib-avif",
+      "matched_source_files": 9,
+      "required": true
+    },
+    {
+      "id": "php-lib-curl",
+      "matched_source_files": 37,
+      "required": true
+    },
+    {
+      "id": "php-lib-edit",
+      "matched_source_files": 1,
+      "required": true
+    },
+    {
+      "id": "php-lib-gd",
+      "matched_source_files": 55,
+      "required": true
+    },
+    {
+      "id": "php-lib-iconv",
+      "matched_source_files": 15,
+      "required": true
+    },
+    {
+      "id": "php-lib-jpeg",
+      "matched_source_files": 59,
+      "required": true
+    },
+    {
+      "id": "php-lib-ncurses",
+      "matched_source_files": 32,
+      "required": true
+    },
+    {
+      "id": "php-lib-openssl",
+      "matched_source_files": 629,
+      "required": true
+    },
+    {
+      "id": "php-lib-png",
+      "matched_source_files": 33,
+      "required": true
+    },
+    {
+      "id": "php-lib-webp",
+      "matched_source_files": 71,
+      "required": true
+    },
+    {
+      "id": "php-lib-xml2",
+      "matched_source_files": 111,
+      "required": true
+    },
+    {
+      "id": "php-lib-zlib",
+      "matched_source_files": 15,
+      "required": true
+    },
+    {
+      "id": "php-lib-zip",
+      "matched_source_files": 17,
+      "required": true
+    },
+    {
+      "id": "php-lib-oniguruma",
+      "matched_source_files": 17,
+      "required": true
+    },
+    {
+      "id": "node-lock",
+      "matched_source_files": 44,
+      "required": true
+    },
+    {
+      "id": "generated-assets",
+      "matched_source_files": 22494,
+      "required": true
+    }
+  ],
+  "source_categories": {
+    "root_license": {
+      "samples": 1,
+      "sha256_rollup": "a2cf0964f034ea08a1f47818cfdfbc2903fbb7bfe310a2eaf9d97d97c4d700a9"
+    },
+    "wordpress_archives": {
+      "samples": 10,
+      "sha256_rollup": "0990a2ebbc1f815d062b8a5a6c99fbea0d7d2f34e1375d54451f5423ec05847c"
+    },
+    "php_wasm": {
+      "samples": 16,
+      "sha256_rollup": "29f8e4aae5f935a2617775bdf3459d067f321686eda604c5dbc8de6c0767e6a0"
+    },
+    "fonts": {
+      "samples": 944,
+      "sha256_rollup": "19c5a57db70bb74457533560bea59d2c8ab72d590014a15388375a338e6a1899"
+    },
+    "sqlite_archives": {
+      "samples": 4,
+      "sha256_rollup": "e1075802d1cf8bbf5b3d34748357313a839b62d133e2a8848a95b62094a5b6d5"
+    },
+    "wp_cli": {
+      "samples": 2,
+      "sha256_rollup": "9309d1137648d2fbdd54838a88a4546bff9bf6a04a304002e3589ee7c1ccab32"
+    },
+    "license_files": {
+      "samples": 132,
+      "sha256_rollup": "daab3047db8f87aa027d5dc4e716901d4088a77ef408c2773ff83bbe08b82429"
+    }
+  },
+  "node_package_samples": 3778,
+  "node_unknown_licenses": [],
+  "runtime": {
+    "provided": true,
+    "samples": 20545,
+    "by_extension": {
+      ".css": 9375,
+      ".html": 325,
+      ".js": 6095,
+      ".json": 1397,
+      ".png": 1104,
+      ".svg": 1273,
+      ".ttf": 64,
+      ".wasm": 19,
+      ".woff": 81,
+      ".woff2": 796,
+      ".zip": 16
+    },
+    "sha256_rollup": "1125f42153e2215c50501624814074d209fe59b850874e677f4dd9f245b2959c",
+    "php_next_wasm_samples": 2,
+    "php_next_wasm_sha256": [
+      "3df97dd7be2219fc3d2a549b3a4ec89780f413d1dda885f10e1a5c812322fbc1",
+      "8874f48796c16a0c87329a8adb4ade3c0188d07635d2924e48039231f2dba8e6"
+    ],
+    "php_next_metadata": {
+      "README.md": [],
+      "manifest.json": [
+        "861a8095c4cd754ab4b87d4012857cc4f16ef22ae20b5c02bf564766c22d181a"
+      ]
+    }
+  },
+  "failures": []
+}

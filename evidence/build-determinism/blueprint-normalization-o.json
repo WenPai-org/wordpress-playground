@@ -1,0 +1,24 @@
+{
+  "alias_samples": 2,
+  "contract": "first-seen stable alias sequence; every definition/reference token is rewritten together",
+  "file_samples": 2,
+  "files": [
+    {
+      "after_sha256": "d3a42ba2b734e7e09df19f34b0aa495e767eae7d1bbcf7ef86bc667e94b1fcbd",
+      "alias_samples": 1,
+      "before_sha256": "d3a42ba2b734e7e09df19f34b0aa495e767eae7d1bbcf7ef86bc667e94b1fcbd",
+      "path": "packages/playground/blueprints/public/blueprint-schema.json",
+      "result": "already-normalized"
+    },
+    {
+      "after_sha256": "be7e76b053178cfeb1aaacabbaf233b30aa8519d46e1ea23d053238babda9905",
+      "alias_samples": 1,
+      "before_sha256": "be7e76b053178cfeb1aaacabbaf233b30aa8519d46e1ea23d053238babda9905",
+      "path": "packages/playground/blueprints/public/blueprint-v2-schema-validator.js",
+      "result": "already-normalized"
+    }
+  ],
+  "result": "already-normalized",
+  "schema": "wenpai-blueprint-validator-normalization/v1",
+  "status": "PASS"
+}

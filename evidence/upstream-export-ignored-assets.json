@@ -1,0 +1,52 @@
+{
+  "already_present": 0,
+  "commit": "4d9c20678ca7cbd7bb881dc0cc5f4e5739f6cc2d",
+  "entry_count": 22239,
+  "groups": {
+    "php_wasm_node": {
+      "entry_count": 16,
+      "manifest_sha256": "3127cd761d71522c1dcf03aee6f2a5bb5f38c51c93ea91d830f6afd21420b4ce",
+      "path_whitelist": "packages/php-wasm/node-builds/**/*.wasm",
+      "total_bytes": 334390849
+    },
+    "php_wasm_web": {
+      "entry_count": 16,
+      "manifest_sha256": "ea133c1911d4fa08599bf9e67db2b706d7cf185c399a39ae2d4ba73c158f1d0b",
+      "path_whitelist": "packages/php-wasm/web-builds/**/*.wasm",
+      "total_bytes": 261264839
+    },
+    "website_demos": {
+      "entry_count": 14,
+      "manifest_sha256": "a59dad171bb6a7a66e95903ed62bfaa1aab989a5ad3251fc3a300379ab455f1b",
+      "path_whitelist": "packages/playground/website/demos/*",
+      "total_bytes": 6377959
+    },
+    "wordpress_public_tree": {
+      "entry_count": 22164,
+      "manifest_sha256": "a02db9a3f2341a1d385d103b24a389ccc40c40a1a3e36e797f0085ec8efcb401",
+      "path_whitelist": "packages/playground/wordpress-builds/public/wp-*/* (excluding the two files above)",
+      "total_bytes": 652877448
+    },
+    "wordpress_remote_asset_paths": {
+      "entry_count": 10,
+      "manifest_sha256": "ca5e8d36fd8276c8873cd1f1628e2454fb24179f9f0ddb8293ac4dbbe15efd23",
+      "path_whitelist": "packages/playground/wordpress-builds/public/wp-*/wordpress-remote-asset-paths",
+      "total_bytes": 809151
+    },
+    "wordpress_static_zip": {
+      "entry_count": 10,
+      "manifest_sha256": "5cac400bf2b24c31da1ab35dd774e0c3bd1bfa5af05610ff3f0acd989e2deac0",
+      "path_whitelist": "packages/playground/wordpress-builds/public/wp-*/wordpress-static.zip",
+      "total_bytes": 176251043
+    },
+    "wordpress_tar_zst": {
+      "entry_count": 9,
+      "manifest_sha256": "74084689e687bfcaa4566d7cda55cb388275006cd5fc48bdad90a6e49836f603",
+      "path_whitelist": "packages/playground/wordpress-builds/src/wordpress/wp-*.tar.zst",
+      "total_bytes": 34810400
+    }
+  },
+  "restored": 22239,
+  "schema": "wenpai-upstream-export-ignored-restore/v1",
+  "status": "PASS"
+}

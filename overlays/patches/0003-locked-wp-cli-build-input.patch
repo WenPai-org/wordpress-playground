@@ -1,0 +1,15 @@
+diff --git a/packages/playground/website/project.json b/packages/playground/website/project.json
+index 8554523..012bcb0 100644
+--- a/packages/playground/website/project.json
++++ b/packages/playground/website/project.json
+@@ -22,8 +22,8 @@
+ 					"cp -r ./website/* ./wasm-wordpress-net/",
+ 					"cp -r ./website-extras/* ./wasm-wordpress-net/",
+ 					"cat ./remote/.htaccess ./website/.htaccess > ./wasm-wordpress-net/.htaccess",
+-					"curl https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar > wasm-wordpress-net/wp-cli.phar",
+-					"cat wasm-wordpress-net/wp-cli.phar | gzip -c -9 > wasm-wordpress-net/wp-cli.phar.gz"
++					"test -n \"$WENPAI_WP_CLI_PAYLOAD\" && cp \"$WENPAI_WP_CLI_PAYLOAD\" wasm-wordpress-net/wp-cli.phar",
++					"gzip -n -9 -c wasm-wordpress-net/wp-cli.phar > wasm-wordpress-net/wp-cli.phar.gz"
+ 				],
+ 				"cwd": "dist/packages/playground",
+ 				"parallel": false

@@ -1,0 +1,23 @@
+{
+  "blueprint_schema_sha256": "d3a42ba2b734e7e09df19f34b0aa495e767eae7d1bbcf7ef86bc667e94b1fcbd",
+  "blueprint_validator_sha256": "be7e76b053178cfeb1aaacabbaf233b30aa8519d46e1ea23d053238babda9905",
+  "env": {
+    "LC_ALL": "C",
+    "NODE_OPTIONS": "--require=<product>/tools/deterministic-node-build.cjs",
+    "NX_DAEMON": "false",
+    "NX_PARALLEL": "1",
+    "TZ": "UTC"
+  },
+  "generator_sha256": "ee895d4c4cde6c61243814bcffe6a60a6b530e75cc84bbf9279e1927d2dab9ad",
+  "package_lock_sha256": "107182f0235d05f499465a0be54ab980972818af489ab2d59ba25e936253a564",
+  "preloader_sha256": "1e440b7a248c98e413d2aa28b9a6a55fc7908fa9cecd8c424dbb084eeaf3693b",
+  "schema": "wenpai-build-input/v1",
+  "source_date_epoch": 1786355284,
+  "toolchain": {
+    "gzip": "1.12",
+    "node": "22.23.0",
+    "npm": "10.9.2"
+  },
+  "transform_sha256": "4b12a5172d3fc9456d70720484beb8b9e8f195efb29e3872a8a2dac27dfc2222",
+  "upstream_commit": "4d9c20678ca7cbd7bb881dc0cc5f4e5739f6cc2d"
+}

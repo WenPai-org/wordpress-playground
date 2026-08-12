@@ -1,0 +1,12 @@
+{
+  "canonical": "https://github.com/WordPress/wordpress-playground.git",
+  "canonical_commit": "4d9c20678ca7cbd7bb881dc0cc5f4e5739f6cc2d",
+  "mirror": "https://feicode.com/WPFork/wordpress-playground-upstream.git",
+  "mirror_commit": "4d9c20678ca7cbd7bb881dc0cc5f4e5739f6cc2d",
+  "previous_commit": "4d9c20678ca7cbd7bb881dc0cc5f4e5739f6cc2d",
+  "previous_tag": "v3.1.49",
+  "reason": "current lock already records latest stable tag",
+  "schema": "wenpai-upstream-watch/v1",
+  "status": "UNCHANGED",
+  "tag": "v3.1.49"
+}

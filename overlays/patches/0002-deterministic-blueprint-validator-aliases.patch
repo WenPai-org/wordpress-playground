@@ -1,0 +1,61 @@
+diff --git a/packages/playground/blueprints/bin/generate-v2-schema-validator.js b/packages/playground/blueprints/bin/generate-v2-schema-validator.js
+index 9d0af52..e17eccb 100644
+--- a/packages/playground/blueprints/bin/generate-v2-schema-validator.js
++++ b/packages/playground/blueprints/bin/generate-v2-schema-validator.js
+@@ -54,17 +54,50 @@ export async function generateBlueprintV2SchemaValidator(
+ 	applyBlueprintV2DocumentInvariants(schema);
+ 	optimizeBlueprintV2TaggedUnions(schema);
+ 
+-	const runtimeSchema = createRuntimeValidationSchema(schema);
++	// ts-json-schema-generator-v2 uses transient declaration offsets in alias
++	// keys. Canonicalize the portable schema before any consumer sees it.
++	const deterministicSchema = JSON.parse(
++		normalizeGeneratedAliasNames(JSON.stringify(schema))
++	);
++
++	const runtimeSchema = createRuntimeValidationSchema(deterministicSchema);
+ 	const ajv = createBlueprintV2Ajv();
+ 	const validate = ajv.compile(runtimeSchema);
+ 	const rawValidationCode = ajvStandaloneCode(ajv, validate);
+-	const formattedValidationCode = await prettier.format(rawValidationCode, {
+-		...prettierConfig,
+-		parser: 'babel',
+-	});
++	const deterministicValidationCode = normalizeGeneratedAliasNames(
++		rawValidationCode
++	);
++	const formattedValidationCode = await prettier.format(
++		deterministicValidationCode,
++		{
++			...prettierConfig,
++			parser: 'babel',
++		}
++	);
+ 	fs.writeFileSync(v2ValidatorOutputPath, formattedValidationCode);
+ 
+-	return schema;
++	return deterministicSchema;
++}
++
++/**
++ * Replaces source-offset aliases emitted by ts-json-schema-generator-v2.
++ *
++ * The numeric suffixes describe transient declaration offsets and can change
++ * between otherwise identical fresh builds. AJV treats them only as internal
++ * definition keys, so a first-seen stable sequence preserves every reference
++ * while removing build-order entropy.
++ */
++function normalizeGeneratedAliasNames(code) {
++	const aliases = new Map();
++	return code.replace(/alias-(?:[0-9]+-)+[0-9]+/g, (alias) => {
++		if (!aliases.has(alias)) {
++			aliases.set(
++				alias,
++				`alias-wenpai-${String(aliases.size + 1).padStart(4, '0')}`
++			);
++		}
++		return aliases.get(alias);
++	});
+ }
+ 
+ /**

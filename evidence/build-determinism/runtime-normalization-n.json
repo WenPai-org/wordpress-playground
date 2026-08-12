@@ -1,0 +1,58 @@
+{
+  "php_next": {
+    "commit": "c9ce635313dd326b3947a5d5c37b7f36307e665e",
+    "wasm_samples": 2
+  },
+  "schema": "wenpai-runtime-normalization/v1",
+  "sourcemap_reference_normalization": {
+    "map_samples": 35,
+    "paths": [
+      "assets/extensions/icu-BRfHVWa3.js.map",
+      "assets/intl-286PYpcT.js.map",
+      "assets/intl-BNHmTUtj.js.map",
+      "assets/intl-Bi3Fm00g.js.map",
+      "assets/intl-BtmQazQP.js.map",
+      "assets/intl-Bv9tqRQx.js.map",
+      "assets/intl-C-mR2imQ.js.map",
+      "assets/intl-C9QA2LJV.js.map",
+      "assets/intl-CY-xVG86.js.map",
+      "assets/intl-C_ix9gjB.js.map",
+      "assets/intl-CwapJsb-.js.map",
+      "assets/intl-Dh_Q-HJt.js.map",
+      "assets/intl-DuBnQPCW.js.map",
+      "assets/intl-DwFY2r7n.js.map",
+      "assets/intl-SiZZMwjW.js.map",
+      "assets/main-Bp08VoUg.js.map",
+      "assets/main-qM5Co_PQ.js.map",
+      "assets/php_5_2-Bsm4sPeR.js.map",
+      "assets/php_5_2-D2Je_kBv.js.map",
+      "assets/php_7_4-CKNsPEK_.js.map",
+      "assets/php_7_4-D1fjvWA1.js.map",
+      "assets/php_8_0-Bg0njb-0.js.map",
+      "assets/php_8_0-DM9KLw40.js.map",
+      "assets/php_8_1-CnExWHC4.js.map",
+      "assets/php_8_1-KotpuWOL.js.map",
+      "assets/php_8_2-DVjg9Nmi.js.map",
+      "assets/php_8_2-kYKruzSm.js.map",
+      "assets/php_8_3-BIyy1gxd.js.map",
+      "assets/php_8_3-GTfJGOrY.js.map",
+      "assets/php_8_4-Bf4T7oHy.js.map",
+      "assets/php_8_4-Ckk_OSWN.js.map",
+      "assets/php_8_5-DNNfjrlC.js.map",
+      "assets/php_8_5-DtwaOFHI.js.map",
+      "capture-site-thumbnail-B5UT9PBb.js.map",
+      "playground-worker-endpoint-blueprints-DbnQsBsb.js.map"
+    ],
+    "pattern": "__VITE_ASSET__[A-Za-z0-9_$]+__",
+    "replacement": "__VITE_ASSET__NORMALIZED__",
+    "scope": "source maps only; executable payloads are not rewritten",
+    "token_samples": 46
+  },
+  "status": "PASS",
+  "wp_cli": {
+    "commit": "3191b8d62f41717e5c4033a73c059301f3b1ab95",
+    "gzip_sha256": "0bb148cbfb50eff93e470ebf59675e54536cfc0033ebbb8d4096b0032a351212",
+    "gzip_version": "1.12",
+    "sha256": "ce34ddd838f7351d6759068d09793f26755463b4a4610a5a5c0a97b68220d85c"
+  }
+}

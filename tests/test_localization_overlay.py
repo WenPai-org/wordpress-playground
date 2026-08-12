@@ -55,6 +55,29 @@ class LocalizationOverlayTests(unittest.TestCase):
             with self.assertRaises(mod.OverlayError): mod.safe_target(Path(tmp),'../escape')
             with self.assertRaises(mod.OverlayError): mod.safe_target(Path(tmp),'/absolute')
 
+    def test_upstream_unit_contract_patch_preserves_coverage_and_asserts_chinese(self):
+        patch=(ROOT/'overlays/patches/0001-localization-test-contract.patch').read_text()
+        touched={line.removeprefix('+++ b/') for line in patch.splitlines() if line.startswith('+++ b/')}
+        expected={
+            'packages/playground/website/src/components/dock/dock-corner-launcher.spec.tsx',
+            'packages/playground/website/src/components/dock/dock-pane.spec.tsx',
+            'packages/playground/website/src/components/dock/dock-toggle-pill.spec.tsx',
+            'packages/playground/website/src/components/site-manager/site-settings-form/site-settings-action-footer.spec.tsx',
+        }
+        self.assertEqual(touched,expected)
+        added=[line[1:] for line in patch.splitlines() if line.startswith('+') and not line.startswith('+++')]
+        removed=[line[1:] for line in patch.splitlines() if line.startswith('-') and not line.startswith('---')]
+        self.assertEqual(len(added),18)
+        self.assertEqual(len(removed),len(added))
+        localized=('显示 Playground 工具','拖出或点击以显示 Playground 工具','关闭','显示工具',
+                   '退出全宽','隐藏工具','全宽','当前无法隐藏工具','应用到此 Playground',
+                   '更多设置操作','创建新的 Playground','丢弃当前工作并创建新的 Playground')
+        for text in localized:
+            self.assertTrue(any(text in line for line in added),text)
+        # The patch only changes assertion operands and button lookup strings; it does not
+        # remove test cases or behavior assertions to make the upstream suite green.
+        self.assertFalse(any('it(' in line or 'test(' in line for line in removed))
+
     def test_locked_upstream_source_contract_when_provided(self):
         source=os.environ.get('PLAYGROUND_SOURCE_ROOT')
         if not source:
