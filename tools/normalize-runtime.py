@@ -9,8 +9,6 @@ import json
 from pathlib import Path
 import re
 import subprocess
-import tempfile
-import urllib.request
 
 from manifest import sha256_file, write_json
 
@@ -18,6 +16,8 @@ from manifest import sha256_file, write_json
 ROOT = Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser()
 parser.add_argument("--runtime", type=Path, required=True)
+parser.add_argument("--wp-cli-payload", type=Path, required=True,
+                    help="Previously fetched, exact locked wp-cli.phar payload")
 parser.add_argument("--lock", type=Path, default=ROOT / "upstream-lock.json")
 parser.add_argument("--output", "-o", type=Path)
 args = parser.parse_args()
@@ -34,9 +34,10 @@ gzip_version = subprocess.run(["gzip", "--version"], check=True,
 if gzip_version != toolchain.get("gzip"):
     raise SystemExit(f"BLOCKED gzip version mismatch expected={toolchain.get('gzip')} actual={gzip_version}")
 
-request = urllib.request.Request(wp_cli["url"], headers={"User-Agent": "WenPai-Release/1"})
-with urllib.request.urlopen(request, timeout=60) as response:
-    payload = response.read()
+payload_path = args.wp_cli_payload.resolve(strict=True)
+if not payload_path.is_file():
+    raise SystemExit(f"BLOCKED pinned WP-CLI payload is not a regular file: {payload_path}")
+payload = payload_path.read_bytes()
 raw_sha = hashlib.sha256(payload).hexdigest()
 if raw_sha != wp_cli["sha256"]:
     raise SystemExit(f"BLOCKED pinned WP-CLI payload mismatch expected={wp_cli['sha256']} actual={raw_sha}")

@@ -1,4 +1,5 @@
 import importlib.util
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -64,6 +65,51 @@ class ManifestTests(unittest.TestCase):
 
 
 class PipelineTests(unittest.TestCase):
+    def test_wp_cli_is_prefetched_once_and_runtime_normalization_is_offline(self):
+        normalize = (ROOT / "tools/normalize-runtime.py").read_text()
+        self.assertIn('parser.add_argument("--wp-cli-payload"', normalize)
+        self.assertNotIn("urlopen", normalize)
+        for workflow_name in ("ci.yml", "release.yml"):
+            workflow = (ROOT / ".forgejo/workflows" / workflow_name).read_text()
+            self.assertIn("tools/prefetch-wp-cli.py", workflow)
+            self.assertIn("--wp-cli-payload .ci-work/generated-assets/wp-cli.phar", workflow)
+
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            payload = b"exact wp-cli test payload\n"
+            commit = "1" * 40
+            lock = root / "lock.json"
+            lock.write_text(json.dumps({"generated_assets": {"wp_cli": {
+                "repository": "https://example.invalid/wp-cli/builds",
+                "commit": commit,
+                "url": f"https://example.invalid/{commit}/wp-cli.phar",
+                "sha256": hashlib.sha256(payload).hexdigest(),
+                "gzip_sha256": "2" * 64,
+            }}}))
+            bin_dir = root / "bin"
+            bin_dir.mkdir()
+            curl = bin_dir / "curl"
+            fixture = root / "fixture"
+            fixture.write_bytes(payload)
+            curl.write_text("""#!/bin/sh
+while [ "$#" -gt 0 ]; do
+  if [ "$1" = "--output" ]; then shift; output=$1; fi
+  shift
+done
+cp "$FAKE_CURL_SOURCE" "$output"
+""")
+            curl.chmod(0o755)
+            output = root / "generated" / "wp-cli.phar"
+            report = root / "report.json"
+            env = dict(os.environ, PATH=f"{bin_dir}:{os.environ['PATH']}",
+                       FAKE_CURL_SOURCE=str(fixture))
+            subprocess.run([
+                sys.executable, str(ROOT / "tools/prefetch-wp-cli.py"),
+                "--lock", str(lock), "--output", str(output), "--report", str(report),
+            ], check=True, capture_output=True, text=True, env=env)
+            self.assertEqual(payload, output.read_bytes())
+            self.assertEqual("PASS", json.loads(report.read_text())["status"])
+
     def test_generated_asset_fetch_uses_source_volume_not_system_tmpfs(self):
         tool = (ROOT / "tools/sync-generated-assets.py").read_text()
         self.assertIn('dir=source.parent', tool)
@@ -82,6 +128,7 @@ class PipelineTests(unittest.TestCase):
                 "LICENSE", "NOTICE", "UPSTREAM.md", "docs/licenses",
                 "tools/license-notice-audit.py", "tools/release.py",
                 "tools/stable-watcher.py", "tools/normalize-runtime.py",
+                "tools/prefetch-wp-cli.py",
                 "tools/restore-upstream-generated-assets.py",
                 "tools/normalize-blueprint-validator.py", "upstream-lock.json#downstream.transform_sha256=SELF",
             }

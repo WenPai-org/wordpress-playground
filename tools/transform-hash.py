@@ -13,6 +13,7 @@ DEFAULTS = [".forgejo/workflows", "config", "overlays", "tests",
             "tools/release.py", "tools/stable-watcher.py",
             "tools/sync-generated-assets.py", "tools/compare-runtime-builds.py",
             "tools/restore-upstream-generated-assets.py",
+            "tools/prefetch-wp-cli.py",
             "tools/normalize-runtime.py", "tools/normalize-blueprint-validator.py",
             "tools/deterministic-node-build.cjs", "tools/transform-hash.py"]
 parser = argparse.ArgumentParser(description="Hash every governed transform/build input")

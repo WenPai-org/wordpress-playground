@@ -60,6 +60,7 @@ jobs:
           cmp evidence/upstream-export-ignored-assets-1.json evidence/upstream-export-ignored-assets-2.json
           python3 tools/sync-generated-assets.py --source .ci-work/product-source-1 --report evidence/php-next-assets-1.json
           python3 tools/sync-generated-assets.py --source .ci-work/product-source-2 --report evidence/php-next-assets-2.json
+          python3 tools/prefetch-wp-cli.py --output .ci-work/generated-assets/wp-cli.phar --report evidence/wp-cli-asset.json
       - name: Upstream relevant gates and website build
         run: |
           for source in .ci-work/product-source-1 .ci-work/product-source-2; do
@@ -92,7 +93,7 @@ jobs:
             python3 tools/normalize-blueprint-validator.py --source "$source" --output ".ci-work/blueprint-validator-normalization-$number.json"
             rm -rf "$source/dist"
             (cd "$source" && SOURCE_DATE_EPOCH="$epoch" TZ=UTC LC_ALL=C NX_DAEMON=false NX_PARALLEL=1 NODE_OPTIONS="--require=$GITHUB_WORKSPACE/tools/deterministic-node-build.cjs" corepack npm@10.9.2 exec nx build playground-website --skip-nx-cache --parallel=1)
-            python3 tools/normalize-runtime.py --runtime "$source/dist/packages/playground/wasm-wordpress-net" --output ".ci-work/runtime-normalization-$number.json"
+            python3 tools/normalize-runtime.py --runtime "$source/dist/packages/playground/wasm-wordpress-net" --wp-cli-payload .ci-work/generated-assets/wp-cli.phar --output ".ci-work/runtime-normalization-$number.json"
             mkdir -p ".ci-work/notices-$number"
             python3 tools/license-notice-audit.py --source .ci-work/upstream --runtime "$source/dist/packages/playground/wasm-wordpress-net" --expected-commit "$(python3 -c 'import json; print(json.load(open("upstream-lock.json"))["upstream"]["commit"])')" --inventory docs/licenses/third-party-inventory.json --output ".ci-work/notices-$number/license-notice-audit-runtime.json" --node-notices evidence/node-license-notices.json
             python3 tools/build-runtime.py --source "$source" --runtime-dir dist/packages/playground/wasm-wordpress-net --out-dir "$build" --version "$version" --source-sha "$(python3 -c 'import json; print(json.load(open("upstream-lock.json"))["upstream"]["source_sha256"])')" --transform-sha "$transform" --product-commit "$GITHUB_SHA" --source-date-epoch "$epoch" --package-lock package-lock.json --enforce-generated-assets --notice-audit evidence/license-notice-audit-source.json --notice-audit ".ci-work/notices-$number/license-notice-audit-runtime.json" --node-notices evidence/node-license-notices.json
@@ -125,7 +126,7 @@ jobs:
           FEICODE_TOKEN: ${{ secrets.FEICODE_TOKEN }}
         run: |
           tag="${GITHUB_REF_NAME}"
-          artifacts=(.ci-work/build-1/*.sha256 .ci-work/build-1/runtime.json .ci-work/build-1/runtime-manifest.json .ci-work/build-1/sbom-summary.json .ci-work/build-1/artifact-set.json .ci-work/build-1/THIRD_PARTY_NOTICES.md .ci-work/build-1/third-party-inventory.json .ci-work/build-1/sbom-notice-metadata.json .ci-work/build-1/LICENSE_TEXTS.sha256 .ci-work/build-1/license-notice-audit-source.json .ci-work/build-1/license-notice-audit-runtime.json .ci-work/build-1/node-license-notices.json .ci-work/runtime-normalization-1.json .ci-work/blueprint-validator-normalization-1.json evidence/build-determinism.json evidence/upstream-export-ignored-assets-1.json evidence/upstream-export-ignored-assets-2.json ROLLBACK.md)
+          artifacts=(.ci-work/build-1/*.sha256 .ci-work/build-1/runtime.json .ci-work/build-1/runtime-manifest.json .ci-work/build-1/sbom-summary.json .ci-work/build-1/artifact-set.json .ci-work/build-1/THIRD_PARTY_NOTICES.md .ci-work/build-1/third-party-inventory.json .ci-work/build-1/sbom-notice-metadata.json .ci-work/build-1/LICENSE_TEXTS.sha256 .ci-work/build-1/license-notice-audit-source.json .ci-work/build-1/license-notice-audit-runtime.json .ci-work/build-1/node-license-notices.json .ci-work/runtime-normalization-1.json .ci-work/blueprint-validator-normalization-1.json evidence/build-determinism.json evidence/upstream-export-ignored-assets-1.json evidence/upstream-export-ignored-assets-2.json evidence/wp-cli-asset.json ROLLBACK.md)
           if compgen -G '.ci-work/build-1/*.part-*' >/dev/null; then
             artifacts+=(.ci-work/build-1/*.part-*)
           else

@@ -63,6 +63,7 @@ jobs:
           cmp .ci-work/upstream-export-ignored-assets-1.json .ci-work/upstream-export-ignored-assets-2.json
           python3 tools/sync-generated-assets.py --source .ci-work/product-source-1 --report .ci-work/generated-assets-1.json
           python3 tools/sync-generated-assets.py --source .ci-work/product-source-2 --report .ci-work/generated-assets-2.json
+          python3 tools/prefetch-wp-cli.py --output .ci-work/generated-assets/wp-cli.phar --report .ci-work/wp-cli-asset.json
           mkdir -p .ci-work/notices-source
           python3 tools/license-notice-audit.py --source .ci-work/upstream --expected-commit "$commit" --inventory docs/licenses/third-party-inventory.json --output .ci-work/notices-source/license-notice-audit-source.json --node-notices .ci-work/notices-source/node-license-notices.json
       - name: Two independent exact website builds and artifact comparison
@@ -95,7 +96,7 @@ jobs:
             rm -rf "$source/dist"
             (cd "$source" && SOURCE_DATE_EPOCH="$epoch" TZ=UTC LC_ALL=C NX_DAEMON=false NX_PARALLEL=1 NODE_OPTIONS="--require=$GITHUB_WORKSPACE/tools/deterministic-node-build.cjs" corepack npm@10.9.2 exec nx build playground-website --skip-nx-cache --parallel=1)
             runtime="$source/dist/packages/playground/wasm-wordpress-net"
-            python3 tools/normalize-runtime.py --runtime "$runtime" --output ".ci-work/runtime-normalization-$number.json"
+            python3 tools/normalize-runtime.py --runtime "$runtime" --wp-cli-payload .ci-work/generated-assets/wp-cli.phar --output ".ci-work/runtime-normalization-$number.json"
             mkdir -p ".ci-work/notices-$number"
             python3 tools/license-notice-audit.py --source .ci-work/upstream --runtime "$runtime" --expected-commit "$commit" --inventory docs/licenses/third-party-inventory.json --output ".ci-work/notices-$number/license-notice-audit-runtime.json" --node-notices .ci-work/notices-source/node-license-notices.json
             python3 tools/build-runtime.py --source "$source" --runtime-dir dist/packages/playground/wasm-wordpress-net --out-dir ".ci-work/build-$number" --version "$version" --source-sha "$source_sha" --transform-sha "$transform" --product-commit "$GITHUB_SHA" --source-date-epoch "$epoch" --package-lock package-lock.json --enforce-generated-assets --notice-audit .ci-work/notices-source/license-notice-audit-source.json --notice-audit ".ci-work/notices-$number/license-notice-audit-runtime.json" --node-notices .ci-work/notices-source/node-license-notices.json
