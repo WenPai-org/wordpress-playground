@@ -68,7 +68,8 @@ jobs:
           python3 tools/prefetch-wp-cli.py --source-file generated-assets/wp-cli/wp-cli.phar --output .ci-work/generated-assets/wp-cli.phar --report evidence/wp-cli-asset.json
       - name: Upstream relevant gates and website build
         run: |
-          for source in .ci-work/product-source-1 .ci-work/product-source-2; do
+          for number in 1 2; do
+            source=".ci-work/product-source-$number"
             npm_cache="$GITHUB_WORKSPACE/.ci-work/npm-cache"
             test "$(corepack npm@10.9.2 config get registry)" = "https://registry.npmjs.org/"
             if [ "$number" = 1 ]; then install_mode=--prefer-offline; else install_mode=--offline; fi
