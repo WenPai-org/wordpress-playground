@@ -26,11 +26,20 @@ Math.random = () => {
 // source trees may allocate different chunk names. Sort every public readdir
 // result by the raw bytes of its name while retaining strings, Buffers, and
 // Dirent instances exactly as Node returned them.
+const rawBytes = (value) => Buffer.isBuffer(value) ? value : Buffer.from(value);
 const nameBytes = (entry) => {
-  const name = entry && typeof entry === 'object' && 'name' in entry
-    ? entry.name
-    : entry;
-  return Buffer.isBuffer(name) ? name : Buffer.from(name);
+  if (!(entry && typeof entry === 'object' && 'name' in entry)) {
+    return rawBytes(entry);
+  }
+  // Recursive Dirent results may contain identical basenames from different
+  // directories. Include the parent bytes to impose a total order; `path` is
+  // retained for the older Node spelling of `parentPath`.
+  const parent = entry.parentPath === undefined ? entry.path : entry.parentPath;
+  return Buffer.concat([
+    rawBytes(parent === undefined ? '' : parent),
+    Buffer.from([0]),
+    rawBytes(entry.name),
+  ]);
 };
 const sortEntries = (entries) => entries.sort((left, right) =>
   Buffer.compare(nameBytes(left), nameBytes(right))
