@@ -18,6 +18,6 @@ jobs:
       - name: Catalog coverage and placeholder gates
         run: |
           python3 tools/localization_overlay.py catalog-check | tee evidence/translation-status.json
-          python3 -m unittest tests/test_localization_overlay.py -v
+          python3 -m unittest discover -s tests -p 'test_localization_overlay.py' -v
       - name: Translation policy
         run: echo 'Translation failure is WARN and cannot create a Release; release retains stable zh_CN assertions.'
