@@ -1,0 +1,24 @@
+{
+  "artifact": {
+    "a_sha256": "a64545ec00cb1aded67d3118e6ed6b8632b7c68eee26c1dadb62480497008f8c",
+    "a_size": 649931634,
+    "b_sha256": "a64545ec00cb1aded67d3118e6ed6b8632b7c68eee26c1dadb62480497008f8c",
+    "b_size": 649931634,
+    "byte_identical": true
+  },
+  "build_a": {
+    "entry_count": 25312,
+    "manifest_sha256": "765e39f9e1f56f378ead6fe0045f4de5e37e49c6977806ccfb36d8002083c55b"
+  },
+  "build_b": {
+    "entry_count": 25312,
+    "manifest_sha256": "765e39f9e1f56f378ead6fe0045f4de5e37e49c6977806ccfb36d8002083c55b"
+  },
+  "differences": {
+    "changed": [],
+    "only_a": [],
+    "only_b": []
+  },
+  "schema": "wenpai-build-determinism/v1",
+  "status": "PASS"
+}

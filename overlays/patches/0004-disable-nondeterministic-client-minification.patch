@@ -1,5 +1,5 @@
 diff --git a/packages/playground/client/project.json b/packages/playground/client/project.json
-index 3d4d4a4..b0af1d2 100644
+index 3d4d4a4..6e8d472 100644
 --- a/packages/playground/client/project.json
 +++ b/packages/playground/client/project.json
 @@ -43,7 +43,7 @@
@@ -20,3 +20,40 @@ index 3d4d4a4..b0af1d2 100644
  				}
  			}
  		},
+diff --git a/packages/playground/client/vite.config.ts b/packages/playground/client/vite.config.ts
+index 6193c21..90e65a0 100644
+--- a/packages/playground/client/vite.config.ts
++++ b/packages/playground/client/vite.config.ts
+@@ -87,6 +87,8 @@ export default defineConfig({
+ 	// Configuration for building your library.
+ 	// See: https://vitejs.dev/guide/build.html#library-mode
+ 	build: {
++		commonjsOptions: { strictRequires: true },
++		minify: false,
+ 		lib: {
+ 			// Could also be a dictionary or array of multiple entry points.
+ 			entry: './src/index.ts',
+diff --git a/packages/playground/website-extras/vite.config.ts b/packages/playground/website-extras/vite.config.ts
+index 04c94a3..6bc30ba 100644
+--- a/packages/playground/website-extras/vite.config.ts
++++ b/packages/playground/website-extras/vite.config.ts
+@@ -83,6 +83,7 @@ export default defineConfig(({ mode }) => {
+ 		// Configuration for building your library.
+ 		// See: https://vitejs.dev/guide/build.html#library-mode
+ 		build: {
++			commonjsOptions: { strictRequires: true },
+ 			target: 'esnext',
+ 			sourcemap: true,
+ 			rollupOptions: {
+diff --git a/packages/playground/website/vite.config.ts b/packages/playground/website/vite.config.ts
+index 0ab69f7..7c5f58b 100644
+--- a/packages/playground/website/vite.config.ts
++++ b/packages/playground/website/vite.config.ts
+@@ -385,6 +385,7 @@ export default defineConfig(({ command, mode }) => {
+ 		// Configuration for building your library.
+ 		// See: https://vitejs.dev/guide/build.html#library-mode
+ 		build: {
++			commonjsOptions: { strictRequires: true },
+ 			target: 'esnext',
+ 			sourcemap: true,
+ 			rollupOptions: {

@@ -1,31 +1,56 @@
 {
-  "schema": "wenpai-client-minify-experiment/v1",
-  "status": "PASS",
-  "upstream_commit": "4d9c20678ca7cbd7bb881dc0cc5f4e5739f6cc2d",
-  "source_path": "/home/parallels/.cache/wenpai-playground-runtime/source",
-  "environment": {
-    "source_date_epoch": 1786355284,
-    "node_preload": "fixed pid/time/random only",
-    "nx_skip_nx_cache": true
+  "conclusion": {
+    "artifact_sha256": "a64545ec00cb1aded67d3118e6ed6b8632b7c68eee26c1dadb62480497008f8c",
+    "artifact_size": 649931634,
+    "byte_identical": true,
+    "client_minify": "Actual client vite.config.ts must set minify=false; project.json alone is overridden.",
+    "differences": {
+      "changed": [],
+      "only_a": [],
+      "only_b": []
+    },
+    "fix": "Set commonjsOptions.strictRequires=true in client, website, and website-extras Vite builds.",
+    "full_website_builds": 2,
+    "manifest_sha256": "765e39f9e1f56f378ead6fe0045f4de5e37e49c6977806ccfb36d8002083c55b",
+    "remaining_root": "@rollup/plugin-commonjs strictRequires=auto has documented conditional-require race behavior.",
+    "runtime_entry_count": 25312
   },
-  "target": "playground-client:build:bundle:production",
+  "environment": {
+    "node_preload": "fixed pid/time/random only",
+    "nx_skip_nx_cache": true,
+    "source_date_epoch": 1786355284
+  },
+  "evidence_directory": "/mnt/shared-context/tmp/wenpai-minify-experiment-20260813",
   "minify_false": {
     "builds": 2,
+    "changed": [],
     "entries_per_build": 16,
     "manifest_a_sha256": "0c5d756fe644b693fbc99c9c88b3d14508873181d826c4113bfbf2116b1bbc49",
     "manifest_b_sha256": "0c5d756fe644b693fbc99c9c88b3d14508873181d826c4113bfbf2116b1bbc49",
-    "changed": [],
     "only_a": [],
     "only_b": []
   },
   "minify_true_control": {
     "builds": 2,
+    "changed": [
+      "index.cjs",
+      "index.js"
+    ],
     "entries_per_build": 16,
-    "status": "FAIL",
-    "changed": ["index.cjs", "index.js"],
     "only_a_count": 10,
     "only_b_count": 10,
-    "roots": ["isomorphic-git-internals", "git-create-dotgit-directory", "git-sparse-checkout", "validate-blueprint-v2", "index"]
+    "roots": [
+      "isomorphic-git-internals",
+      "git-create-dotgit-directory",
+      "git-sparse-checkout",
+      "validate-blueprint-v2",
+      "index"
+    ],
+    "status": "FAIL"
   },
-  "evidence_directory": "/mnt/shared-context/tmp/wenpai-minify-experiment-20260813"
+  "schema": "wenpai-client-minify-experiment/v1",
+  "source_path": "/home/parallels/.cache/wenpai-playground-runtime/source",
+  "status": "PASS",
+  "target": "playground-client:build:bundle:production",
+  "upstream_commit": "4d9c20678ca7cbd7bb881dc0cc5f4e5739f6cc2d"
 }

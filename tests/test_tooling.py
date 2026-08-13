@@ -146,6 +146,12 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(2, len(removed))
         self.assertEqual(2, len(added))
         self.assertIn("packages/playground/client/project.json", patch)
+        self.assertIn("packages/playground/client/vite.config.ts", patch)
+        self.assertIn("+\t\tminify: false,", patch)
+        self.assertEqual(3, sum(1 for line in patch.splitlines()
+                                if line.startswith("+") and "commonjsOptions: { strictRequires: true }" in line))
+        self.assertIn("packages/playground/website/vite.config.ts", patch)
+        self.assertIn("packages/playground/website-extras/vite.config.ts", patch)
 
     def test_apply_overlay_forces_no_index_inside_parent_repository(self):
         tool = (ROOT / "tools/apply-overlay.py").read_text()
