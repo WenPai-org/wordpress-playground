@@ -137,6 +137,60 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(first, second)
         self.assertTrue(first.startswith("4242 1786355284000 "))
 
+    def test_deterministic_node_build_sorts_all_readdir_apis_by_name_bytes(self):
+        preload = ROOT / "tools/deterministic-node-build.cjs"
+        script = r"""
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const os = require('node:os');
+const path = require('node:path');
+assert.equal(fs.readdirSync.length, 2);
+assert.equal(fs.readdir.length, 3);
+assert.equal(fs.promises.readdir.length, 2);
+const root = fs.mkdtempSync(path.join(os.tmpdir(), 'wenpai-readdir-'));
+const names = ['z.txt', 'ä.txt', 'B.txt', 'a.txt'];
+for (const name of names.slice().reverse()) fs.writeFileSync(path.join(root, name), name);
+const expected = names.slice().sort((a, b) => Buffer.compare(Buffer.from(a), Buffer.from(b)));
+assert.deepEqual(fs.readdirSync(root), expected);
+const buffers = fs.readdirSync(root, { encoding: 'buffer' });
+assert.ok(buffers.length > 0 && buffers.every(Buffer.isBuffer));
+assert.deepEqual(buffers.map(String), expected);
+const dirents = fs.readdirSync(root, { withFileTypes: true });
+assert.ok(dirents.length > 0 && dirents.every((entry) => entry.isFile()));
+assert.deepEqual(dirents.map((entry) => entry.name), expected);
+const callbackRead = (options) => new Promise((resolve, reject) => {
+  fs.readdir(root, options, (error, entries) => error ? reject(error) : resolve(entries));
+});
+Promise.all([
+    callbackRead('utf8'),
+    callbackRead({ encoding: 'buffer' }),
+    callbackRead({ withFileTypes: true }),
+    fs.promises.readdir(root),
+    fs.promises.readdir(root, { encoding: 'buffer' }),
+    fs.promises.readdir(root, { withFileTypes: true }),
+  ]).then(([callbackNames, callbackBuffers, callbackDirents,
+            promiseNames, promiseBuffers, promiseDirents]) => {
+    assert.deepEqual(callbackNames, expected);
+    assert.ok(callbackBuffers.every(Buffer.isBuffer));
+    assert.deepEqual(callbackBuffers.map(String), expected);
+    assert.ok(callbackDirents.every((entry) => entry.isFile()));
+    assert.deepEqual(callbackDirents.map((entry) => entry.name), expected);
+    assert.deepEqual(promiseNames, expected);
+    assert.ok(promiseBuffers.every(Buffer.isBuffer));
+    assert.deepEqual(promiseBuffers.map(String), expected);
+    assert.ok(promiseDirents.length > 0 && promiseDirents.every((entry) => entry.isFile()));
+    assert.deepEqual(promiseDirents.map((entry) => entry.name), expected);
+    fs.rmSync(root, { recursive: true });
+    console.log(`PASS deterministic-readdir samples=${9 * expected.length}`);
+  }).catch((failure) => { throw failure; });
+"""
+        env = dict(os.environ, SOURCE_DATE_EPOCH="1786355284")
+        result = subprocess.run(
+            ["node", "-r", str(preload), "-e", script], env=env,
+            check=True, capture_output=True, text=True,
+        )
+        self.assertIn("PASS deterministic-readdir samples=36", result.stdout)
+
     def test_apply_overlay_forces_no_index_inside_parent_repository(self):
         tool = (ROOT / "tools/apply-overlay.py").read_text()
         self.assertIn('"apply", "--no-index"', tool)
