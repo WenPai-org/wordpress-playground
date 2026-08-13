@@ -51,7 +51,7 @@
 - 兼容模式：`compatibility-preserving`，保留 Blueprint、query API、worker/SW 与 runtime URL 协议。
 - 并存策略：不同 origin 可并存；同 origin 替换必须通过版本化 runtime manifest 和 SW/cache 升级测试。
 - 数据迁移：不迁移 WordPress 内容；旧 SW/cache 有显式清理与回滚门。
-- 版本映射：upstream `X.Y.Z` -> downstream `X.Y.Z.N`，首次为 `3.1.49.1`。
+- 版本映射：upstream `X.Y.Z` -> downstream `X.Y.Z.N`，首次发布目标为 `3.1.49.2`（`3.1.49.1` 仅失败 tag，无公开 Release）。
 
 ## 4. 转换契约
 
@@ -118,11 +118,11 @@
 
 | 检查 | 命令/证据 | 状态 |
 |---|---|---|
-| 工具 unit | 39 tests：37 PASS / 2 host/exact-source SKIP；exact-source website 单元另为 369/369 PASS | PASS |
+| 工具 unit | 41 tests：39 PASS / 2 host/exact-source SKIP；远端 run76 为 40 PASS / 1 exact-source SKIP；exact-source website 单元另为 369/369 PASS | PASS |
 | upstream lint/type/unit/relevant | exact upstream `lint:js`、`typecheck` 与 website unit；369/369 非零单元样本 | PASS |
 | source/transform/protected/residual | source 4977 entries；overlay/catalog 164；security 63 samples/105 paths/0 finding；final transform 随 Release commit锁定 | PASS |
-| 双构建一致 | Elementary N/O 两个 fresh tree：25,312 entries，差异 0；两份 649,717,690-byte artifact SHA 均为 `4ec0fdaa08e9750beb21fdde2be891174a26a3c851655e6d044d5e219fc5d4ed`；Release exact-SHA workflow仍须复核 | PASS |
-| runtime manifest/SHA/SBOM | N/O runtime manifest 均为 `7ead800bc319bd655348d3a214a9acd3a5c6ddfb2e8d16caf3b733e9aa76c834`，各 25,312 entries；26 notice组件、Node 3778 license unknown=0 | PASS |
+| 双构建一致 | Elementary G/H 两个独立 fresh tree：25,312 entries，差异 0；两份 649,931,634-byte artifact SHA 均为 `a64545ec00cb1aded67d3118e6ed6b8632b7c68eee26c1dadb62480497008f8c`；PR exact-SHA workflow仍须复核 | PASS |
+| runtime manifest/SHA/SBOM | G/H runtime manifest 均为 `765e39f9e1f56f378ead6fe0045f4de5e37e49c6977806ccfb36d8002083c55b`，各 25,312 entries；26 notice组件、Node 3778 license unknown=0 | PASS |
 | HTML/worker/SW/JS/CSS/WASM MIME | staging/production HTTP probes，非零 URL | PENDING |
 | WordPress 7.0/PHP WASM | exact published assets启动 | PENDING |
 | Blueprint schema/真实启动 | 站点候选 42/42：单插件、组合、多站点、Minimal Admin/自定义后台均真实启动 | PASS |
@@ -141,7 +141,7 @@ PASS 必须记录 exact product SHA、命令/run、日期和非零样本。0 样
 
 | 字段 | 值 |
 |---|---|
-| tag | `vX.Y.Z.N`；首次 `v3.1.49.1` |
+| tag | `vX.Y.Z.N`；首次公开 Release 目标 `v3.1.49.2` |
 | artifact | `wenpai-wordpress-playground-X.Y.Z.N.tar.gz` + `.sha256` + runtime/SBOM metadata |
 | Release | `https://feicode.com/WenPai-org/wordpress-playground/releases/tag/<tag>` |
 | tag验证 | `git ls-remote <product> refs/tags/<tag> refs/tags/<tag>^{}` 对 exact product SHA |
@@ -154,7 +154,7 @@ PASS 必须记录 exact product SHA、命令/run、日期和非零样本。0 样
 
 | 日期 | upstream | product | CI/Release | artifact SHA | translation | 结论 |
 |---|---|---|---|---|---|---|
-| 2026-08-12 | `v3.1.49@4d9c20678ca7cbd7bb881dc0cc5f4e5739f6cc2d` | candidate branch；最终 exact SHA 由合并/tag 锁定 | 工具门 PASS；exact-SHA CI/Release PENDING | VM N/O 双构 artifact SHA `4ec0fdaa08e9750beb21fdde2be891174a26a3c851655e6d044d5e219fc5d4ed`，公开附件 PENDING | zh_CN 164/164，residual 0；website unit 369/369 | PENDING |
+| 2026-08-13 | `v3.1.49@4d9c20678ca7cbd7bb881dc0cc5f4e5739f6cc2d` | candidate `fedc33f8d3af280a5e7ab7d07e2e9bda7a080a07`；profile修订后以新 exact SHA锁定 | 工具门 PASS；run76 checkout受 runner DNS/exit137 影响且双构0样本；新 exact-SHA CI PENDING | VM G/H 双构 artifact SHA `a64545ec00cb1aded67d3118e6ed6b8632b7c68eee26c1dadb62480497008f8c`，公开附件 PENDING | zh_CN 164/164，residual 0；website unit 369/369 | PENDING |
 
 ## 11. 偏差记录
 
