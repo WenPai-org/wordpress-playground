@@ -1,0 +1,31 @@
+{
+  "schema": "wenpai-client-minify-experiment/v1",
+  "status": "PASS",
+  "upstream_commit": "4d9c20678ca7cbd7bb881dc0cc5f4e5739f6cc2d",
+  "source_path": "/home/parallels/.cache/wenpai-playground-runtime/source",
+  "environment": {
+    "source_date_epoch": 1786355284,
+    "node_preload": "fixed pid/time/random only",
+    "nx_skip_nx_cache": true
+  },
+  "target": "playground-client:build:bundle:production",
+  "minify_false": {
+    "builds": 2,
+    "entries_per_build": 16,
+    "manifest_a_sha256": "0c5d756fe644b693fbc99c9c88b3d14508873181d826c4113bfbf2116b1bbc49",
+    "manifest_b_sha256": "0c5d756fe644b693fbc99c9c88b3d14508873181d826c4113bfbf2116b1bbc49",
+    "changed": [],
+    "only_a": [],
+    "only_b": []
+  },
+  "minify_true_control": {
+    "builds": 2,
+    "entries_per_build": 16,
+    "status": "FAIL",
+    "changed": ["index.cjs", "index.js"],
+    "only_a_count": 10,
+    "only_b_count": 10,
+    "roots": ["isomorphic-git-internals", "git-create-dotgit-directory", "git-sparse-checkout", "validate-blueprint-v2", "index"]
+  },
+  "evidence_directory": "/mnt/shared-context/tmp/wenpai-minify-experiment-20260813"
+}

@@ -1,0 +1,22 @@
+diff --git a/packages/playground/client/project.json b/packages/playground/client/project.json
+index 3d4d4a4..b0af1d2 100644
+--- a/packages/playground/client/project.json
++++ b/packages/playground/client/project.json
+@@ -43,7 +43,7 @@
+ 				"outputPath": "dist/packages/playground/client",
+ 				"main": "packages/playground/client/index.html",
+ 				"tsConfig": "packages/playground/client/tsconfig.lib.json",
+-				"minify": true
++				"minify": false
+ 			},
+ 			"defaultConfiguration": "production",
+ 			"configurations": {
+@@ -51,7 +51,7 @@
+ 					"minify": false
+ 				},
+ 				"production": {
+-					"minify": true
++					"minify": false
+ 				}
+ 			}
+ 		},
